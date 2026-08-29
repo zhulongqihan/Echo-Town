@@ -4,7 +4,7 @@
   "project_name": "回声镇：一生一局",
   "framework_gate": "F0B",
   "current_rule": "development",
-  "development_phase": "G3重开提案",
+  "development_phase": "D3核心循环垂直切片",
   "development_authorization": "DEC-20260828-015",
   "allowed_runtime_roots": ["development/"],
   "playable_entries": ["index.html"],

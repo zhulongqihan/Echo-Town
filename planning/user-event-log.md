@@ -2,9 +2,9 @@
 document_id: USER-EVENT-LOG
 title: 用户事件与项目控制记录
 status: 已启用
-version: 1.4.0
-as_of: 2026-08-29T17:39:13+08:00
-updated_at: 2026-08-29T17:39:13+08:00
+version: 1.5.0
+as_of: 2026-08-29T20:56:00+08:00
+updated_at: 2026-08-29T20:56:00+08:00
 canonical: true
 append_only: true
 source: 主窗口用户确认与项目控制指令
@@ -99,3 +99,13 @@ supersedes: []
 - 影响：`planning/04_core-loop-progression.md`、`planning/05_world-narrative-characters.md`、`planning/06_systems-events-content.md`、`planning/08_ux-ui-audio.md`、`planning/09_technical-data-architecture.md`、`planning/10_production-testing-roadmap.md`、`planning/11_final-gdd.md`及`development/game/`当前玩法实现均需要按新核心循环重新评估；旧版发行包保留为回退基线，不再作为正式玩法方向的充分证据。
 - 应用：创建`CHANGE-20260829-006`，先重做“每世目标—回合行动—即时反馈—一世结算—遗产继承—下一世目标”的玩法契约，再决定内容、界面、存档和测试改造范围。
 - supersedes：无；本事件不直接批准具体新数值、新内容规模或新终局。
+
+## EVENT-20260829-011：批准核心循环进入开发验证
+
+- 时间：2026-08-29T20:56:00+08:00
+- 类型：开发授权与变更申请确认
+- 结论：用户确认按照角色规划开始开发和修改，同意CHANGE-20260829-006进入垂直切片验证；本次授权针对开发验证，不等于新正式版规则已经最终锁定。
+- 实施范围：A00先作为唯一主写角色，制作“每世目标—有限回合行动—即时反馈—一世结算—遗产继承—下一世用途”的最小可玩切片；旧版代码和发行包继续保留为回退基线。
+- 约束：继续保持网页/PWA、全中文、单机、离线、无账号/联网/多人/内购、首版运行时不依赖AI；每个阶段完成后及时提交并推送GitHub。
+- 应用：新增`DEC-20260829-018`和`TASK-20260829-A00-D3-CORE-LOOP-001`，当前门禁切换为D3核心循环垂直切片。
+- supersedes：无；正式版门禁仍需在垂直切片通过后重新审查。

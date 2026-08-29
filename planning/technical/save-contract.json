@@ -1,44 +1,55 @@
 {
-  "schema_version": "1.0.0",
-  "storage_key": "echo-town-save",
-  "legacy_storage_keys": ["echo-town-mvp-v1"],
-  "save_version": 3,
-  "accepted_versions": [1, 2, 3],
+  "schema_version": "2.0.0",
+  "storage_key": "echo-town-generation-save",
+  "legacy_storage_keys": ["echo-town-save", "echo-town-mvp-v1"],
+  "save_version": 4,
+  "accepted_versions": [4],
   "max_save_bytes": 524288,
   "screen_values": ["start", "game", "ending", "archive"],
   "life_status_values": ["active", "complete"],
-  "plan_values": ["repair", "witness", "lantern"],
+  "profile_values": ["apprentice", "outsider", "inheritor"],
+  "goal_values": ["shop", "train", "truth"],
   "world": {
     "completedLives": {"type": "integer", "min": 0, "max": 9999},
-    "tracks": ["bridge", "river", "trust", "archive", "workshop", "light"],
-    "people": ["ahe", "qishu", "lin", "children"],
+    "town": ["shop", "bridge", "trust", "archive"],
+    "people": ["master", "neighbor", "apprentice"],
+    "legacyBank_max": 4,
     "history_max": 20,
-    "echoes_max": 120,
-    "discoveries_max": 40,
-    "relics_max": 20
+    "text_max": 240
   },
   "current_life": {
     "generation": {"type": "integer", "min": 1, "max": 9999},
-    "stage": {"type": "integer", "min": 0, "max": 11},
+    "round": {"type": "integer", "min": 0, "max": 7},
+    "maxRounds": 8,
     "seed": {"type": "uint32", "min": 0, "max": 4294967295},
-    "stats": {
-      "health": {"min": 0, "max": 3},
-      "coins": {"min": 0, "max": 6},
-      "courage": {"min": 0, "max": 5},
-      "bond": {"min": 0, "max": 6},
+    "resources": {
+      "money": {"min": 0, "max": 8},
+      "energy": {"min": 0, "max": 6},
+      "health": {"min": 0, "max": 3}
+    },
+    "traits": {
       "craft": {"min": 0, "max": 6},
+      "care": {"min": 0, "max": 6},
+      "nerve": {"min": 0, "max": 6},
       "insight": {"min": 0, "max": 6}
     },
-    "choices_max": 12,
-    "echoes_max": 12,
-    "relics_max": 20,
-    "discoveries_max": 20,
+    "relationships": {
+      "master": {"min": 0, "max": 4},
+      "neighbor": {"min": 0, "max": 4},
+      "apprentice": {"min": 0, "max": 4}
+    },
+    "action_log_max": 8,
+    "flags_max": 30,
+    "inheritedLegacyIds_max": 4,
+    "selectedLegacies_max": 2,
+    "legacyCandidates_max": 12,
     "text_max": 240
   },
   "import_policy": {
     "parse_before_replace": true,
     "reject_keeps_current_save": true,
     "normalize_before_persist": true,
-    "execute_imported_markup": false
+    "execute_imported_markup": false,
+    "legacy_storage_preserved": true
   }
 }

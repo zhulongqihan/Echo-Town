@@ -1,6 +1,6 @@
 {
-  "review_version": "1.0.0",
-  "content_version": "1.0.0",
+  "review_version": "2.0.0",
+  "content_version": "2.0.0",
   "baseline_no_ai": true,
   "runtime_ai": false,
   "policy": {
@@ -10,24 +10,20 @@
     "integrator": "A00"
   },
   "assets": [
-    {"id":"kite","choice_ids":["kite-share","kite-sell","kite-cross"],"facts":["bridge","ahe"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"school","choice_ids":["school-read","school-leave","school-sell"],"facts":["archive","lin"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"secret","choice_ids":["secret-keep","secret-report","secret-burn"],"facts":["river","archive","ahe"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"bridge","choice_ids":["bridge-fund","bridge-shop","bridge-map"],"facts":["bridge","river","qishu"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"shop","choice_ids":["shop-teach","shop-river","shop-record"],"facts":["workshop","qishu","archive"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"flood","choice_ids":["flood-ledger","flood-people","flood-gate"],"facts":["trust","river","archive"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"ledger","choice_ids":["ledger-open","ledger-protect","ledger-trade"],"facts":["archive","trust"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"radio","choice_ids":["radio-archive","radio-river","radio-teach"],"facts":["archive","river","workshop","children"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"bell","choice_ids":["bell-name","bell-key","bell-walk"],"facts":["archive","bridge","ahe"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"mail","choice_ids":["mail-answer","mail-invite","mail-fold"],"facts":["ahe","bridge","light"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"window","choice_ids":["window-teach","window-catalogue","window-home"],"facts":["workshop","children","archive"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"last","choice_ids":["last-hand","last-book","last-boat"],"facts":["bridge","archive","children"],"owner":"A04","reviewer":"A00","status":"approved"}
+    {"id":"arrival","action_ids":["take-order","learn-craft","open-ledger"],"facts":["修理铺","旧账"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"customer","action_ids":["rush-job","rest","ask-neighbor"],"facts":["钱","精力","邻里"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"materials","action_ids":["buy-material","borrow-material","river-salvage"],"facts":["木料","河桥"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"apprentice","action_ids":["teach-apprentice","take-extra-jobs","read-ledger"],"facts":["学徒","传承"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"rain","action_ids":["repair-bridge","protect-shop","organize-neighbors"],"facts":["暴雨","小镇"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"accounts","action_ids":["publish-accounts","hide-pages","sell-old-papers"],"facts":["旧账","证据"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"opportunity","action_ids":["register-workshop","let-apprentice-run","leave-town"],"facts":["作坊","外地"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"handoff","action_ids":["repair-last-order","hand-over-tools","finish-last-page"],"facts":["交接","下一世"],"owner":"A04","reviewer":"A00","status":"approved"}
   ],
   "checks": {
-    "facts_against_g4": "passed",
-    "choice_effects_against_g5": "passed",
-    "voice_and_repetition_sample": "passed",
-    "sensitivity_and_copyright": "passed",
+    "goal_and_action_clarity": "passed",
+    "requirements_are_visible": "passed",
+    "cross_generation_effects_are_explainable": "passed",
+    "voice_and_sensitivity": "passed",
     "ai_draft_deletion": "passed"
   }
 }

@@ -1,4 +1,4 @@
-"""Validate the authoritative local-save contract against the shipped static game."""
+"""Validate the authoritative local-save contract against the shipped game."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = ROOT / "planning" / "technical" / "save-contract.json"
 GAME_PATH = ROOT / "development" / "game" / "game.js"
+CONTENT_PATH = ROOT / "development" / "game" / "content.js"
 SW_PATH = ROOT / "development" / "game" / "sw.js"
 
 
@@ -23,14 +24,15 @@ def main() -> int:
     try:
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
         game = GAME_PATH.read_text(encoding="utf-8")
+        content = CONTENT_PATH.read_text(encoding="utf-8")
         sw = SW_PATH.read_text(encoding="utf-8")
     except (OSError, json.JSONDecodeError) as error:
         fail(f"无法读取契约或运行时文件: {error}")
 
     expected = {
-        "storage_key": "echo-town-save",
-        "save_version": 3,
-        "accepted_versions": [1, 2, 3],
+        "storage_key": "echo-town-generation-save",
+        "save_version": 4,
+        "accepted_versions": [4],
         "max_save_bytes": 524288,
     }
     for key, value in expected.items():
@@ -38,33 +40,34 @@ def main() -> int:
             fail(f"契约字段 {key} 不正确")
 
     checks = [
-        ('const STORAGE_KEY = "echo-town-save"', "存储键"),
-        ("const SAVE_VERSION = 3", "存档版本"),
+        ('const STORAGE_KEY = "echo-town-generation-save"', "存储键"),
+        ("const SAVE_VERSION = 4", "存档版本"),
         ("const MAX_SAVE_BYTES = 512 * 1024", "存档大小上限"),
         ("function normalizeState(saved)", "状态归一化"),
         ("function makeLifeSeed(generation, historyLength = 0)", "确定性seed"),
         ("localStorage.setItem(STORAGE_KEY", "本地写入"),
         ("function importSave(file)", "导入入口"),
         ("function exportSave()", "导出入口"),
+        ("function confirmLegacies()", "遗产交接"),
     ]
     for needle, label in checks:
         if needle not in game:
             fail(f"运行时代码缺少{label}标记")
 
-    if not re.search(r"\[1, 2, SAVE_VERSION\]\.includes\(Number\(value\.version\)\)", game):
-        fail("运行时代码没有明确接受v1/v2/v3")
-    if "JSON.parse(reader.result)" not in game or "state = nextState" not in game:
-        fail("导入没有体现先解析再替换状态的边界")
+    if not re.search(r"Number\(value\.version\) === SAVE_VERSION", game):
+        fail("运行时代码没有明确拒绝非v4存档")
+    if "JSON.parse(reader.result)" not in game or "state = normalizeState(imported)" not in game:
+        fail("导入没有体现先解析、校验、归一化再替换状态的边界")
     if "fetch(" in game or "WebSocket" in game or "XMLHttpRequest" in game:
         fail("业务运行时代码出现联网接口")
-    if "Math.random" in game:
+    if "Math.random" in game or "Math.random" in content:
         fail("运行时代码出现非确定性随机")
 
     shell_match = re.search(r"const APP_SHELL = \[(.*?)\];", sw, re.S)
     if not shell_match:
         fail("Service Worker缺少固定应用壳")
     shell = shell_match.group(1)
-    for asset in ("./index.html", "./styles.css", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"):
+    for asset in ("./index.html", "./styles.css", "./content.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"):
         if asset not in shell:
             fail(f"应用壳缺少本地资源 {asset}")
     if "http://" in shell or "https://" in shell:

@@ -1,18 +1,18 @@
 ---
 agent_id: A00
 status: 工作中
-as_of: 2026-08-29T20:40:13+08:00
-current_task: null
-task_brief: null
+as_of: 2026-08-29T21:29:57+08:00
+current_task: TASK-20260829-A00-D3-CORE-LOOP-001
+task_brief: TASK_20260829_010.md
 upstream_versions:
-  MASTER: 3.28.0
-  DECISION-LOG: 1.6.0
+  MASTER: 3.30.0
+  DECISION-LOG: 1.7.0
   AGENT-REGISTRY: 3.22.0
-latest_handoff: ../../handoffs/20260829_023-core-loop-replan.md
+latest_handoff: ../../handoffs/20260829_024-core-loop-mvp.md
 blockers:
-  - 新核心循环重规划提案尚未获得用户确认
+  - 无；D3垂直切片已完成，等待用户本人试玩回填
   - 正式版内容和长期重玩证据尚未完成
-next_action: 根据CHANGE-20260829-006完成G3核心循环重规划，确认后制作新的垂直切片
+next_action: 等待用户试玩；根据理解性反馈决定D3修订或恢复G3-G10专题复审
 ---
 
 # A00 运行状态
@@ -101,6 +101,15 @@ next_action: 根据CHANGE-20260829-006完成G3核心循环重规划，确认后�
 - 已创建`planning/changes/CHANGE_20260829_006.md`和`planning/replans/20260829_core-loop-replan-proposal.md`。
 - 当前不继续扩写旧12节点内容；先用“修理铺撑到下一代”的8回合垂直切片验证新循环。
 
+## D3核心循环垂直切片完成
+
+- 已将旧版线性12节点替换为8回合、24行动、3起点、3目标的目标驱动短世循环；
+- 已实现行动代价/条件、即时结果、后续影响、目标推进、结算和1—2件遗产交接；
+- 下一世实际继承资源/能力/关系或小镇基础，并在首页与开局条同时解释用途；
+- 已完成内容 manifest、审校记录、save v4、响应式 UI、PWA 应用壳和 D3 验收表；
+- 已完成真实 Chromium 一世闭环、遗产交接、第二世加成、刷新恢复、镇志和最新缓存控制台检查；
+- 详情见 `planning/handoffs/20260829_024-core-loop-mvp.md`，旧发行包和旧规则保留为回退基线。
+
 ## 根目录试玩入口交付
 
 - 已在项目根目录创建`index.html`，作为唯一稳定用户试玩入口；实际游戏源码仍唯一保存在`development/game/`。
@@ -156,4 +165,4 @@ next_action: 根据CHANGE-20260829-006完成G3核心循环重规划，确认后�
 
 ## 下一次启动动作
 
-A00保持G10待用户批准状态，已交付根目录试玩入口并接收用户试玩回填；若用户确认通过则关闭G10，若发现阻塞问题则按G9缺陷分级回到对应门禁。
+A00保持D3完成待用户试玩状态；收到试玩反馈后，只按反馈决定继续修订D3，或让G3至G10按新循环重新复审。未收到用户证据前，不宣称正式版规则或G10已完成。

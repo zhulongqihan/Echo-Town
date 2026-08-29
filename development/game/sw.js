@@ -1,5 +1,5 @@
-const CACHE_NAME = "echo-town-mvp-v13";
-const APP_SHELL = ["./", "./index.html", "./styles.css", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"];
+const CACHE_NAME = "echo-town-generation-v4";
+const APP_SHELL = ["./", "./index.html", "./styles.css", "./content.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
