@@ -1,0 +1,1 @@
+{"version":2,"world":{"completedLives":1,"history":[{"generation":1,"choices":["<b>选择</b>"],"echoes":["<img src=x onerror=alert('xss')>"],"verdict":"<script>document.body.dataset.injected='yes'</script>","town":[]}]},"currentLife":null,"screen":"archive"}

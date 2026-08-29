@@ -1,0 +1,24 @@
+{
+  "name": "回声镇：一生一局",
+  "short_name": "回声镇",
+  "description": "每一世很短，但小镇会记住。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#10101a",
+  "theme_color": "#10101a",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

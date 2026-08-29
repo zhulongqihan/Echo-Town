@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10101a" />
+    <meta name="description" content="《回声镇：一生一局》——每一世很短，但小镇会记住。" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>回声镇：一生一局</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <button class="wordmark" data-action="home" aria-label="回到游戏首页">
+          <span class="wordmark-mark" aria-hidden="true">◎</span>
+          <span>回声镇</span>
+        </button>
+        <div class="header-tools">
+          <button class="text-button header-font-toggle" id="font-toggle" data-action="toggle-font" aria-pressed="false">大字模式</button>
+          <div class="header-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="save-status">本地存档</span>
+          </div>
+        </div>
+      </header>
+
+      <a class="skip-link" href="#app">跳到主要内容</a>
+      <main id="app" class="app-main">
+        <section id="screen-start" class="screen screen-start" aria-labelledby="start-title">
+          <div class="start-copy">
+            <p class="kicker">回声镇 · 本地可玩构建</p>
+            <h1 id="start-title">一生一局</h1>
+            <p class="lede">你只有这一生，但这座镇子会把你留下的东西交给下一位你。</p>
+            <p class="start-note">12个生命节点 · 多重结局 · 选择会留下痕迹</p>
+            <div class="start-actions">
+              <button class="button button-primary" data-action="start-life" data-plan="witness">开始第一世 <span aria-hidden="true">→</span></button>
+              <button class="button button-secondary is-hidden" data-action="continue-life">继续人生</button>
+            </div>
+            <section class="plan-picker" aria-labelledby="plan-title">
+              <p id="plan-title" class="eyebrow">先决定这一世想留下什么</p>
+              <div class="plan-grid">
+                <button class="plan-card" type="button" data-action="start-life" data-plan="repair"><strong>修路的人</strong><span>从手边的工具和桥开始。</span></button>
+                <button class="plan-card" type="button" data-action="start-life" data-plan="witness"><strong>记事的人</strong><span>先听见，再把来处写下来。</span></button>
+                <button class="plan-card" type="button" data-action="start-life" data-plan="lantern"><strong>守灯的人</strong><span>让关系比答案更早抵达下一世。</span></button>
+              </div>
+            </section>
+          </div>
+          <div class="start-archive" aria-label="回声镇当前状态">
+            <div class="archive-heading">
+              <span class="eyebrow">镇志摘录</span>
+              <span id="generation-label">还没有人写下第一行</span>
+            </div>
+            <p id="start-echo" class="archive-quote">“河水从镇子中间穿过去，谁也没有想过它会记得什么。”</p>
+            <div id="start-town" class="town-mini"></div>
+            <div class="start-tools">
+              <button class="text-button is-hidden" data-action="view-archive">翻开完整镇志</button>
+              <button class="text-button" data-action="export-save">导出存档</button>
+              <label class="text-button file-button" for="import-input">导入存档</label>
+              <input id="import-input" type="file" accept="application/json,.json" class="visually-hidden" />
+              <button class="text-button" data-action="erase-save">清除本地存档</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-game" class="screen is-hidden" aria-labelledby="event-title">
+          <div class="game-toolbar">
+            <div>
+              <p class="kicker">人生档案</p>
+              <h1 id="life-label">第 1 世</h1>
+            </div>
+            <div class="life-progress-wrap">
+              <span id="stage-label">第一章</span>
+              <div id="life-progress" class="life-progress" role="progressbar" aria-label="人生进度" aria-valuemin="0" aria-valuemax="12" aria-valuenow="1"></div>
+            </div>
+          </div>
+
+          <div id="legacy-banner" class="legacy-banner is-hidden" role="status"></div>
+
+          <div class="game-layout">
+            <article class="event-column">
+              <div class="event-meta">
+                <span id="event-age">7岁</span>
+                <span class="meta-separator" aria-hidden="true">·</span>
+                <span id="event-place">河边</span>
+              </div>
+              <h2 id="event-title">还没有写下这一页</h2>
+              <p id="event-copy" class="event-copy"></p>
+              <div id="choices" class="choices" role="group" aria-label="人生选择"></div>
+
+              <section id="feedback" class="feedback is-hidden" aria-live="polite">
+                <div class="feedback-rule" aria-hidden="true"></div>
+                <p class="eyebrow">这一选择留下的回声</p>
+                <p id="feedback-copy" class="feedback-copy"></p>
+                <div id="feedback-changes" class="feedback-changes"></div>
+                <button class="button button-primary" data-action="next-stage">翻到下一页 <span aria-hidden="true">→</span></button>
+              </section>
+            </article>
+
+            <aside class="town-column" aria-label="人生状态与小镇状态">
+              <section class="status-panel">
+                <div class="panel-heading">
+                  <span class="eyebrow">这一生</span>
+                  <span id="status-hint">你能带走的只有判断</span>
+                </div>
+                <div class="stat-list">
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">♡</span>
+                    <div class="stat-main"><span>身体</span><strong id="stat-health">3 / 3</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="身体" aria-valuemin="0" aria-valuemax="3" aria-valuenow="3"><span id="meter-health"></span></div>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">◇</span>
+                    <div class="stat-main"><span>积蓄</span><strong id="stat-coins">2</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="积蓄" aria-valuemin="0" aria-valuemax="6" aria-valuenow="2"><span id="meter-coins"></span></div>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">⌁</span>
+                    <div class="stat-main"><span>胆量</span><strong id="stat-courage">1</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="胆量" aria-valuemin="0" aria-valuemax="5" aria-valuenow="1"><span id="meter-courage"></span></div>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">✦</span>
+                    <div class="stat-main"><span>牵挂</span><strong id="stat-bond">0</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="牵挂" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><span id="meter-bond"></span></div>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">⌘</span>
+                    <div class="stat-main"><span>手艺</span><strong id="stat-craft">0</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="手艺" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><span id="meter-craft"></span></div>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-icon" aria-hidden="true">◌</span>
+                    <div class="stat-main"><span>洞察</span><strong id="stat-insight">0</strong></div>
+                    <div class="stat-meter" role="progressbar" aria-label="洞察" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><span id="meter-insight"></span></div>
+                  </div>
+                </div>
+                <p id="life-intent" class="life-intent">这一世还没有决定要留下什么。</p>
+              </section>
+
+              <section class="town-panel">
+                <div class="panel-heading">
+                  <span class="eyebrow">小镇现在</span>
+                  <span id="town-year">第一行还没写下</span>
+                </div>
+                <div id="town-state" class="town-state"></div>
+              </section>
+
+              <section class="people-panel">
+                <div class="panel-heading">
+                  <span class="eyebrow">人还记得</span>
+                  <span>关系会跨世</span>
+                </div>
+                <div id="people-state" class="people-state"></div>
+              </section>
+
+              <section class="relic-panel">
+                <div class="panel-heading">
+                  <span class="eyebrow">带来的东西</span>
+                  <span id="relic-count">0 件</span>
+                </div>
+                <div id="relics" class="relics"></div>
+              </section>
+            </aside>
+          </div>
+
+          <div class="game-footer">
+            <button class="text-button" data-action="home">暂存，回到首页</button>
+            <span>选择会自动保存 · 键盘可用 1 / 2 / 3</span>
+          </div>
+        </section>
+
+        <section id="screen-ending" class="screen is-hidden" aria-labelledby="ending-title">
+          <div class="ending-intro">
+            <p class="kicker">人生档案已封存</p>
+            <h1 id="ending-title">你这一生，留下了回声。</h1>
+            <p id="ending-copy" class="lede"></p>
+          </div>
+          <div class="ending-grid">
+            <article class="ending-card ending-summary">
+              <span class="eyebrow">这一世</span>
+              <div id="ending-stats" class="ending-stats"></div>
+              <div class="ending-rule"></div>
+              <p id="ending-verdict" class="ending-verdict"></p>
+            </article>
+            <article class="ending-card ending-echoes">
+              <span class="eyebrow">镇上记住了</span>
+              <div id="echo-list" class="echo-list"></div>
+            </article>
+          </div>
+          <div class="ending-actions">
+            <button class="button button-primary" data-action="next-life">带着它，选择下一世方向 <span aria-hidden="true">→</span></button>
+            <button class="text-button" data-action="home">回到镇志首页</button>
+          </div>
+        </section>
+
+        <section id="screen-archive" class="screen is-hidden" aria-labelledby="archive-title">
+          <div class="archive-page-heading">
+            <div>
+              <p class="kicker">回声镇 · 记忆总览</p>
+              <h1 id="archive-title">每一世都写在这里。</h1>
+              <p class="lede">你不必记住所有选择。镇志会替你记住，直到下一次有人把它翻开。</p>
+            </div>
+            <button class="button button-secondary" data-action="home">回到首页</button>
+          </div>
+          <div class="archive-overview">
+            <article class="archive-overview-card">
+              <span class="eyebrow">小镇现在</span>
+              <div id="archive-town" class="town-state"></div>
+            </article>
+            <article class="archive-overview-card">
+              <span class="eyebrow">已经走过</span>
+              <strong id="archive-life-count" class="archive-life-count">0 世</strong>
+              <p>每一世的判断都会成为下一世的天气。</p>
+            </article>
+          </div>
+          <div id="archive-timeline" class="archive-timeline"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>《回声镇：一生一局》</span>
+        <span>本地单机 · 无需联网</span>
+      </footer>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="game.js"></script>
+  </body>
+</html>

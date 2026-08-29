@@ -1,0 +1,1 @@
+{"version":2,"world":{"completedLives":0,"history":[]},"currentLife":{"generation":1,"stage":0,"stats":{"health":3,"coins":2,"courage":1,"bond":0},"choices":["kite-share"],"choiceLabels":["<b>已选</b>"],"echoes":["<img src=x onerror=alert('feedback-xss')>"],"relics":[],"status":"active","lastFeedback":"反馈仍应是文字。"},"screen":"game"}
