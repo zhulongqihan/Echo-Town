@@ -1,18 +1,22 @@
 {
-  "content_version": "3.0.0",
-  "project_id": "echo-town-rich-life",
+  "content_version": "4.0.0",
+  "project_id": "echo-town-life-sim",
   "rules": {
     "life_rounds": 23,
     "stages": 5,
     "actions_per_round": 3,
     "actions_total": 69,
+    "life_actions": 7,
+    "jobs": 6,
+    "items": 6,
+    "action_points_per_round": 3,
     "profiles": 5,
     "talents": 8,
     "goals": 6,
     "legacy_choices": 3,
     "legacy_count": 16,
-    "achievements": 12,
-    "secrets": 8,
+    "achievements": 16,
+    "secrets": 10,
     "runtime_generation": false,
     "randomness": "deterministic-seed-only"
   },
@@ -45,7 +49,10 @@
     {"id":"later-final","stage":"later","age":75,"action_ids":["write-final-page","leave-open-door","listen-thirteenth"],"tags":["结算","彩蛋"]}
   ],
   "legacy_ids": ["steady-habit", "small-tool", "study-notebook", "radio-recording", "family-recipe", "friend-letter", "bridge-map", "shop-key", "wet-ledger", "school-badge", "clock-spring", "town-register", "travel-postcard", "apprentice-notes", "unfinished-letter", "open-door"],
-  "achievement_ids": ["first-page", "three-lives", "master-of-one", "well-rounded", "town-builder", "legacy-collector", "good-neighbor", "second-chance", "thirteenth-chime", "echo-heard", "old-friend", "leave-a-light"],
-  "secret_ids": ["thirteenth-chime", "echo-not-glitch", "river-number", "empty-seat", "coin-under-floor", "night-radio", "paper-fold", "open-door-secret"],
+  "life_action_ids": ["routine-study", "routine-repair", "routine-social", "routine-care", "routine-rest", "routine-explore", "routine-record"],
+  "job_ids": ["shop-shift", "tutor-shift", "market-shift", "courier-shift", "night-shift", "town-job"],
+  "item_ids": ["toolkit", "study-notebook", "warm-coat", "old-phone", "first-aid", "camera"],
+  "achievement_ids": ["first-page", "three-lives", "master-of-one", "well-rounded", "town-builder", "legacy-collector", "good-neighbor", "second-chance", "thirteenth-chime", "echo-heard", "old-friend", "leave-a-light", "first-pay", "balance-sheet", "three-jobs", "kept-breath"],
+  "secret_ids": ["thirteenth-chime", "echo-not-glitch", "river-number", "empty-seat", "coin-under-floor", "night-radio", "paper-fold", "open-door-secret", "last-bus", "pocket-receipt"],
   "runtime_files": ["development/game/index.html", "development/game/content.js", "development/game/game.js", "development/game/styles.css", "development/game/sw.js"]
 }

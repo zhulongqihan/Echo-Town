@@ -31,8 +31,8 @@ def main() -> int:
 
     expected = {
         "storage_key": "echo-town-generation-save",
-        "save_version": 5,
-        "accepted_versions": [5],
+        "save_version": 6,
+        "accepted_versions": [6],
         "max_save_bytes": 524288,
     }
     for key, value in expected.items():
@@ -47,7 +47,7 @@ def main() -> int:
 
     checks = [
         ('const STORAGE_KEY = "echo-town-generation-save"', "存储键"),
-        ("const SAVE_VERSION = 5", "存档版本"),
+        ("const SAVE_VERSION = 6", "存档版本"),
         ("const MAX_SAVE_BYTES = 512 * 1024", "存档大小上限"),
         ("function normalizeState(saved)", "状态归一化"),
         ("function makeLifeSeed(generation, profileId, talentId, goalId, legacyIds)", "确定性seed"),
@@ -63,7 +63,7 @@ def main() -> int:
             fail(f"运行时代码缺少{label}标记")
 
     if not re.search(r"Number\((?:saved|imported)\.version\) !== SAVE_VERSION", game):
-        fail("运行时代码没有明确拒绝非v5存档")
+        fail("运行时代码没有明确拒绝非v6存档")
     if "JSON.parse(reader.result)" not in game or "const normalized = normalizeState(imported)" not in game or "state = normalized" not in game:
         fail("导入没有体现先解析、校验、归一化再替换状态的边界")
     if "fetch(" in game or "WebSocket" in game or "XMLHttpRequest" in game:
@@ -72,6 +72,9 @@ def main() -> int:
         fail("运行时代码出现非确定性随机")
     if "maxRounds: 23" not in content:
         fail("运行时内容没有声明23个成长节点")
+    for needle, label in [("actionPoints", "生活行动点"), ("inventory", "物品库存"), ("cashflow", "现金流"), ("function resolveLifeAction", "生活行动"), ("function buyItem", "购买物品"), ("function settleLivingCost", "生活支出")]:
+        if needle not in game:
+            fail(f"运行时代码缺少{label}标记")
 
     shell_match = re.search(r"const APP_SHELL = \[(.*?)\];", sw, re.S)
     if not shell_match:

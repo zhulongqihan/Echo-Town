@@ -3,8 +3,8 @@
 
   const CONTENT = window.EchoTownContent;
   const STORAGE_KEY = "echo-town-generation-save";
-  const LEGACY_STORAGE_KEYS = ["echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"];
-  const SAVE_VERSION = 5;
+  const LEGACY_STORAGE_KEYS = ["echo-town-generation-save-v5", "echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"];
+  const SAVE_VERSION = 6;
   const MAX_SAVE_BYTES = 512 * 1024;
   const MAX_HISTORY = 40;
   const MAX_TEXT_LENGTH = 280;
@@ -25,6 +25,15 @@
     "life-record": "写下人生记录",
     "clock-opened": "拆过祁叔的钟",
     "echo-heard": "听见第十三声",
+    "worked-shop": "修理铺帮过工",
+    "worked-tutor": "教过一个学生",
+    "worked-market": "在集市跑过摊",
+    "worked-courier": "走过一趟远路",
+    "worked-night": "熬过一班夜",
+    "worked-town": "接过小镇项目",
+    "in-debt": "账单压在身上",
+    "bought-item": "给生活添了一件东西",
+    "first-wage": "拿到第一笔工资",
   };
   const LEGACY_ID_MAP = {
     "work-habit": "steady-habit",
@@ -48,7 +57,7 @@
       collectedLegacyIds: [],
       achievements: [],
       secrets: [],
-      totals: { choices: 0, tests: 0, testWins: 0 },
+      totals: { choices: 0, tests: 0, testWins: 0, workShifts: 0, moneyEarned: 0, moneySpent: 0 },
     },
     currentLife: null,
     screen: "start",
@@ -117,6 +126,22 @@
     return CONTENT.legacies.find((item) => item.id === id) || null;
   }
 
+  function getItem(id) {
+    return CONTENT.items.find((item) => item.id === id) || null;
+  }
+
+  function getLifeAction(id) {
+    return CONTENT.lifeActions.find((item) => item.id === id) || null;
+  }
+
+  function getJob(id) {
+    return CONTENT.jobs.find((item) => item.id === id) || null;
+  }
+
+  function getLivingCost(age) {
+    return CONTENT.livingCosts.find((item) => age <= item.maxAge) || CONTENT.livingCosts[CONTENT.livingCosts.length - 1];
+  }
+
   function getAchievement(id) {
     return CONTENT.achievements.find((item) => item.id === id) || null;
   }
@@ -163,6 +188,20 @@
       goalProgress: clamp(entry.goalProgress, 0, 99, 0),
       goalTarget: clamp(entry.goalTarget, 1, 99, 8),
       bestSkill: safeText(entry.bestSkill, 50),
+      activityCount: clamp(entry.activityCount, 0, CONTENT.maxLifeLog + CONTENT.maxRounds, 23),
+      jobId: safeText(entry.jobId, 50),
+      cashflow: {
+        income: clamp(entry.cashflow?.income, 0, 99999, 0),
+        expenses: clamp(entry.cashflow?.expenses, 0, 99999, 0),
+        debt: clamp(entry.cashflow?.debt, 0, 99999, 0),
+      },
+      inventory: safeList(entry.inventory, CONTENT.maxInventory, 60).filter((id, index, list) => getItem(id) && list.indexOf(id) === index),
+      lifeLog: Array.isArray(entry.lifeLog) ? entry.lifeLog.slice(-12).filter(isRecord).map((item) => ({
+        age: clamp(item.age, 1, 120, 6),
+        label: safeText(item.label, 100),
+        result: safeText(item.result, MAX_TEXT_LENGTH),
+        kind: safeText(item.kind, 30),
+      })) : [],
       actions: Array.isArray(entry.actions) ? entry.actions.slice(-CONTENT.maxRounds).filter(isRecord).map((action) => ({
         round: clamp(action.round, 1, CONTENT.maxRounds, 1),
         age: clamp(action.age, 1, 120, 6),
@@ -182,7 +221,9 @@
 
   function normalizeLife(savedLife) {
     if (!isRecord(savedLife) || !isRecord(savedLife.skills)) return null;
-    const resources = normalizeMap(savedLife.resources, RESOURCE_KEYS, Object.fromEntries(RESOURCE_KEYS.map((key) => [key, [0, CONTENT.resources[key].max]])));
+    const maxEnergy = clamp(savedLife.maxResources?.energy, 10, 12, 10);
+    const resourceLimits = Object.fromEntries(RESOURCE_KEYS.map((key) => [key, [0, key === "energy" ? maxEnergy : CONTENT.resources[key].max]]));
+    const resources = normalizeMap(savedLife.resources, RESOURCE_KEYS, resourceLimits);
     const skills = normalizeMap(savedLife.skills, SKILL_KEYS, Object.fromEntries(SKILL_KEYS.map((key) => [key, [0, 10]])));
     const relationships = normalizeMap(savedLife.relationships, RELATIONSHIP_KEYS, Object.fromEntries(RELATIONSHIP_KEYS.map((key) => [key, [0, 10]])));
     return {
@@ -195,10 +236,27 @@
       talentId: getTalent(savedLife.talentId).id,
       goalId: getGoal(savedLife.goalId).id,
       resources,
-      maxResources: { energy: clamp(savedLife.maxResources?.energy, 10, 12, 10) },
+      maxResources: { energy: maxEnergy },
       skills,
       relationships,
       town: normalizeTown(savedLife.town),
+      actionPoints: clamp(savedLife.actionPoints, 0, CONTENT.actionPointsPerRound, CONTENT.actionPointsPerRound),
+      sideActionsUsed: clamp(savedLife.sideActionsUsed, 0, CONTENT.maxLifeLog, 0),
+      inventory: safeList(savedLife.inventory, CONTENT.maxInventory, 60).filter((id, index, list) => getItem(id) && list.indexOf(id) === index),
+      jobId: getJob(savedLife.jobId)?.id || "none",
+      jobShifts: clamp(savedLife.jobShifts, 0, CONTENT.maxLifeLog, 0),
+      cashflow: {
+        income: clamp(savedLife.cashflow?.income, 0, 99999, 0),
+        expenses: clamp(savedLife.cashflow?.expenses, 0, 99999, 0),
+        debt: clamp(savedLife.cashflow?.debt, 0, 99999, 0),
+      },
+      lifeLog: Array.isArray(savedLife.lifeLog) ? savedLife.lifeLog.slice(-CONTENT.maxLifeLog).filter(isRecord).map((entry) => ({
+        age: clamp(entry.age, 1, 120, 6),
+        label: safeText(entry.label, 100),
+        result: safeText(entry.result, MAX_TEXT_LENGTH),
+        kind: safeText(entry.kind, 30),
+      })) : [],
+      lifeFeedback: isRecord(savedLife.lifeFeedback) ? savedLife.lifeFeedback : null,
       flags: safeList(savedLife.flags, 80, 80),
       secrets: safeList(savedLife.secrets, CONTENT.secrets.length, 60),
       progress: normalizeMap(savedLife.progress, CONTENT.goals.map((goal) => goal.id), Object.fromEntries(CONTENT.goals.map((goal) => [goal.id, [0, goal.target]]))),
@@ -230,6 +288,9 @@
         choices: clamp(savedWorld.totals?.choices, 0, 99999, 0),
         tests: clamp(savedWorld.totals?.tests, 0, 99999, 0),
         testWins: clamp(savedWorld.totals?.testWins, 0, 99999, 0),
+        workShifts: clamp(savedWorld.totals?.workShifts, 0, 99999, 0),
+        moneyEarned: clamp(savedWorld.totals?.moneyEarned, 0, 9999999, 0),
+        moneySpent: clamp(savedWorld.totals?.moneySpent, 0, 9999999, 0),
       },
     };
     const isRichSave = Number(saved.version) === SAVE_VERSION && isRecord(saved.currentLife) && isRecord(saved.currentLife.skills);
@@ -252,7 +313,7 @@
       }
       const fresh = clone(DEFAULT_STATE);
       if (LEGACY_STORAGE_KEYS.some((key) => Boolean(localStorage.getItem(key)))) {
-        fresh.notice = "检测到旧版人生存档。旧存档仍被保留；丰富版将从新一世开始，避免把两套规则混在一起。";
+        fresh.notice = "检测到旧版人生存档。旧存档仍被保留；生活经营版将从新一世开始，避免把两套规则混在一起。";
       }
       return fresh;
     } catch (error) {
@@ -317,7 +378,7 @@
         render();
         showToast("存档已导入");
       } catch (error) {
-        showToast("导入失败：需要丰富版 v5 存档，当前存档未改变");
+        showToast("导入失败：需要生活经营版 v6 存档，当前存档未改变");
       }
     };
     reader.onerror = () => showToast("导入失败：无法读取文件");
@@ -342,6 +403,14 @@
       skills: defaultMap(SKILL_KEYS),
       relationships: defaultMap(RELATIONSHIP_KEYS),
       town: clone(state.world.town),
+      actionPoints: CONTENT.actionPointsPerRound,
+      sideActionsUsed: 0,
+      inventory: [],
+      jobId: "none",
+      jobShifts: 0,
+      cashflow: { income: 0, expenses: 0, debt: 0 },
+      lifeLog: [],
+      lifeFeedback: null,
       flags: [...(profile.flags || [])],
       secrets: [],
       progress: defaultMap(CONTENT.goals.map((goal) => goal.id)),
@@ -378,6 +447,7 @@
   function applyEffect(life, effect = {}, includeTown = true) {
     const beforeFlags = new Set(life.flags);
     const beforeSecrets = new Set(life.secrets);
+    const beforeItems = new Set(life.inventory || []);
     Object.entries(effect.maxResources || {}).forEach(([key, amount]) => {
       if (key in life.maxResources) life.maxResources[key] = clamp(life.maxResources[key] + Number(amount || 0), 10, 12, 10);
     });
@@ -389,11 +459,13 @@
     if (includeTown) Object.entries(effect.town || {}).forEach(([key, amount]) => {
       if (key in life.town) addValue(life.town, key, amount, 0, CONTENT.world[key].values.length - 1);
     });
+    life.inventory = [...new Set([...life.inventory, ...safeList(effect.items, CONTENT.maxInventory, 60)])].filter((id) => getItem(id)).slice(0, CONTENT.maxInventory);
     life.flags = [...new Set([...life.flags, ...safeList(effect.flags, 20, 80)])].slice(0, 80);
     life.secrets = [...new Set([...life.secrets, ...safeList(effect.secrets, CONTENT.secrets.length, 60)])].filter((id) => getSecret(id));
     return {
       newFlags: life.flags.filter((flag) => !beforeFlags.has(flag)),
       newSecrets: life.secrets.filter((secret) => !beforeSecrets.has(secret)),
+      newItems: life.inventory.filter((item) => !beforeItems.has(item)),
     };
   }
 
@@ -428,6 +500,127 @@
   function getAvailability(life, action) {
     const failed = (action.requires || []).find((requirement) => !requirementMet(life, requirement));
     return { available: !failed, reason: failed ? requirementReason(failed) : "" };
+  }
+
+  function getLifeAvailability(life, action) {
+    if (life.age < Number(action.minAge || 0)) return { available: false, reason: `需要 ${action.minAge} 岁以后` };
+    if (life.actionPoints < Number(action.points || 1)) return { available: false, reason: `还需要 ${action.points} 点生活行动` };
+    return getAvailability(life, action);
+  }
+
+  function hasItem(life, itemId) {
+    return Array.isArray(life.inventory) && life.inventory.includes(itemId);
+  }
+
+  function getLifeActionEffect(life, action) {
+    const effect = clone(action.effect || {});
+    const bonus = action.bonusItem && hasItem(life, action.bonusItem) ? action.bonusItem : "";
+    const bonusEffects = {
+      study: { skills: { study: 1 } },
+      repair: { skills: { craft: 1 } },
+      social: { relationships: { friend: 1 } },
+      care: { resources: { health: 1 }, relationships: { family: 1 } },
+      rest: { resources: { health: 1 } },
+    };
+    if (bonusEffects[bonus]) {
+      Object.entries(bonusEffects[bonus]).forEach(([group, values]) => {
+        effect[group] = { ...(effect[group] || {}) };
+        Object.entries(values).forEach(([key, value]) => { effect[group][key] = Number(effect[group][key] || 0) + value; });
+      });
+    }
+    return effect;
+  }
+
+  function addGoalPoints(life, goalPoints = {}) {
+    Object.entries(goalPoints).forEach(([goalId, amount]) => {
+      life.progress[goalId] = clamp(Number(life.progress[goalId] || 0) + Number(amount || 0), 0, getGoal(goalId)?.target || 8, 0);
+    });
+  }
+
+  function pushLifeLog(life, entry) {
+    life.lifeLog = [...(life.lifeLog || []), {
+      age: life.age,
+      label: safeText(entry.label, 100),
+      result: safeText(entry.result, MAX_TEXT_LENGTH),
+      kind: safeText(entry.kind, 30),
+    }].slice(-CONTENT.maxLifeLog);
+  }
+
+  function resolveLifeAction(actionId) {
+    const life = state.currentLife;
+    if (!life || life.status !== "active" || life.lastAction) return;
+    const action = getLifeAction(actionId) || getJob(actionId);
+    if (!action) return;
+    const availability = getLifeAvailability(life, action);
+    if (!availability.available) {
+      showToast(availability.reason || "这个生活安排现在还做不了");
+      return;
+    }
+    const before = captureMetrics(life);
+    const beforeItems = new Set(life.inventory);
+    const effect = getLifeActionEffect(life, action);
+    const firstWage = Boolean(action.jobId && life.jobShifts === 0);
+    effect.flags = [...(effect.flags || []), ...(firstWage ? ["first-wage"] : [])];
+    if (action.id === "night-shift") effect.secrets = [...(effect.secrets || []), "last-bus"];
+    const applied = applyEffect(life, effect);
+    const goalPoints = { ...(action.goalPoints || {}) };
+    if (action.bonusItem === "record" && hasItem(life, "camera")) goalPoints.record = Number(goalPoints.record || 0) + 1;
+    addGoalPoints(life, goalPoints);
+    life.actionPoints -= Number(action.points || 1);
+    life.sideActionsUsed += 1;
+    if (action.jobId) {
+      life.jobId = action.jobId;
+      life.jobShifts += 1;
+      state.world.totals.workShifts += 1;
+      state.world.totals.moneyEarned += Math.max(0, Number(effect.resources?.money || 0));
+    }
+    const income = Math.max(0, Number(effect.resources?.money || 0));
+    const expenses = Math.max(0, -Number(effect.resources?.money || 0));
+    life.cashflow.income += income;
+    life.cashflow.expenses += expenses;
+    state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
+    const after = captureMetrics(life);
+    const newItems = life.inventory.filter((item) => !beforeItems.has(item));
+    const newSecrets = [...new Set([...(applied.newSecrets || []), ...life.secrets.filter((secret) => !state.world.secrets.includes(secret))])];
+    life.newSecrets = [...new Set([...(life.newSecrets || []), ...newSecrets])];
+    life.lifeFeedback = {
+      title: action.label,
+      copy: action.jobId ? `${action.label}结束了。${action.detail}` : `${action.label}完成了。${action.detail}`,
+      changes: getMetricChanges(before, after),
+      newItems,
+      newSecrets,
+    };
+    pushLifeLog(life, { label: action.label, result: life.lifeFeedback.copy, kind: action.jobId ? "工作" : "生活" });
+    life.flags = [...new Set([...life.flags, ...(action.jobId ? ["worked"] : [])])];
+    unlockAchievements(life);
+    persist("生活安排已保存");
+    render();
+  }
+
+  function buyItem(itemId) {
+    const life = state.currentLife;
+    const item = getItem(itemId);
+    if (!life || life.status !== "active" || life.lastAction || !item) return;
+    if (life.actionPoints < 1) { showToast("生活行动点不够了"); return; }
+    if (life.inventory.includes(item.id)) { showToast("你已经有这件东西了"); return; }
+    if (life.inventory.length >= CONTENT.maxInventory) { showToast(`库存最多放 ${CONTENT.maxInventory} 件东西`); return; }
+    if (life.resources.money < item.price) { showToast(`还差 ${item.price - life.resources.money} 元，先去工作或换个便宜的选择`); return; }
+    const before = captureMetrics(life);
+    const beforeSecrets = new Set(state.world.secrets);
+    applyEffect(life, { resources: { money: -item.price }, items: [item.id], flags: ["bought-item"], secrets: item.id === "camera" ? ["pocket-receipt"] : [] });
+    life.actionPoints -= 1;
+    life.sideActionsUsed += 1;
+    life.cashflow.expenses += item.price;
+    state.world.totals.moneySpent += item.price;
+    const newSecrets = life.secrets.filter((secret) => !beforeSecrets.has(secret));
+    state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
+    const after = captureMetrics(life);
+    life.newSecrets = [...new Set([...(life.newSecrets || []), ...newSecrets])];
+    life.lifeFeedback = { title: `买下：${item.label}`, copy: item.detail, changes: getMetricChanges(before, after), newItems: [item.id], newSecrets };
+    pushLifeLog(life, { label: `购买${item.label}`, result: item.detail, kind: "消费" });
+    unlockAchievements(life);
+    persist("物品已加入库存");
+    render();
   }
 
   function getAction(actionId) {
@@ -503,6 +696,8 @@
     if (!requirement) return true;
     if (requirement.type === "world") return Number(state.world[requirement.key] || 0) >= Number(requirement.min || 0);
     if (requirement.type === "count") return Array.isArray(state.world[requirement.group]) && state.world[requirement.group].length >= Number(requirement.min || 0);
+    if (requirement.type === "lifeCount") return Array.isArray(life[requirement.group]) && life[requirement.group].length >= Number(requirement.min || 0);
+    if (requirement.type === "countFlags") return life.flags.filter((flag) => flag.startsWith(requirement.prefix || "")).length >= Number(requirement.min || 0);
     if (requirement.type === "anyStat") return Object.values(life[requirement.group] || {}).some((value) => Number(value) >= Number(requirement.min || 0));
     if (requirement.type === "statCount") return Object.values(life[requirement.group] || life.town || {}).filter((value) => Number(value) >= Number(requirement.min || 0)).length >= Number(requirement.count || 1);
     if (requirement.type === "lifeStat") return getLifeStat(life, requirement.group, requirement.key) >= Number(requirement.min || 0);
@@ -526,10 +721,7 @@
     const before = captureMetrics(life);
     const beforeLevels = Object.fromEntries(SKILL_KEYS.map((key) => [key, getSkillLevel(life.skills[key])]));
     const baseResult = applyEffect(life, action.effect);
-    const goalDelta = Object.entries(action.goalPoints || {}).forEach(([goalId, amount]) => {
-      life.progress[goalId] = clamp(Number(life.progress[goalId] || 0) + Number(amount || 0), 0, getGoal(goalId)?.target || 8, 0);
-    });
-    void goalDelta;
+    addGoalPoints(life, action.goalPoints || {});
     let testResult = null;
     if (action.test) {
       const test = action.test;
@@ -563,6 +755,7 @@
       test: testResult,
       stageBreak: stageBreak ? { label: stageBreak.label, range: stageBreak.range, hint: stageBreak.hint } : null,
     };
+    life.lifeFeedback = null;
     life.actions.push({ round: life.round + 1, age: life.age, label: action.label, result: life.lastAction.result, success: testResult ? testResult.success : true });
     life.actions = life.actions.slice(-CONTENT.maxRounds);
     state.world.totals.choices += 1;
@@ -605,6 +798,11 @@
       goalProgress: life.progress[life.goalId],
       goalTarget: goal.target,
       bestSkill: getBestSkill(life),
+      activityCount: life.actions.length + life.lifeLog.length,
+      jobId: life.jobId,
+      cashflow: clone(life.cashflow),
+      inventory: [...life.inventory],
+      lifeLog: life.lifeLog.slice(-12),
       actions: life.actions.slice(-CONTENT.maxRounds),
       legacyIds: [],
       achievementIds: life.newAchievements || [],
@@ -628,6 +826,35 @@
     render();
   }
 
+  function settleLivingCost(life) {
+    const bill = getLivingCost(life.age);
+    if (!bill.cost) {
+      life.lifeFeedback = null;
+      return;
+    }
+    const before = captureMetrics(life);
+    const available = life.resources.money;
+    const paid = Math.min(available, bill.cost);
+    const shortfall = Math.max(0, bill.cost - available);
+    life.cashflow.expenses += paid;
+    life.cashflow.debt += shortfall;
+    state.world.totals.moneySpent += paid;
+    if (shortfall) {
+      applyEffect(life, { resources: { money: -available, pressure: Math.min(3, 1 + Math.ceil(shortfall / 5)) }, flags: ["in-debt"] });
+    } else {
+      applyEffect(life, { resources: { money: -paid } });
+    }
+    const after = captureMetrics(life);
+    life.lifeFeedback = {
+      title: shortfall ? "生活账单没有完全付清" : "生活账单已结算",
+      copy: shortfall ? `这一阶段的${bill.label}是${bill.cost}元，你先付了${paid}元，剩下的压力会留在账上。` : `这一阶段的${bill.label}花了${paid}元，日子暂时稳住了。`,
+      changes: getMetricChanges(before, after),
+      newItems: [],
+      newSecrets: [],
+    };
+    if (shortfall) pushLifeLog(life, { label: "生活账单", result: life.lifeFeedback.copy, kind: "账单" });
+  }
+
   function advanceRound() {
     const life = state.currentLife;
     if (!life || life.status !== "active" || !life.lastAction) return;
@@ -637,7 +864,10 @@
     }
     life.round += 1;
     life.age = CONTENT.rounds[life.round].age;
+    life.actionPoints = CONTENT.actionPointsPerRound;
+    life.sideActionsUsed = 0;
     life.lastAction = null;
+    settleLivingCost(life);
     persist("人生继续保存");
     render();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -759,6 +989,35 @@
     $("#life-tags").innerHTML = flags.length ? flags.map((flag) => `<span class="tag-chip">${escapeHtml(FLAG_LABELS[flag])}</span>`).join("") : `<span class="empty-note">每一次行动都会写下一枚标签。</span>`;
   }
 
+  function renderLifeManagement(life) {
+    const blocked = Boolean(life.lastAction);
+    const nextRound = CONTENT.rounds[life.round + 1];
+    const bill = getLivingCost(nextRound?.age || life.age);
+    $("#life-action-points").textContent = `${life.actionPoints} / ${CONTENT.actionPointsPerRound}`;
+    $("#living-cost").textContent = bill.cost ? `下一节点预计生活费 ${bill.cost} 元` : "下一节点由家里承担日常";
+    $("#cashflow").textContent = `本世收入 ${life.cashflow.income} · 支出 ${life.cashflow.expenses} · 账上压力 ${life.cashflow.debt}`;
+    const renderOption = (action) => {
+      const availability = getLifeAvailability(life, action);
+      const disabled = blocked || !availability.available;
+      const reason = blocked ? "先完成右侧的人生事件" : availability.reason;
+      return `<button class="life-action-card ${disabled ? "is-locked" : ""}" data-action="life-action" data-life-action-id="${action.id}" ${disabled ? "disabled" : ""}><span class="life-action-type">${action.jobId ? "工作" : "生活"}</span><span class="life-action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail)}</span><small>${escapeHtml(action.cost)}</small>${disabled ? `<b>${escapeHtml(reason)}</b>` : `<em>${escapeHtml(action.preview)}</em>`}</span><span class="life-action-points">-${action.points || 1}点</span></button>`;
+    };
+    $("#life-action-list").innerHTML = CONTENT.lifeActions.map(renderOption).join("");
+    $("#job-list").innerHTML = CONTENT.jobs.map(renderOption).join("");
+    const currentJob = getJob(life.jobId);
+    $("#job-status").innerHTML = currentJob ? `<strong>${escapeHtml(currentJob.label)}</strong><span>已上班 ${life.jobShifts} 班 · 这份工作会留在履历里</span>` : `<strong>还没有固定工作</strong><span>你可以先学习、休息，也可以在15岁以后找一份合适的班。</span>`;
+    $("#inventory-limit").textContent = `${life.inventory.length} / ${CONTENT.maxInventory} 格`;
+    $("#inventory-list").innerHTML = life.inventory.length ? life.inventory.map((id) => { const item = getItem(id); return item ? `<span class="inventory-item"><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.detail)}</small></span>` : ""; }).join("") : `<span class="empty-note">库存还是空的。钱不只用来存，也可以买回时间和选择。</span>`;
+    $("#shop-list").innerHTML = CONTENT.items.map((item) => {
+      const owned = hasItem(life, item.id);
+      const unavailable = blocked || owned || life.actionPoints < 1 || life.resources.money < item.price || life.inventory.length >= CONTENT.maxInventory;
+      const reason = owned ? "已拥有" : life.resources.money < item.price ? `还差 ${item.price - life.resources.money} 元` : blocked ? "先完成本节点事件" : "购买";
+      return `<button class="shop-item ${unavailable ? "is-locked" : ""}" data-action="buy-item" data-item-id="${item.id}" ${unavailable ? "disabled" : ""}><span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.detail)}</small></span><b>${owned ? "已拥有" : `${item.price} 元 · ${reason}`}</b></button>`;
+    }).join("");
+    const feedback = life.lifeFeedback;
+    $("#life-feedback").innerHTML = feedback ? `<strong>${escapeHtml(feedback.title)}</strong><span>${escapeHtml(feedback.copy)}</span><div>${[...(feedback.changes || []), ...(feedback.newItems || []).map((id) => `获得${getItem(id)?.label || id}`), ...(feedback.newSecrets || []).map((id) => `发现彩蛋：${getSecret(id)?.label || id}`)].map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>` : `<span>先安排生活，再处理本节点事件。3点行动可以自由组合。</span>`;
+  }
+
   function renderGame() {
     const life = state.currentLife;
     if (!life) return;
@@ -786,11 +1045,13 @@
     $("#inherited-strip").classList.remove("is-hidden");
     $("#action-list").innerHTML = round.actions.map((action, index) => {
       const availability = getAvailability(life, action);
-      const locked = !availability.available;
+      const locked = Boolean(life.lastAction) || !availability.available;
+      const lockReason = life.lastAction ? "先完成当前事件反馈" : availability.reason;
       const test = action.test ? `<span class="action-test">${escapeHtml(action.test.label)}：${escapeHtml(CONTENT.skills[action.test.skill]?.label || action.test.skill)} + 命运点 ≥ ${action.test.difficulty}</span>` : "";
       const tags = (action.tags || []).map((tag) => `<em>${escapeHtml(tag)}</em>`).join("");
-      return `<button class="action-card ${locked ? "is-locked" : ""}" data-action="choose-action" data-action-id="${action.id}" ${locked ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail)}</span><small>${escapeHtml(action.cost)}</small>${test}${locked ? `<b class="action-lock">锁定：${escapeHtml(availability.reason)}</b>` : `<span class="action-tags">${tags}</span>`}</span><span class="action-result"><b>${escapeHtml(action.preview)}</b><small>选后会写入人生记录，并影响后面的路线。</small></span></button>`;
+      return `<button class="action-card ${locked ? "is-locked" : ""}" data-action="choose-action" data-action-id="${action.id}" ${locked ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail)}</span><small>${escapeHtml(action.cost)}</small>${test}${locked ? `<b class="action-lock">锁定：${escapeHtml(lockReason)}</b>` : `<span class="action-tags">${tags}</span>`}</span><span class="action-result"><b>${escapeHtml(action.preview)}</b><small>选后会写入人生记录，并影响后面的路线。</small></span></button>`;
     }).join("");
+    renderLifeManagement(life);
     const feedback = $("#feedback");
     feedback.classList.toggle("is-hidden", !life.lastAction);
     if (life.lastAction) {
@@ -822,7 +1083,9 @@
     $("#ending-goal").innerHTML = `<strong>${life.progress[life.goalId]} / ${goal.target}</strong><span>${escapeHtml(goal.label)} · ${escapeHtml(life.outcome.tone)}</span>`;
     $("#ending-score").textContent = `${life.outcome.score} 分`;
     $("#ending-best-skill").textContent = `${CONTENT.skills[getBestSkill(life)].label} · ${life.skills[getBestSkill(life)]}/10`;
-    $("#ending-actions-count").textContent = `${life.actions.length} 个选择`;
+    $("#ending-actions-count").textContent = `${life.actions.length} 个事件`;
+    $("#ending-life-actions-count").textContent = `${life.lifeLog.length} 次安排`;
+    $("#ending-cashflow").textContent = `${life.cashflow.income - life.cashflow.expenses} 元`;
     $("#ending-echo").textContent = life.lastAction?.future || "你留下的基础，会在下一世变成新的选择。";
     renderTown("#ending-changes", life.town);
     $("#ending-achievements").innerHTML = life.newAchievements.length ? life.newAchievements.map((id) => { const item = getAchievement(id); return item ? `<div class="reward-item"><strong>${escapeHtml(item.icon)} ${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">这一世没有新成就，但每个选择仍写进了镇志。</span>`;
@@ -864,7 +1127,9 @@
       const goal = getGoal(entry.goalId);
       const legacyTags = (entry.legacyIds || []).map((id) => getLegacy(id)).filter(Boolean).map((item) => `<span class="archive-tag">带出：${escapeHtml(item.label)}</span>`).join("");
       const actionTags = (entry.actions || []).slice(-5).map((action) => `<span class="archive-tag">${escapeHtml(action.label)}</span>`).join("");
-      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${entry.age} 岁封存</span><span>${escapeHtml(profile.label)}</span></div><div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · ${entry.goalProgress} / ${entry.goalTarget} · 天赋“${escapeHtml(talent.label)}”</p><p class="archive-echo">${escapeHtml(entry.outcomeCopy)}</p><div class="archive-tags">${actionTags}${legacyTags || "<span class=\"archive-tag\">没有交接特殊遗产</span>"}</div></div></article>`;
+      const lifeTags = (entry.lifeLog || []).slice(-4).map((item) => `<span class="archive-tag archive-life-tag">${escapeHtml(item.label)}</span>`).join("");
+      const job = getJob(entry.jobId);
+      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${entry.age} 岁封存</span><span>${escapeHtml(profile.label)}</span></div><div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · ${entry.goalProgress} / ${entry.goalTarget} · 天赋“${escapeHtml(talent.label)}”</p><p class="archive-echo">${escapeHtml(entry.outcomeCopy)}</p><p class="archive-economy">${entry.activityCount || 23} 次生活与事件安排 · ${job ? escapeHtml(job.label) : "没有固定工作"} · 现金流 ${Number(entry.cashflow?.income || 0) - Number(entry.cashflow?.expenses || 0)} 元</p><div class="archive-tags">${lifeTags}${actionTags}${legacyTags || "<span class=\"archive-tag\">没有交接特殊遗产</span>"}</div></div></article>`;
     }).join("") : `<div class="empty-archive"><strong>镇志还没有第一页。</strong><span>完成一世以后，这里会记录你的目标、选择、遗产和留下的回声。</span></div>`;
   }
 
@@ -885,6 +1150,8 @@
     if (action === "choose-goal") { setup.goalId = element.dataset.id; render(); }
     if (action === "start-life") startLife();
     if (action === "continue-life") { state.screen = "game"; render(); }
+    if (action === "life-action") resolveLifeAction(element.dataset.lifeActionId);
+    if (action === "buy-item") buyItem(element.dataset.itemId);
     if (action === "choose-action") resolveAction(element.dataset.actionId);
     if (action === "advance-round") advanceRound();
     if (action === "choose-legacy") { toggleLegacy(element.dataset.id); }

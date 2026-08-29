@@ -1,6 +1,6 @@
 {
-  "review_version": "3.0.0",
-  "content_version": "3.0.0",
+  "review_version": "4.0.0",
+  "content_version": "4.0.0",
   "baseline_no_ai": true,
   "runtime_ai": false,
   "policy": {
@@ -33,6 +33,31 @@
     {"id":"later-handoff","action_ids":["train-successor","record-life","give-away-tools"],"facts":["学徒","镇志","工具"],"owner":"A04","reviewer":"A00","status":"approved"},
     {"id":"later-farewell","action_ids":["open-clock","sit-by-bridge","call-family"],"facts":["钟","桥边","电话"],"owner":"A04","reviewer":"A00","status":"approved"},
     {"id":"later-final","action_ids":["write-final-page","leave-open-door","listen-thirteenth"],"facts":["最后一页","留门","第十三声"],"owner":"A04","reviewer":"A00","status":"approved"}
+  ],
+  "life_actions": [
+    {"id":"routine-study","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-repair","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-social","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-care","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-rest","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-explore","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"routine-record","owner":"A04","reviewer":"A00","status":"approved"}
+  ],
+  "jobs": [
+    {"id":"shop-shift","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"tutor-shift","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"market-shift","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"courier-shift","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"night-shift","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"town-job","owner":"A04","reviewer":"A00","status":"approved"}
+  ],
+  "items": [
+    {"id":"toolkit","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"study-notebook","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"warm-coat","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"old-phone","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"first-aid","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"camera","owner":"A04","reviewer":"A00","status":"approved"}
   ],
   "checks": {
     "goal_and_action_clarity": "passed",

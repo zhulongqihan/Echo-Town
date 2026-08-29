@@ -39,21 +39,25 @@ def main() -> int:
         "stages": 5,
         "actions_per_round": 3,
         "actions_total": 69,
+        "life_actions": 7,
+        "jobs": 6,
+        "items": 6,
+        "action_points_per_round": 3,
         "profiles": 5,
         "talents": 8,
         "goals": 6,
         "legacy_choices": 3,
         "legacy_count": 16,
-        "achievements": 12,
-        "secrets": 8,
+        "achievements": 16,
+        "secrets": 10,
     }
     for key, expected in expected_rules.items():
         if rules.get(key) != expected:
             fail(f"规则 {key} 应为 {expected}")
 
-    if manifest.get("content_version") != "3.0.0" or review.get("content_version") != "3.0.0":
-        fail("内容版本没有统一到3.0.0")
-    if review.get("review_version") != "3.0.0":
+    if manifest.get("content_version") != "4.0.0" or review.get("content_version") != "4.0.0":
+        fail("内容版本没有统一到4.0.0")
+    if review.get("review_version") != "4.0.0":
         fail("内容审阅记录版本不正确")
     if review.get("baseline_no_ai") is not True or review.get("runtime_ai") is not False:
         fail("内容审阅没有明确运行时无AI")
@@ -65,6 +69,9 @@ def main() -> int:
     legacy_ids = manifest.get("legacy_ids", [])
     achievement_ids = manifest.get("achievement_ids", [])
     secret_ids = manifest.get("secret_ids", [])
+    life_action_ids = manifest.get("life_action_ids", [])
+    job_ids = manifest.get("job_ids", [])
+    item_ids = manifest.get("item_ids", [])
     unique(profiles, "人生起点")
     unique(talents, "天赋")
     unique(goals, "人生愿望")
@@ -72,6 +79,9 @@ def main() -> int:
     unique(legacy_ids, "遗产")
     unique(achievement_ids, "成就")
     unique(secret_ids, "彩蛋")
+    unique(life_action_ids, "生活行动")
+    unique(job_ids, "工作")
+    unique(item_ids, "物品")
 
     if len(rounds) != rules["life_rounds"]:
         fail("成长节点数量不正确")
@@ -81,6 +91,8 @@ def main() -> int:
         fail("遗产数量不正确")
     if len(achievement_ids) != rules["achievements"] or len(secret_ids) != rules["secrets"]:
         fail("成就或彩蛋数量不正确")
+    if len(life_action_ids) != rules["life_actions"] or len(job_ids) != rules["jobs"] or len(item_ids) != rules["items"]:
+        fail("生活行动、工作或物品数量不正确")
 
     all_actions: list[str] = []
     stages: set[str] = set()
@@ -104,6 +116,12 @@ def main() -> int:
             fail(f"节点 {round_item.get('id')} 的审阅行动清单不一致")
         if asset.get("owner") != "A04" or asset.get("reviewer") != "A00" or asset.get("status") != "approved":
             fail(f"节点 {round_item.get('id')} 缺少内容负责人审阅状态")
+    for group_name, entries, expected in [("生活行动", review.get("life_actions", []), life_action_ids), ("工作", review.get("jobs", []), job_ids), ("物品", review.get("items", []), item_ids)]:
+        if [entry.get("id") for entry in entries] != expected:
+            fail(f"内容审阅记录没有覆盖全部{group_name}")
+        for entry in entries:
+            if entry.get("owner") != "A04" or entry.get("reviewer") != "A00" or entry.get("status") != "approved":
+                fail(f"{group_name} {entry.get('id')} 缺少内容负责人审阅状态")
     for key, value in review.get("checks", {}).items():
         if value != "passed":
             fail(f"内容检查项 {key} 尚未通过")
@@ -116,11 +134,15 @@ def main() -> int:
         "test:",
         "secrets:",
         "nextUse:",
+        "actionPointsPerRound: 3",
+        "lifeActions:",
+        "jobs:",
+        "items:",
     ]
     for marker in required_content_markers:
         if marker not in content:
             fail(f"运行时内容缺少 {marker}")
-    for value in profiles + talents + goals + [item for action in all_actions for item in [action]] + legacy_ids + achievement_ids + secret_ids:
+    for value in profiles + talents + goals + [item for action in all_actions for item in [action]] + legacy_ids + achievement_ids + secret_ids + life_action_ids + job_ids + item_ids:
         if f'"{value}"' not in content:
             fail(f"运行时内容缺少ID {value}")
 

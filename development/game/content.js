@@ -17,9 +17,44 @@
   });
 
   const CONTENT = {
-    version: "3.0.0",
+    version: "4.0.0",
     maxRounds: 23,
     maxLegacyChoices: 3,
+    actionPointsPerRound: 3,
+    maxInventory: 6,
+    maxLifeLog: 120,
+    livingCosts: [
+      { maxAge: 11, cost: 0, label: "家里承担日常" },
+      { maxAge: 17, cost: 1, label: "零花与交通" },
+      { maxAge: 29, cost: 3, label: "房租与日常" },
+      { maxAge: 49, cost: 5, label: "家庭与生活" },
+      { maxAge: 75, cost: 4, label: "医疗与日常" },
+    ],
+    items: [
+      { id: "toolkit", label: "趁手工具", price: 12, detail: "练手艺和修理工作时，额外获得一点手艺。", bonus: "repair" },
+      { id: "study-notebook", label: "空白笔记本", price: 10, detail: "学习和记录时，额外获得一点学识。", bonus: "study" },
+      { id: "warm-coat", label: "厚外套", price: 8, detail: "休息时身体恢复更多，寒冷的工作少受一点损耗。", bonus: "rest" },
+      { id: "old-phone", label: "旧手机", price: 14, detail: "维护关系时更容易联系上人，社交额外获得一点朋友。", bonus: "social" },
+      { id: "first-aid", label: "急救包", price: 10, detail: "照料和休息时多一点身体，代价来临时更有余地。", bonus: "care" },
+      { id: "camera", label: "旧相机", price: 18, detail: "记录和小镇行动时，额外推进记录目标。", bonus: "record" },
+    ],
+    lifeActions: [
+      { id: "routine-study", label: "学习 / 练习", detail: "把一项能力往前推一点，为人生事件准备。", points: 1, cost: "1行动点 · 精力-2 · 压力+1", preview: "+1 学识；学习目标+1", effect: { resources: { energy: -2, pressure: 1 }, skills: { study: 1 } }, goalPoints: { learn: 1, record: 1 }, bonusItem: "study", tags: ["成长", "计划"] },
+      { id: "routine-repair", label: "动手做点东西", detail: "把抽象的想法变成能拿在手里的东西。", minAge: 8, points: 1, cost: "1行动点 · 精力-2", preview: "+1 手艺；小镇目标+1", effect: { resources: { energy: -2 }, skills: { craft: 1 } }, goalPoints: { learn: 1, town: 1 }, bonusItem: "repair", tags: ["手艺", "成长"] },
+      { id: "routine-social", label: "约一个人见面", detail: "不解决问题，只先让关系不要断掉。", points: 1, cost: "1行动点 · 精力-1", preview: "+1 心气；朋友+1；同伴目标+1", effect: { resources: { energy: -1, happiness: 1 }, relationships: { friend: 1 } }, goalPoints: { connection: 1 }, bonusItem: "social", tags: ["关系", "心气"] },
+      { id: "routine-care", label: "照料家里的人", detail: "把时间花在一个今天确实需要你的人身上。", minAge: 8, points: 1, cost: "1行动点 · 精力-1", preview: "+1 体谅；家人+1；照料目标+1", effect: { resources: { energy: -1 }, skills: { empathy: 1 }, relationships: { family: 1 } }, goalPoints: { home: 1 }, bonusItem: "care", tags: ["家人", "责任"] },
+      { id: "routine-rest", label: "认真休息", detail: "不把休息当成浪费，给身体和心气留一点余地。", points: 1, cost: "1行动点 · 精力+2 · 身体+1 · 压力-1", preview: "+2 精力，+1 身体，压力-1", effect: { resources: { energy: 2, health: 1, pressure: -1, happiness: 1 } }, bonusItem: "rest", tags: ["恢复", "风险管理"] },
+      { id: "routine-explore", label: "去镇上走走", detail: "看看谁在开门，哪里正在变化，别只盯着自己的账。", minAge: 11, points: 1, cost: "1行动点 · 精力-1", preview: "+1 胆识；小镇目标+1；可能发现线索", effect: { resources: { energy: -1, happiness: 1 }, skills: { courage: 1 }, town: { market: 1 } }, goalPoints: { town: 1, free: 1 }, tags: ["小镇", "探索"] },
+      { id: "routine-record", label: "写下今天的账", detail: "记下收入、支出和一个不想忘的细节。", minAge: 13, points: 1, cost: "1行动点 · 精力-1", preview: "+1 表达；记录目标+1；现金流更清楚", effect: { resources: { energy: -1 }, skills: { expression: 1 } }, goalPoints: { record: 1 }, bonusItem: "record", tags: ["记录", "复盘"] },
+    ],
+    jobs: [
+      { id: "shop-shift", label: "修理铺帮工", detail: "跟着祁叔接一班小活，收入稳定，但需要真的会动手。", minAge: 15, points: 2, cost: "2行动点 · 精力-2 · 压力+1", preview: "工资+7；手艺+1；修理铺+1", requires: [{ type: "skill", key: "craft", min: 1, label: "需要手艺 1" }], effect: { resources: { money: 7, energy: -2, pressure: 1 }, skills: { craft: 1 }, town: { shop: 1 }, flags: ["worked-shop"] }, goalPoints: { learn: 1, town: 1 }, jobId: "shop-shift", tags: ["工资", "手艺"] },
+      { id: "tutor-shift", label: "给低年级辅导", detail: "把自己会的东西讲给别人听，钱不算多，但会积累信任。", minAge: 15, points: 2, cost: "2行动点 · 精力-2 · 压力+1", preview: "工资+8；学识+1；学校+1", requires: [{ type: "skill", key: "study", min: 2, label: "需要学识 2" }], effect: { resources: { money: 8, energy: -2, pressure: 1 }, skills: { study: 1 }, relationships: { child: 1 }, town: { school: 1 }, flags: ["worked-tutor"] }, goalPoints: { learn: 1, home: 1 }, jobId: "tutor-shift", tags: ["工资", "传授"] },
+      { id: "market-shift", label: "去集市跑摊", detail: "帮摊主吆喝、搬货和算账，收入看当天人流。", minAge: 15, points: 2, cost: "2行动点 · 精力-2 · 压力+1", preview: "工资+6；表达+1；集市+1", requires: [{ type: "skill", key: "expression", min: 1, label: "需要表达 1" }], effect: { resources: { money: 6, energy: -2, pressure: 1 }, skills: { expression: 1 }, relationships: { neighbor: 1 }, town: { market: 1 }, flags: ["worked-market"] }, goalPoints: { town: 1, record: 1 }, jobId: "market-shift", tags: ["工资", "集市"] },
+      { id: "courier-shift", label: "接一趟送货", detail: "路远、钱多，赶在天黑前把东西送到另一头。", minAge: 18, points: 2, cost: "2行动点 · 精力-3 · 身体-1", preview: "工资+10；胆识+1；可能遇到检定", effect: { resources: { money: 10, energy: -3, health: -1 }, skills: { courage: 1 }, flags: ["worked-courier"] }, goalPoints: { free: 1 }, jobId: "courier-shift", tags: ["工资", "风险"] },
+      { id: "night-shift", label: "接一份夜班", detail: "最直接的现金，但身体会认真记住这笔账。", minAge: 18, points: 2, cost: "2行动点 · 精力-3 · 身体-2 · 压力+2", preview: "工资+13；家人目标+1；健康风险高", effect: { resources: { money: 13, energy: -3, health: -2, pressure: 2 }, relationships: { family: 1 }, flags: ["worked-night"] }, goalPoints: { home: 1 }, jobId: "night-shift", tags: ["工资", "透支"] },
+      { id: "town-job", label: "接下小镇项目", detail: "替学校、桥或集市协调一次真正的公共工作。", minAge: 30, points: 2, cost: "2行动点 · 精力-2 · 压力+1", preview: "工资+11；体谅+1；小镇基础+1", requires: [{ type: "skill", key: "empathy", min: 2, label: "需要体谅 2" }], effect: { resources: { money: 11, energy: -2, pressure: 1 }, skills: { empathy: 1 }, town: { bridge: 1, school: 1 }, flags: ["worked-town"] }, goalPoints: { town: 2, home: 1 }, jobId: "town-job", tags: ["工资", "公共事务"] },
+    ],
     stages: [
       { id: "childhood", label: "童年", range: "6—11岁", hint: "你还没有决定要成为什么人，但每天都在学会一件小事。" },
       { id: "adolescence", label: "少年", range: "12—17岁", hint: "成绩、朋友、兴趣和家人的期待开始拉扯你。" },
@@ -308,12 +343,12 @@
       },
     ],
     legacies: [
-      { id: "steady-habit", label: "不把自己耗尽的习惯", detail: "下一世精力上限和起始精力各+1，压力−1。", nextUse: "让下一世的第一次选择不必用透支换来。", requires: [], effect: { resources: { energy: 1, pressure: -1 }, maxResources: { energy: 1 }, flags: ["legacy-steady"] } },
-      { id: "small-tool", label: "一件趁手工具", detail: "下一世手艺+2，开局多一件可验证的工作。", nextUse: "让下一世更早出现手艺路线。", requires: [], effect: { skills: { craft: 2 }, flags: ["legacy-tool"] } },
-      { id: "study-notebook", label: "写满批注的笔记", detail: "下一世学识+2，并解锁一个额外学习行动。", nextUse: "让下一世的学习不只靠考试。", requires: [], effect: { skills: { study: 2 }, flags: ["legacy-notebook"] } },
+      { id: "steady-habit", label: "不把自己耗尽的习惯", detail: "下一世精力上限和起始精力各+1，压力−1。", nextUse: "让下一世的第一次选择不必用透支换来。", requires: [], effect: { resources: { energy: 1, pressure: -1 }, maxResources: { energy: 1 }, items: ["warm-coat"], flags: ["legacy-steady"] } },
+      { id: "small-tool", label: "一件趁手工具", detail: "下一世手艺+2，开局多一件可验证的工作。", nextUse: "让下一世更早出现手艺路线。", requires: [], effect: { skills: { craft: 2 }, items: ["toolkit"], flags: ["legacy-tool"] } },
+      { id: "study-notebook", label: "写满批注的笔记", detail: "下一世学识+2，并解锁一个额外学习行动。", nextUse: "让下一世的学习不只靠考试。", requires: [], effect: { skills: { study: 2 }, items: ["study-notebook"], flags: ["legacy-notebook"] } },
       { id: "radio-recording", label: "一段旧收音机录音", detail: "下一世表达+1、心气+2；偶尔会听见不该出现的声音。", nextUse: "让下一世更早发现回声镇的彩蛋线。", requires: [{ type: "flag", key: "radio" }], effect: { skills: { expression: 1 }, resources: { happiness: 2 }, flags: ["legacy-radio"] } },
       { id: "family-recipe", label: "家里传下来的菜谱", detail: "下一世体谅+2、家人关系+1。", nextUse: "让下一世在最早的家庭事件里多一个温柔选项。", requires: [{ type: "relationship", key: "family", min: 5 }], effect: { skills: { empathy: 2 }, relationships: { family: 1 }, flags: ["legacy-recipe"] } },
-      { id: "friend-letter", label: "没有寄出的信", detail: "下一世朋友关系+2，开局会出现一个熟悉的地址。", nextUse: "让下一世更容易建立第一段真正的同伴关系。", requires: [{ type: "flag", key: "letter" }], effect: { relationships: { friend: 2 }, flags: ["legacy-letter"] } },
+      { id: "friend-letter", label: "没有寄出的信", detail: "下一世朋友关系+2，开局会出现一个熟悉的地址。", nextUse: "让下一世更容易建立第一段真正的同伴关系。", requires: [{ type: "flag", key: "letter" }], effect: { relationships: { friend: 2 }, items: ["old-phone"], flags: ["legacy-letter"] } },
       { id: "bridge-map", label: "河桥旧地图", detail: "下一世胆识+1，小镇河桥基础+1。", nextUse: "让下一世在第一次镇上危机时拥有提前准备。", requires: [{ type: "world", key: "bridge", min: 3 }], effect: { skills: { courage: 1 }, town: { bridge: 1 }, flags: ["legacy-map"] } },
       { id: "shop-key", label: "修理铺的钥匙", detail: "下一世钱+8、手艺+1，修理铺从有人留灯开始。", nextUse: "让下一世可以直接选择经营路线。", requires: [{ type: "flag", key: "shop-key" }], effect: { resources: { money: 8 }, skills: { craft: 1 }, town: { shop: 1 }, flags: ["legacy-shop-key"] } },
       { id: "wet-ledger", label: "夹在工具箱里的湿账页", detail: "下一世学识+1，旧账调查行动会提前出现。", nextUse: "让下一世从一条可核对的线索开始。", requires: [{ type: "flag", key: "wet-ledger" }], effect: { skills: { study: 1 }, town: { archive: 1 }, flags: ["legacy-ledger"] } },
@@ -338,6 +373,10 @@
       { id: "echo-heard", label: "回声不是故障", detail: "听完最后一声没有解释的钟响。", icon: "声", requires: [{ type: "secret", key: "echo-not-glitch" }] },
       { id: "old-friend", label: "地址仍然有效", detail: "重新走到旧朋友面前。", icon: "信", requires: [{ type: "flag", key: "visited-friend" }] },
       { id: "leave-a-light", label: "给后来的人留灯", detail: "让下一世从一扇真实的门开始。", icon: "灯", requires: [{ type: "flag", key: "shop-key" }] },
+      { id: "first-pay", label: "第一笔工资", detail: "靠自己的选择拿到第一笔工资。", icon: "薪", requires: [{ type: "flag", key: "first-wage" }] },
+      { id: "balance-sheet", label: "收支有数", detail: "一世结束时没有把生活过成一笔糊涂账。", icon: "账", requires: [{ type: "all", requirements: [{ type: "flag", key: "bought-item" }, { type: "flag", key: "first-wage" }] }] },
+      { id: "three-jobs", label: "不止一种谋生", detail: "尝试三种不同的工作。", icon: "路", requires: [{ type: "countFlags", prefix: "worked-", min: 3 }] },
+      { id: "kept-breath", label: "留有余地", detail: "带着至少一件物品，并在结束时保有6点身体。", icon: "息", requires: [{ type: "all", requirements: [{ type: "lifeCount", group: "inventory", min: 1 }, { type: "lifeStat", group: "resources", key: "health", min: 6 }] }] },
     ],
     secrets: [
       { id: "thirteenth-chime", label: "第十三声", detail: "祁叔的钟里藏着一张只写给下一代的纸条。" },
@@ -348,6 +387,8 @@
       { id: "night-radio", label: "凌晨的广播", detail: "录音里偶尔会出现一段不属于任何电台的报时。" },
       { id: "paper-fold", label: "画报的折角", detail: "第一世折过的那一页，下一世仍会出现在镇志里。" },
       { id: "open-door-secret", label: "没有锁上的门", detail: "门后不是奖励，是有人相信你还会回来。" },
+      { id: "last-bus", label: "末班车的零钱", detail: "夜班结束后，你在口袋里摸到一枚不属于自己的旧硬币。" },
+      { id: "pocket-receipt", label: "口袋里的小票", detail: "一件买下来的东西，后来替你记住了那个普通的下午。" },
     ],
   };
 

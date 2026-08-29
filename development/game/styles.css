@@ -283,3 +283,56 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-weight: 750; letter-spacing: -.0
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
 }
+
+.event-card { margin-top: 30px; padding: 24px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-quiet); }
+.event-card h2 { margin-top: 14px; }
+.life-management { padding: 22px; border: 1px solid var(--primary-bright); border-radius: var(--radius-md); background: #202b31; }
+.management-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; }
+.management-heading h2 { max-width: 20ch; margin-top: 7px; font-size: clamp(22px, 3vw, 32px); }
+.management-heading > strong { color: var(--accent); font-size: 28px; white-space: nowrap; }
+.management-note { margin: 12px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.65; }
+.management-ledger { display: flex; flex-wrap: wrap; gap: 7px 14px; margin-top: 16px; padding: 9px 11px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--accent-soft); font-size: 12px; }
+.life-action-list { display: grid; gap: 7px; margin-top: 14px; }
+.life-action-card { display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 11px; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface); cursor: pointer; text-align: left; }
+.life-action-card:hover:not(:disabled) { border-color: var(--accent); background: var(--surface-raised); }
+.life-action-card:disabled { cursor: not-allowed; opacity: .55; }
+.life-action-type { align-self: start; padding-top: 2px; color: var(--accent); font-size: 11px; font-weight: 800; }
+.life-action-body { display: grid; gap: 3px; min-width: 0; }
+.life-action-body strong { font-size: 14px; }
+.life-action-body > span { color: var(--ink-soft); font-size: 12px; line-height: 1.45; }
+.life-action-body small, .life-action-body b { color: var(--muted); font-size: 11px; font-weight: 650; }
+.life-action-body em { color: var(--success); font-size: 11px; font-style: normal; line-height: 1.4; }
+.life-action-points { color: var(--warning); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.management-subheading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 18px; color: var(--muted); font-size: 11px; }
+.management-subheading strong { color: var(--ink-soft); font-size: 13px; }
+.management-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 7px; }
+.management-box { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.job-status, .inventory-list { display: grid; gap: 3px; margin-top: 10px; }
+.job-status strong { color: var(--accent); font-size: 13px; }
+.job-status span, .inventory-item small { color: var(--muted); font-size: 11px; line-height: 1.4; }
+.inventory-item { display: grid; gap: 2px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 5px; }
+.inventory-item strong { color: var(--ink-soft); font-size: 12px; }
+.shop-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 8px; }
+.shop-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; padding: 9px; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); background: var(--surface); cursor: pointer; text-align: left; }
+.shop-item:hover:not(:disabled) { border-color: var(--accent); }
+.shop-item:disabled { cursor: not-allowed; opacity: .52; }
+.shop-item > span { display: grid; gap: 2px; min-width: 0; }
+.shop-item strong { color: var(--ink-soft); font-size: 12px; }
+.shop-item small { color: var(--muted); font-size: 10px; line-height: 1.35; }
+.shop-item > b { color: var(--accent); font-size: 10px; white-space: nowrap; }
+.life-feedback { display: grid; gap: 4px; margin-top: 14px; padding: 10px 11px; border: 1px solid #526e62; border-radius: var(--radius-sm); color: var(--ink-soft); background: #182921; font-size: 12px; line-height: 1.45; }
+.life-feedback strong { color: var(--accent); }
+.life-feedback em { display: inline-block; margin: 3px 5px 0 0; padding: 3px 6px; border-radius: 4px; color: var(--success); background: #203a2f; font-size: 11px; font-style: normal; }
+.archive-economy { color: var(--accent-soft) !important; font-size: 11px !important; }
+.archive-life-tag { color: var(--accent-soft) !important; border-color: #4a5c62 !important; }
+
+@media (max-width: 640px) {
+  .event-card { margin-top: 22px; padding: 16px; }
+  .life-management { padding: 16px; }
+  .management-heading { align-items: start; }
+  .management-heading > strong { font-size: 24px; }
+  .life-action-card { grid-template-columns: 38px minmax(0, 1fr); }
+  .life-action-points { grid-column: 2; justify-self: start; }
+  .management-columns, .shop-list { grid-template-columns: minmax(0, 1fr); }
+  .shop-item { align-items: start; }
+}
