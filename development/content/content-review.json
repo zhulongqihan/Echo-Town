@@ -1,6 +1,6 @@
 {
-  "review_version": "2.0.0",
-  "content_version": "2.0.0",
+  "review_version": "3.0.0",
+  "content_version": "3.0.0",
   "baseline_no_ai": true,
   "runtime_ai": false,
   "policy": {
@@ -10,19 +10,38 @@
     "integrator": "A00"
   },
   "assets": [
-    {"id":"arrival","action_ids":["take-order","learn-craft","open-ledger"],"facts":["修理铺","旧账"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"customer","action_ids":["rush-job","rest","ask-neighbor"],"facts":["钱","精力","邻里"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"materials","action_ids":["buy-material","borrow-material","river-salvage"],"facts":["木料","河桥"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"apprentice","action_ids":["teach-apprentice","take-extra-jobs","read-ledger"],"facts":["学徒","传承"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"rain","action_ids":["repair-bridge","protect-shop","organize-neighbors"],"facts":["暴雨","小镇"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"accounts","action_ids":["publish-accounts","hide-pages","sell-old-papers"],"facts":["旧账","证据"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"opportunity","action_ids":["register-workshop","let-apprentice-run","leave-town"],"facts":["作坊","外地"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"handoff","action_ids":["repair-last-order","hand-over-tools","finish-last-page"],"facts":["交接","下一世"],"owner":"A04","reviewer":"A00","status":"approved"}
+    {"id":"childhood-yard","action_ids":["yard-play","fix-radio","read-comic"],"facts":["收音机","邻居孩子","旧画报"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"childhood-school","action_ids":["front-seat","window-seat","share-notes"],"facts":["座位","学校","同桌"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"childhood-sick","action_ids":["rest-at-home","hide-fever","ask-for-help"],"facts":["身体","求助","家人"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"childhood-festival","action_ids":["tell-story","repair-lantern","invite-shy-child"],"facts":["灯会","表达","递出机会"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"adolescence-exam","action_ids":["study-plan","comfort-friend","learn-bicycle"],"facts":["考试","朋友","手艺"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"adolescence-club","action_ids":["join-literature","join-repair","join-river-team"],"facts":["文学社","修理社","志愿队"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"adolescence-summer","action_ids":["leave-for-school","stay-for-family","ask-scholarship"],"facts":["录取通知","留镇工作","助学金"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"youth-departure","action_ids":["share-room","night-shift","city-library"],"facts":["合租","夜班","图书馆"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"youth-mentor","action_ids":["mentor-newcomer","fix-bicycle","publish-story"],"facts":["新人","自行车","故事"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"youth-love","action_ids":["confess-love","keep-friendship","avoid-relationship"],"facts":["亲密关系","朋友","边界"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"youth-career","action_ids":["take-promotion","return-workshop","community-speech"],"facts":["升职","修理铺","社区发言"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-family","action_ids":["pay-medical-bill","ask-family-share","take-risk-loan"],"facts":["医疗账单","家庭分担","借贷"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-store","action_ids":["open-workshop","change-career","take-sabbatical"],"facts":["作坊","转行","停工"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-partner","action_ids":["talk-through","buy-peace","leave-argument"],"facts":["伴侣","沟通","冲突"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-child","action_ids":["support-choice","pay-course","tell-regret"],"facts":["晚辈","课程","遗憾"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-flood","action_ids":["repair-bridge-adult","protect-home","organize-evacuation"],"facts":["暴雨","河桥","疏散"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"middle-ledger","action_ids":["publish-ledger","trace-watergate","keep-wet-pages"],"facts":["旧账","水闸","证据"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-restart","action_ids":["return-school","teach-youth","street-performance"],"facts":["重返学校","教给年轻人","街头表演"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-memory","action_ids":["write-letter","visit-old-friend","archive-postcard"],"facts":["信","旧友","明信片"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-town","action_ids":["save-school","fund-school","invite-town-alumni"],"facts":["学校","奖学金","校友"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-handoff","action_ids":["train-successor","record-life","give-away-tools"],"facts":["学徒","镇志","工具"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-farewell","action_ids":["open-clock","sit-by-bridge","call-family"],"facts":["钟","桥边","电话"],"owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"later-final","action_ids":["write-final-page","leave-open-door","listen-thirteenth"],"facts":["最后一页","留门","第十三声"],"owner":"A04","reviewer":"A00","status":"approved"}
   ],
   "checks": {
     "goal_and_action_clarity": "passed",
+    "five_stage_growth_arc": "passed",
+    "route_divergence_and_costs": "passed",
     "requirements_are_visible": "passed",
+    "deterministic_tests_are_explainable": "passed",
     "cross_generation_effects_are_explainable": "passed",
+    "achievements_and_easter_eggs_have_feedback": "passed",
     "voice_and_sensitivity": "passed",
     "ai_draft_deletion": "passed"
   }

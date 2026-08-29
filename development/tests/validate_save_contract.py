@@ -1,4 +1,4 @@
-"""Validate the authoritative local-save contract against the shipped game."""
+"""Validate the local-save contract against the shipped multi-life game."""
 
 from __future__ import annotations
 
@@ -31,37 +31,47 @@ def main() -> int:
 
     expected = {
         "storage_key": "echo-town-generation-save",
-        "save_version": 4,
-        "accepted_versions": [4],
+        "save_version": 5,
+        "accepted_versions": [5],
         "max_save_bytes": 524288,
     }
     for key, value in expected.items():
         if contract.get(key) != value:
             fail(f"契约字段 {key} 不正确")
+    if contract.get("schema_version") != "3.0.0":
+        fail("存档契约schema版本不正确")
+    if contract.get("current_life", {}).get("maxRounds") != 23:
+        fail("存档契约没有覆盖23个成长节点")
+    if contract.get("current_life", {}).get("selectedLegacies_max") != 3:
+        fail("存档契约没有覆盖三项遗产交接")
 
     checks = [
         ('const STORAGE_KEY = "echo-town-generation-save"', "存储键"),
-        ("const SAVE_VERSION = 4", "存档版本"),
+        ("const SAVE_VERSION = 5", "存档版本"),
         ("const MAX_SAVE_BYTES = 512 * 1024", "存档大小上限"),
         ("function normalizeState(saved)", "状态归一化"),
-        ("function makeLifeSeed(generation, historyLength = 0)", "确定性seed"),
+        ("function makeLifeSeed(generation, profileId, talentId, goalId, legacyIds)", "确定性seed"),
         ("localStorage.setItem(STORAGE_KEY", "本地写入"),
         ("function importSave(file)", "导入入口"),
         ("function exportSave()", "导出入口"),
         ("function confirmLegacies()", "遗产交接"),
+        ("function getLegacyCandidates", "遗产候选"),
+        ("function unlockAchievements", "成就结算"),
     ]
     for needle, label in checks:
         if needle not in game:
             fail(f"运行时代码缺少{label}标记")
 
-    if not re.search(r"Number\(value\.version\) === SAVE_VERSION", game):
-        fail("运行时代码没有明确拒绝非v4存档")
-    if "JSON.parse(reader.result)" not in game or "state = normalizeState(imported)" not in game:
+    if not re.search(r"Number\((?:saved|imported)\.version\) !== SAVE_VERSION", game):
+        fail("运行时代码没有明确拒绝非v5存档")
+    if "JSON.parse(reader.result)" not in game or "const normalized = normalizeState(imported)" not in game or "state = normalized" not in game:
         fail("导入没有体现先解析、校验、归一化再替换状态的边界")
     if "fetch(" in game or "WebSocket" in game or "XMLHttpRequest" in game:
         fail("业务运行时代码出现联网接口")
     if "Math.random" in game or "Math.random" in content:
         fail("运行时代码出现非确定性随机")
+    if "maxRounds: 23" not in content:
+        fail("运行时内容没有声明23个成长节点")
 
     shell_match = re.search(r"const APP_SHELL = \[(.*?)\];", sw, re.S)
     if not shell_match:

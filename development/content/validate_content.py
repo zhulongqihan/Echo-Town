@@ -1,122 +1,145 @@
-"""Validate the D3 generational core-loop content contract."""
+"""Validate the authored multi-life content manifest and its review record."""
 
 from __future__ import annotations
 
 import json
-import re
-import sys
 from pathlib import Path
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CATALOG = ROOT / "development" / "content" / "content-manifest.json"
-REVIEW = ROOT / "development" / "content" / "content-review.json"
-CONTENT = ROOT / "development" / "game" / "content.js"
-GAME = ROOT / "development" / "game" / "game.js"
+MANIFEST_PATH = ROOT / "development" / "content" / "content-manifest.json"
+REVIEW_PATH = ROOT / "development" / "content" / "content-review.json"
+CONTENT_PATH = ROOT / "development" / "game" / "content.js"
+GAME_PATH = ROOT / "development" / "game" / "game.js"
 
 
-def fail(errors: list[str]) -> int:
-    for error in errors:
-        print(f"ERROR: {error}")
-    return 1
+def fail(message: str) -> None:
+    print(f"ERROR: {message}")
+    raise SystemExit(1)
 
 
-def unique_strings(values: object) -> bool:
-    return isinstance(values, list) and all(isinstance(value, str) and value for value in values) and len(values) == len(set(values))
-
-
-def source_has_id(source: str, value: str) -> bool:
-    return re.search(rf"\bid:\s*[\"']{re.escape(value)}[\"']", source) is not None
+def unique(values: list[str], label: str) -> None:
+    if len(values) != len(set(values)):
+        fail(f"{label}存在重复ID")
 
 
 def main() -> int:
-    errors: list[str] = []
     try:
-        catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
-        review = json.loads(REVIEW.read_text(encoding="utf-8"))
-        content_source = CONTENT.read_text(encoding="utf-8")
-        game_source = GAME.read_text(encoding="utf-8")
-    except Exception as exc:  # pragma: no cover - CLI error path
-        return fail([f"无法读取内容目录或游戏源代码: {exc}"])
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        review = json.loads(REVIEW_PATH.read_text(encoding="utf-8"))
+        content = CONTENT_PATH.read_text(encoding="utf-8")
+        game = GAME_PATH.read_text(encoding="utf-8")
+    except (OSError, json.JSONDecodeError) as error:
+        fail(f"无法读取内容清单或运行时代码: {error}")
 
-    version = catalog.get("content_version")
-    rules = catalog.get("rules", {})
-    rounds = catalog.get("rounds", [])
-    profiles = catalog.get("profiles", [])
-    goals = catalog.get("goals", [])
-    legacy_ids = catalog.get("legacy_ids", [])
-    assets = review.get("assets", [])
+    rules = manifest.get("rules", {})
+    expected_rules = {
+        "life_rounds": 23,
+        "stages": 5,
+        "actions_per_round": 3,
+        "actions_total": 69,
+        "profiles": 5,
+        "talents": 8,
+        "goals": 6,
+        "legacy_choices": 3,
+        "legacy_count": 16,
+        "achievements": 12,
+        "secrets": 8,
+    }
+    for key, expected in expected_rules.items():
+        if rules.get(key) != expected:
+            fail(f"规则 {key} 应为 {expected}")
 
-    if version != "2.0.0" or review.get("content_version") != version:
-        errors.append("内容目录、审校记录必须统一为2.0.0")
+    if manifest.get("content_version") != "3.0.0" or review.get("content_version") != "3.0.0":
+        fail("内容版本没有统一到3.0.0")
+    if review.get("review_version") != "3.0.0":
+        fail("内容审阅记录版本不正确")
     if review.get("baseline_no_ai") is not True or review.get("runtime_ai") is not False:
-        errors.append("审校记录未证明删除AI草稿后仍有固定内容基线")
-    if rules.get("life_rounds") != 8 or len(rounds) != 8:
-        errors.append("D3必须有8个固定回合")
-    if rules.get("actions_per_round") != 3:
-        errors.append("D3每回合必须固定为3个行动")
-    if rules.get("legacy_choices") != 2:
-        errors.append("D3每世交接上限必须为2件遗产")
-    if not unique_strings(profiles) or len(profiles) != 3:
-        errors.append("必须有3个唯一人生起点ID")
-    if not unique_strings(goals) or len(goals) != 3:
-        errors.append("必须有3个唯一目标ID")
-    if not unique_strings(legacy_ids) or len(legacy_ids) < 3:
-        errors.append("必须有至少3个唯一遗产ID")
+        fail("内容审阅没有明确运行时无AI")
 
-    round_ids: list[str] = []
-    action_ids: list[str] = []
+    profiles = manifest.get("profiles", [])
+    talents = manifest.get("talents", [])
+    goals = manifest.get("goals", [])
+    rounds = manifest.get("rounds", [])
+    legacy_ids = manifest.get("legacy_ids", [])
+    achievement_ids = manifest.get("achievement_ids", [])
+    secret_ids = manifest.get("secret_ids", [])
+    unique(profiles, "人生起点")
+    unique(talents, "天赋")
+    unique(goals, "人生愿望")
+    unique([item.get("id") for item in rounds], "成长节点")
+    unique(legacy_ids, "遗产")
+    unique(achievement_ids, "成就")
+    unique(secret_ids, "彩蛋")
+
+    if len(rounds) != rules["life_rounds"]:
+        fail("成长节点数量不正确")
+    if len(profiles) != rules["profiles"] or len(talents) != rules["talents"] or len(goals) != rules["goals"]:
+        fail("起点、天赋或愿望数量不正确")
+    if len(legacy_ids) != rules["legacy_count"]:
+        fail("遗产数量不正确")
+    if len(achievement_ids) != rules["achievements"] or len(secret_ids) != rules["secrets"]:
+        fail("成就或彩蛋数量不正确")
+
+    all_actions: list[str] = []
+    stages: set[str] = set()
     for item in rounds:
-        round_id = item.get("id")
-        round_ids.append(round_id)
-        if not isinstance(round_id, str) or not round_id:
-            errors.append("存在无效回合ID")
         actions = item.get("action_ids", [])
-        if not unique_strings(actions) or len(actions) != 3:
-            errors.append(f"回合{round_id}必须有3个唯一行动")
-        action_ids.extend(actions if isinstance(actions, list) else [])
-    if len(round_ids) != len(set(round_ids)):
-        errors.append("回合ID重复")
-    if len(action_ids) != len(set(action_ids)):
-        errors.append("行动ID重复")
-    if len(action_ids) != 24:
-        errors.append(f"D3行动总数应为24，当前为{len(action_ids)}")
+        if len(actions) != rules["actions_per_round"]:
+            fail(f"节点 {item.get('id')} 没有三个互斥选择")
+        all_actions.extend(actions)
+        stages.add(item.get("stage"))
+    unique(all_actions, "行动")
+    if len(all_actions) != rules["actions_total"]:
+        fail("行动总数不正确")
+    if len(stages) != rules["stages"]:
+        fail("成长阶段数量不正确")
 
-    asset_ids = [asset.get("id") for asset in assets]
-    if asset_ids != round_ids or len(asset_ids) != len(set(asset_ids)):
-        errors.append("审校资产必须按回合与内容目录一一对应")
-    for asset in assets:
+    assets = review.get("assets", [])
+    if [asset.get("id") for asset in assets] != [item.get("id") for item in rounds]:
+        fail("内容审阅记录没有覆盖全部成长节点且顺序不一致")
+    for asset, round_item in zip(assets, rounds):
+        if asset.get("action_ids") != round_item.get("action_ids"):
+            fail(f"节点 {round_item.get('id')} 的审阅行动清单不一致")
         if asset.get("owner") != "A04" or asset.get("reviewer") != "A00" or asset.get("status") != "approved":
-            errors.append(f"回合{asset.get('id')}缺少最终责任人或通过状态")
-        if asset.get("action_ids") != next((item.get("action_ids") for item in rounds if item.get("id") == asset.get("id")), None):
-            errors.append(f"审校回合{asset.get('id')}的行动清单不一致")
+            fail(f"节点 {round_item.get('id')} 缺少内容负责人审阅状态")
+    for key, value in review.get("checks", {}).items():
+        if value != "passed":
+            fail(f"内容检查项 {key} 尚未通过")
 
-    if "window.EchoTownContent" not in content_source:
-        errors.append("内容源代码缺少EchoTownContent入口")
-    for required in ("maxRounds: 8", "requires:", "goalPoints:", "future:", "nextUse:"):
-        if required not in content_source:
-            errors.append(f"内容源代码缺少必需规则标记: {required}")
-    for value in [*profiles, *goals, *legacy_ids, *round_ids, *action_ids]:
-        if not source_has_id(content_source, value):
-            errors.append(f"内容目录ID未在content.js中找到: {value}")
-    if "Math.random" in content_source or "Math.random" in game_source or "fetch(" in content_source or "fetch(" in game_source:
-        errors.append("游戏运行时不得使用随机抽签或远程请求")
-    for required in ("SAVE_VERSION = 4", "function getLegacyCandidates", "function confirmLegacies"):
-        if required not in game_source:
-            errors.append(f"游戏源代码缺少必需规则标记: {required}")
+    required_content_markers = [
+        "window.EchoTownContent",
+        "maxRounds: 23",
+        "requires:",
+        "goalPoints:",
+        "test:",
+        "secrets:",
+        "nextUse:",
+    ]
+    for marker in required_content_markers:
+        if marker not in content:
+            fail(f"运行时内容缺少 {marker}")
+    for value in profiles + talents + goals + [item for action in all_actions for item in [action]] + legacy_ids + achievement_ids + secret_ids:
+        if f'"{value}"' not in content:
+            fail(f"运行时内容缺少ID {value}")
 
-    if errors:
-        return fail(errors)
-    print(json.dumps({
-        "status": "ok",
-        "content_version": version,
-        "rounds": len(rounds),
-        "actions": len(action_ids),
-        "profiles": len(profiles),
-        "goals": len(goals),
-        "legacy_ids": len(legacy_ids),
-        "runtime_generation": rules.get("runtime_generation"),
-    }, ensure_ascii=False, indent=2))
+    for marker in ["function getLegacyCandidates", "function confirmLegacies", "function unlockAchievements", "function requirementMet"]:
+        if marker not in game:
+            fail(f"运行时缺少系统标记 {marker}")
+    if "Math.random" in content or "Math.random" in game or "fetch(" in game:
+        fail("内容或运行时出现非确定性/联网依赖")
+
+    print("status ok")
+    print(f"content_version {manifest['content_version']}")
+    print(f"rounds {len(rounds)}")
+    print(f"actions {len(all_actions)}")
+    print(f"profiles {len(profiles)}")
+    print(f"talents {len(talents)}")
+    print(f"goals {len(goals)}")
+    print(f"legacies {len(legacy_ids)}")
+    print(f"achievements {len(achievement_ids)}")
+    print(f"secrets {len(secret_ids)}")
     return 0
 
 

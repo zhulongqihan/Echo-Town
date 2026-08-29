@@ -1,4 +1,4 @@
-const CACHE_NAME = "echo-town-generation-v4";
+const CACHE_NAME = "echo-town-generation-v8";
 const APP_SHELL = ["./", "./index.html", "./styles.css", "./content.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"];
 
 self.addEventListener("install", (event) => {

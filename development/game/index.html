@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#10151f" />
-    <meta name="description" content="《回声镇：一生一局》——每一世很短，但小镇会记住你留下的基础。" />
+    <meta name="description" content="《回声镇：一生一局》——把一生过成一局，把基础交给下一世。" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
@@ -13,139 +13,52 @@
   <body>
     <div class="site-shell">
       <header class="site-header">
-        <button class="wordmark" data-action="home" aria-label="回到游戏首页">
-          <span class="wordmark-mark" aria-hidden="true">◎</span>
-          <span>回声镇</span>
-        </button>
-        <div class="header-tools">
-          <button class="text-button" id="font-toggle" data-action="toggle-font" aria-pressed="false">大字模式</button>
-          <div class="header-status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="save-status">本地存档</span></div>
-        </div>
+        <button class="wordmark" data-action="home" aria-label="回到游戏首页"><span class="wordmark-mark" aria-hidden="true">◎</span><span>回声镇</span></button>
+        <div class="header-tools"><button class="text-button" id="font-toggle" data-action="toggle-font" aria-pressed="false">大字模式</button><div class="header-status" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="save-status">本地存档</span></div></div>
       </header>
 
       <a class="skip-link" href="#app">跳到主要内容</a>
       <main id="app" class="app-main">
         <section id="screen-start" class="screen screen-start" aria-labelledby="start-title">
           <div class="start-hero">
-            <div class="start-copy">
-              <p class="kicker">回声镇 · 世代经营试玩版</p>
-              <h1 id="start-title">一生一局</h1>
-              <p class="lede">你只经营八个回合。每一回合选一件事，把能力、关系和小镇基础交给下一世。</p>
-              <p class="start-note">目标清楚 · 条件可见 · 结果会解释 · 遗产能使用</p>
-            </div>
-            <aside class="start-archive" aria-label="回声镇当前状态">
-              <div class="archive-heading"><span class="eyebrow">镇志摘录</span><span id="generation-label">还没有人写下第一行</span></div>
-              <p id="start-echo" class="archive-quote">“这座镇子还没有收到上一世留下的东西。”</p>
-              <div id="start-town" class="town-mini"></div>
-              <button id="view-archive" class="text-button is-hidden" data-action="view-archive">翻开完整镇志</button>
-            </aside>
+            <div class="start-copy"><p class="kicker">回声镇 · 多世人生经营</p><h1 id="start-title">一生一局</h1><p class="lede">从 6 岁走到 75 岁。你会遇到 23 个成长节点，练本事、攒资源、经营关系，也决定什么值得留给下一世。</p><p class="start-note">阶段成长 · 多条路线 · 选择有代价 · 遗产有用途</p></div>
+            <aside class="start-archive" aria-label="回声镇当前状态"><div class="archive-heading"><span class="eyebrow">镇志摘录</span><span id="generation-label">还没有人写下第一行</span></div><p id="start-echo" class="archive-quote">“这座镇子还没有收到上一世留下的东西。”</p><div id="start-town" class="town-mini"></div><div class="collection-strip"><span>成就 <strong id="achievement-count">0 / 12</strong></span><span>彩蛋 <strong id="secret-count">0 / 8</strong></span><span>遗产 <strong id="legacy-count-home">0 / 16</strong></span></div><button id="view-archive" class="text-button is-hidden" data-action="view-archive">翻开完整镇志</button></aside>
           </div>
 
           <div id="start-notice" class="notice is-hidden" role="status"></div>
           <div class="setup-layout">
-            <section class="setup-panel" aria-labelledby="profile-title">
-              <div class="section-heading"><span class="eyebrow">第一步</span><span>决定你的起点</span></div>
-              <h2 id="profile-title">这一世，你是谁？</h2>
-              <div id="profile-options" class="selection-grid"></div>
-            </section>
-            <section class="setup-panel" aria-labelledby="goal-title">
-              <div class="section-heading"><span class="eyebrow">第二步</span><span>决定你要留下什么</span></div>
-              <h2 id="goal-title">这一世，先做成哪件事？</h2>
-              <div id="goal-options" class="selection-grid"></div>
-            </section>
+            <section class="setup-panel" aria-labelledby="profile-title"><div class="section-heading"><span class="eyebrow">起点一 · 身份</span><span>决定初始资源与关系</span></div><h2 id="profile-title">这一世，你是谁？</h2><div id="profile-options" class="selection-grid"></div></section>
+            <section class="setup-panel" aria-labelledby="talent-title"><div class="section-heading"><span class="eyebrow">起点二 · 天赋</span><span>决定一条成长捷径</span></div><h2 id="talent-title">你天生更擅长什么？</h2><div id="talent-options" class="selection-grid"></div></section>
+            <section class="setup-panel" aria-labelledby="goal-title"><div class="section-heading"><span class="eyebrow">起点三 · 愿望</span><span>决定这世的追求</span></div><h2 id="goal-title">你想把什么做成？</h2><div id="goal-options" class="selection-grid"></div></section>
           </div>
 
-          <section class="start-action-panel">
-            <div>
-              <p id="start-summary" class="start-summary"></p>
-              <div id="incoming-legacy" class="incoming-legacy"></div>
-            </div>
-            <div class="start-actions">
-              <button id="start-life" class="button button-primary" data-action="start-life">开始第一世 →</button>
-              <button id="continue-life" class="button button-secondary is-hidden" data-action="continue-life">继续这一世</button>
-            </div>
-          </section>
-
-          <div class="start-tools">
-            <button class="text-button" data-action="export-save">导出存档</button>
-            <label class="text-button file-button" for="import-input">导入存档</label>
-            <input id="import-input" type="file" accept="application/json,.json" class="visually-hidden" />
-            <button class="text-button" data-action="erase-save">清除当前世代</button>
-          </div>
+          <section class="start-action-panel"><div><p id="start-summary" class="start-summary"></p><div id="start-preview" class="start-preview"></div><div id="incoming-legacy" class="incoming-legacy"></div></div><div class="start-actions"><button id="start-life" class="button button-primary" data-action="start-life">开始第一世 →</button><button id="continue-life" class="button button-secondary is-hidden" data-action="continue-life">继续这一世</button></div></section>
+          <div class="start-tools"><button class="text-button" data-action="export-save">导出存档</button><label class="text-button file-button" for="import-input">导入存档</label><input id="import-input" type="file" accept="application/json,.json" class="visually-hidden" /><button class="text-button" data-action="erase-save">清除当前世代</button></div>
         </section>
 
         <section id="screen-game" class="screen is-hidden" aria-labelledby="event-title">
-          <div class="game-toolbar">
-            <div><p class="kicker">人生档案</p><h1 id="game-generation">第 1 世</h1></div>
-            <div class="round-progress-wrap">
-              <div class="round-progress-label"><span id="round-label">第 1 / 8 回合</span><span id="phase-label">起步</span></div>
-              <div id="round-progress" class="round-progress" role="progressbar" aria-label="人生回合进度" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1"><span></span></div>
-              <p id="phase-hint" class="progress-hint"></p>
-            </div>
-          </div>
-
-          <div class="goal-strip">
-            <div class="goal-copy"><span class="eyebrow">这一世的明确目标</span><strong id="goal-label"></strong><span id="goal-detail"></span></div>
-            <div class="goal-meter-wrap"><div class="goal-meter-label"><span>推进度</span><strong id="goal-progress-label">0 / 4</strong></div><div class="goal-meter"><span id="goal-progress"></span></div></div>
-          </div>
-
-          <div id="inherited-strip" class="inherited-strip is-hidden"></div>
+          <div class="game-toolbar"><div><p class="kicker">人生档案 · 正在生长</p><h1 id="game-generation">第 1 世 · 6 岁</h1></div><div class="round-progress-wrap"><div class="round-progress-label"><span id="round-label">成长节点 1 / 20</span><span id="stage-label">童年 · 6—11岁</span></div><div id="round-progress" class="round-progress" role="progressbar" aria-label="人生阶段进度" aria-valuemin="1" aria-valuemax="20" aria-valuenow="1"><span></span></div><p id="stage-hint" class="progress-hint"></p></div></div>
+          <div class="life-map" aria-label="人生阶段"><span data-stage="childhood">童年</span><i></i><span data-stage="adolescence">少年</span><i></i><span data-stage="youth">初入社会</span><i></i><span data-stage="middle">成家立业</span><i></i><span data-stage="later">后半生</span></div>
+          <div class="goal-strip"><div class="goal-copy"><span class="eyebrow">这一世的明确愿望</span><strong id="goal-label"></strong><span id="goal-detail"></span></div><div class="goal-meter-wrap"><div class="goal-meter-label"><span>推进度</span><strong id="goal-progress-label">0 / 8</strong></div><div class="goal-meter"><span id="goal-progress"></span></div></div></div>
+          <div id="inherited-strip" class="inherited-strip"></div>
           <div class="game-layout">
-            <article class="event-column">
-              <div class="event-meta"><span id="situation-label">当前处境</span><span aria-hidden="true">·</span><span>只能选一件</span></div>
-              <h2 id="event-title">还没有写下这一页</h2>
-              <p id="event-copy" class="event-copy"></p>
-              <div id="action-list" class="action-list" role="group" aria-label="本回合行动"></div>
-              <section id="feedback" class="feedback is-hidden" aria-live="polite">
-                <div class="feedback-heading"><span class="eyebrow">行动已落地</span><strong id="feedback-title"></strong></div>
-                <p id="feedback-copy" class="feedback-copy"></p>
-                <div class="feedback-block"><span class="feedback-label">发生了什么</span><div id="feedback-changes" class="feedback-changes"></div></div>
-                <div class="feedback-block feedback-future-block"><span class="feedback-label">它会怎样影响后面</span><p id="feedback-future"></p></div>
-                <button id="advance-round" class="button button-primary" data-action="advance-round">进入下一回合 →</button>
-              </section>
-            </article>
-
+            <article class="event-column"><div class="event-meta"><span id="situation-label">童年 · 6 岁</span><span aria-hidden="true">·</span><span>从三个行动里选一个</span></div><h2 id="event-title">还没有写下这一页</h2><p id="event-copy" class="event-copy"></p><div id="action-list" class="action-list" role="group" aria-label="本节点行动"></div><section id="feedback" class="feedback is-hidden" aria-live="polite"><div class="feedback-heading"><span class="eyebrow">行动已落地</span><strong id="feedback-title"></strong></div><p id="feedback-copy" class="feedback-copy"></p><div class="feedback-block"><span class="feedback-label">这次得到与失去</span><div id="feedback-changes" class="feedback-changes"></div></div><div id="feedback-test" class="feedback-test"></div><div id="feedback-secret" class="feedback-reward"></div><div id="feedback-stage" class="feedback-stage"></div><div class="feedback-block feedback-future-block"><span class="feedback-label">它会怎样影响后面</span><p id="feedback-future"></p></div><button id="advance-round" class="button button-primary" data-action="advance-round">继续长大 →</button></section></article>
             <aside class="status-column" aria-label="人生和小镇状态">
-              <section class="status-panel">
-                <div class="panel-heading"><span class="eyebrow">这一生手里的牌</span><span>数值会直接影响可选行动</span></div>
-                <div id="resource-list" class="resource-list"></div>
-                <div class="side-divider"></div>
-                <div class="panel-heading"><span class="eyebrow">能力</span><span>会留下经验</span></div>
-                <div id="trait-list" class="trait-list"></div>
-                <div class="side-divider"></div>
-                <div class="panel-heading"><span class="eyebrow">关系</span><span>可变成支持</span></div>
-                <div id="relationship-list" class="relationship-list"></div>
-              </section>
-              <section class="status-panel town-panel">
-                <div class="panel-heading"><span class="eyebrow">小镇基础</span><span>跨世保留</span></div>
-                <div id="town-list" class="town-state"></div>
-              </section>
+              <section class="status-panel"><div class="panel-heading"><span class="eyebrow">手里的资源</span><span>每个节点都要取舍</span></div><div id="resource-list" class="resource-list"></div><div class="side-divider"></div><div class="panel-heading"><span class="eyebrow">五项能力</span><span>达到 2 / 4 / 6 / 8 会升级</span></div><div id="skill-list" class="skill-list"></div><div class="side-divider"></div><div class="panel-heading"><span class="eyebrow">六段关系</span><span>关系会变成支持</span></div><div id="relationship-list" class="relationship-list"></div></section>
+              <section class="status-panel"><div class="panel-heading"><span class="eyebrow">这一生的履历</span><span>重要行动会留下标签</span></div><div id="life-tags" class="life-tags"></div><div class="side-divider"></div><div class="panel-heading"><span class="eyebrow">接下来可能遇到</span><span>不是预言，是提醒</span></div><div id="upcoming-list" class="upcoming-list"></div></section>
+              <section class="status-panel town-panel"><div class="panel-heading"><span class="eyebrow">小镇基础</span><span>每世都能改变</span></div><div id="town-list" class="town-state"></div></section>
             </aside>
           </div>
           <div class="game-footer"><button class="text-button" data-action="home">暂存，回到首页</button><span>选择会自动保存 · 键盘可用 1 / 2 / 3</span></div>
         </section>
 
-        <section id="screen-ending" class="screen is-hidden" aria-labelledby="ending-title">
-          <div class="ending-intro"><p class="kicker">人生档案已封存</p><h1 id="ending-title">你这一生，留下了回声。</h1><p id="ending-copy" class="lede"></p><p id="ending-context" class="ending-context"></p></div>
-          <div class="ending-grid">
-            <article class="ending-card"><span class="eyebrow">这一世的结果</span><div id="ending-goal" class="ending-goal"></div><div class="ending-rule"></div><p id="ending-echo" class="ending-echo"></p></article>
-            <article class="ending-card"><span class="eyebrow">小镇现在</span><div id="ending-changes" class="town-state"></div></article>
-          </div>
-          <section class="legacy-section"><div class="legacy-heading"><div><span class="eyebrow">最后一步：选择要交接的基础</span><h2>带走一到两件，给下一世使用</h2></div><strong id="legacy-count">0 / 2</strong></div><p class="section-note">特殊遗产不会替你自动获胜，但会让下一世从不同的地方开始。你可以看见它的下一步用途。</p><div id="legacy-list" class="legacy-grid"></div></section>
-          <div class="ending-actions"><button id="confirm-legacy" class="button button-primary" data-action="confirm-legacy">先选择至少一件遗产</button><button class="text-button" data-action="home">回到镇志首页</button></div>
-        </section>
+        <section id="screen-ending" class="screen is-hidden" aria-labelledby="ending-title"><div class="ending-intro"><p class="kicker">人生档案已封存</p><h1 id="ending-title">你这一生，留下了回声。</h1><p id="ending-copy" class="lede"></p><p id="ending-context" class="ending-context"></p></div><div class="ending-grid"><article class="ending-card"><span class="eyebrow">这一世的报告</span><div class="ending-goal" id="ending-goal"></div><div class="ending-stats"><div><span>人生评分</span><strong id="ending-score">0 分</strong></div><div><span>最强能力</span><strong id="ending-best-skill">—</strong></div><div><span>留下选择</span><strong id="ending-actions-count">0 个选择</strong></div></div><div class="ending-rule"></div><p id="ending-echo" class="ending-echo"></p></article><article class="ending-card"><span class="eyebrow">小镇现在</span><div id="ending-changes" class="town-state"></div></article></div><div class="reward-grid"><section class="reward-card"><div class="section-heading"><span class="eyebrow">这一世的新成就</span><span>可以带到镇志</span></div><div id="ending-achievements" class="reward-list"></div></section><section class="reward-card"><div class="section-heading"><span class="eyebrow">这一世发现的彩蛋</span><span>有些不会改变数值</span></div><div id="ending-secrets" class="reward-list"></div></section></div><section class="legacy-section"><div class="legacy-heading"><div><span class="eyebrow">最后一步 · 交接基础</span><h2>最多选三件，给下一世使用</h2></div><strong id="legacy-count">0 / 3</strong></div><p class="section-note">遗产不是收藏品。每一件都会改变下一世的开局、行动或小镇状态。</p><div id="legacy-list" class="legacy-grid"></div></section><div class="ending-actions"><button id="confirm-legacy" class="button button-primary" data-action="confirm-legacy">先选择至少一件遗产</button><button class="text-button" data-action="home">回到镇志首页</button></div></section>
 
-        <section id="screen-archive" class="screen is-hidden" aria-labelledby="archive-title">
-          <div class="archive-page-heading"><div><p class="kicker">回声镇 · 记忆总览</p><h1 id="archive-title">每一世都写在这里。</h1><p class="lede">镇志记录的是你做过什么，以及下一世从哪里接过来。</p></div><button class="button button-secondary" data-action="home">回到首页</button></div>
-          <div class="archive-overview"><article class="archive-overview-card"><span class="eyebrow">小镇现在</span><div id="archive-town" class="town-state"></div></article><article class="archive-overview-card"><span class="eyebrow">已经走过</span><strong id="archive-life-count" class="archive-life-count">0 世</strong><p>每一世结束时，都要亲手选择下一世带走的基础。</p></article></div>
-          <div id="archive-timeline" class="archive-timeline"></div>
-        </section>
+        <section id="screen-archive" class="screen is-hidden" aria-labelledby="archive-title"><div class="archive-page-heading"><div><p class="kicker">回声镇 · 记忆总览</p><h1 id="archive-title">每一世都写在这里。</h1><p class="lede">你会看见自己走过的路线、收集的基础、尚未听见的彩蛋，以及这座镇子如何被一代代人改变。</p></div><button class="button button-secondary" data-action="home">回到首页</button></div><div class="archive-overview"><article class="archive-overview-card"><span class="eyebrow">小镇现在</span><div id="archive-town" class="town-state"></div></article><article class="archive-overview-card"><span class="eyebrow">世代与收藏</span><strong id="archive-life-count" class="archive-life-count">0 世</strong><div class="archive-counters"><span>成就 <b id="archive-achievement-count">0 / 12</b></span><span>彩蛋 <b id="archive-secret-count">0 / 8</b></span><span>遗产 <b id="archive-legacy-count">0 / 16</b></span></div></article></div><div class="archive-collections"><section class="collection-card"><div class="section-heading"><span class="eyebrow">成就册</span><span>完成路线，而不是刷分</span></div><div id="achievement-list" class="achievement-list"></div></section><section class="collection-card"><div class="section-heading"><span class="eyebrow">彩蛋册</span><span>故意留一点未解</span></div><div id="secret-list" class="secret-list"></div></section></div><div class="archive-timeline-heading"><span class="eyebrow">历世时间线</span><span>最近的一世在最上面</span></div><div id="archive-timeline" class="archive-timeline"></div></section>
       </main>
-
-      <footer class="site-footer"><span>《回声镇：一生一局》</span><span>本地单机 · 无需联网</span></footer>
+      <footer class="site-footer"><span>《回声镇：一生一局》</span><span>本地单机 · 无需联网 · 运行时无 AI</span></footer>
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="content.js"></script>
-    <script src="game.js"></script>
+    <script src="content.js"></script><script src="game.js"></script>
   </body>
 </html>

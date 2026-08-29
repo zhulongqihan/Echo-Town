@@ -3,82 +3,110 @@
 
   const CONTENT = window.EchoTownContent;
   const STORAGE_KEY = "echo-town-generation-save";
-  const LEGACY_STORAGE_KEYS = ["echo-town-save", "echo-town-mvp-v1"];
-  const SAVE_VERSION = 4;
+  const LEGACY_STORAGE_KEYS = ["echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"];
+  const SAVE_VERSION = 5;
   const MAX_SAVE_BYTES = 512 * 1024;
-  const MAX_HISTORY = 20;
-  const MAX_TEXT_LENGTH = 240;
-  const RESOURCE_LIMITS = { money: [0, 8], energy: [0, 6], health: [0, 3] };
-  const TRAIT_LIMITS = { craft: [0, 6], care: [0, 6], nerve: [0, 6], insight: [0, 6] };
-  const RELATIONSHIP_LIMITS = { master: [0, 4], neighbor: [0, 4], apprentice: [0, 4] };
-  const METRIC_LABELS = {
-    money: "钱", energy: "精力", health: "身体", craft: "手艺", care: "照料", nerve: "胆量", insight: "洞察",
-    master: "师傅关系", neighbor: "邻里关系", apprentice: "学徒关系", shop: "修理铺", bridge: "河桥", trust: "邻里", archive: "旧账"
+  const MAX_HISTORY = 40;
+  const MAX_TEXT_LENGTH = 280;
+  const RESOURCE_KEYS = Object.keys(CONTENT.resources);
+  const SKILL_KEYS = Object.keys(CONTENT.skills);
+  const RELATIONSHIP_KEYS = Object.keys(CONTENT.relationships);
+  const WORLD_KEYS = Object.keys(CONTENT.world);
+  const FLAG_LABELS = {
+    "yard-friend": "院子里的朋友",
+    radio: "收音机线索",
+    "paper-fold": "画报折角",
+    "shop-key": "没有锁上的门",
+    workshop: "正式作坊",
+    "left-town": "走出小镇",
+    mentor: "带过新人",
+    letter: "旧友来信",
+    successor: "培养了接班人",
+    "life-record": "写下人生记录",
+    "clock-opened": "拆过祁叔的钟",
+    "echo-heard": "听见第十三声",
+  };
+  const LEGACY_ID_MAP = {
+    "work-habit": "steady-habit",
+    "old-address": "friend-letter",
+    toolbox: "small-tool",
+    "apprentice-notebook": "apprentice-notes",
+    "customer-list": "friend-letter",
+    "town-key": "shop-key",
+    "complete-record": "town-register",
+    "outside-view": "travel-postcard",
+    "warm-letter": "family-recipe",
   };
 
   const DEFAULT_STATE = {
     version: SAVE_VERSION,
     world: {
       completedLives: 0,
-      town: { shop: 0, bridge: 0, trust: 0, archive: 0 },
-      people: { master: 0, neighbor: 0, apprentice: 0 },
-      legacyBank: [],
+      town: { shop: 0, bridge: 0, school: 0, market: 0, archive: 0 },
       history: [],
-      lastEcho: "这座镇子还没有收到上一世留下的东西。"
+      legacyBank: [],
+      collectedLegacyIds: [],
+      achievements: [],
+      secrets: [],
+      totals: { choices: 0, tests: 0, testWins: 0 },
     },
-    settings: { fontScale: "normal" },
     currentLife: null,
     screen: "start",
-    notice: ""
+    settings: { fontScale: false },
+    notice: "",
   };
 
   let state = loadState();
-  let setup = { profileId: "apprentice", goalId: "shop" };
+  let setup = { profileId: "town-child", talentId: "slow-and-steady", goalId: "learn" };
   let toastTimer = null;
 
   const $ = (selector) => document.querySelector(selector);
 
   function isRecord(value) {
-    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+    return value !== null && typeof value === "object" && !Array.isArray(value);
   }
 
   function safeText(value, limit = MAX_TEXT_LENGTH) {
-    return typeof value === "string" ? value.slice(0, limit) : "";
+    return String(value ?? "").slice(0, limit);
   }
 
   function safeList(value, limit, textLimit = MAX_TEXT_LENGTH) {
-    if (!Array.isArray(value)) return [];
-    return [...new Set(value.filter((item) => typeof item === "string").map((item) => safeText(item, textLimit)))].slice(-limit);
+    return Array.isArray(value) ? value.slice(0, limit).map((item) => safeText(item, textLimit)) : [];
   }
 
   function clamp(value, min, max, fallback = min) {
     const parsed = Number(value);
-    if (!Number.isFinite(parsed)) return fallback;
-    return Math.max(min, Math.min(max, Math.trunc(parsed)));
+    return Number.isFinite(parsed) ? Math.min(max, Math.max(min, parsed)) : fallback;
   }
 
-  function cloneDefault() {
-    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
   }
 
   function escapeHtml(value) {
-    return safeText(value).replace(/[&<>"']/g, (character) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[character]));
+    return safeText(value).replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
   }
 
-  function makeLifeSeed(generation, historyLength = 0) {
+  function hashSeed(source) {
     let hash = 2166136261;
-    const source = `echo-town-generation:${generation}:${historyLength}`;
-    for (let index = 0; index < source.length; index += 1) {
-      hash ^= source.charCodeAt(index);
+    const text = String(source);
+    for (let index = 0; index < text.length; index += 1) {
+      hash ^= text.charCodeAt(index);
       hash = Math.imul(hash, 16777619);
     }
     return hash >>> 0;
   }
 
+  function makeLifeSeed(generation, profileId, talentId, goalId, legacyIds) {
+    return hashSeed(["echo-town", generation, profileId, talentId, goalId, ...(legacyIds || [])].join(":"));
+  }
+
   function getProfile(id) {
     return CONTENT.profiles.find((item) => item.id === id) || CONTENT.profiles[0];
+  }
+
+  function getTalent(id) {
+    return CONTENT.talents.find((item) => item.id === id) || CONTENT.talents[0];
   }
 
   function getGoal(id) {
@@ -89,142 +117,170 @@
     return CONTENT.legacies.find((item) => item.id === id) || null;
   }
 
+  function getAchievement(id) {
+    return CONTENT.achievements.find((item) => item.id === id) || null;
+  }
+
+  function getSecret(id) {
+    return CONTENT.secrets.find((item) => item.id === id) || null;
+  }
+
+  function getStage(id) {
+    return CONTENT.stages.find((item) => item.id === id) || CONTENT.stages[0];
+  }
+
   function getRound(life) {
     return CONTENT.rounds[clamp(life.round, 0, CONTENT.rounds.length - 1, 0)];
   }
 
-  function isSavePayload(value) {
-    return isRecord(value) && Number(value.version) === SAVE_VERSION && isRecord(value.world)
-      && (value.currentLife == null || isRecord(value.currentLife));
+  function defaultMap(keys, min = 0) {
+    return Object.fromEntries(keys.map((key) => [key, min]));
+  }
+
+  function normalizeMap(value, keys, limits) {
+    const source = isRecord(value) ? value : {};
+    return Object.fromEntries(keys.map((key) => {
+      const [min, max] = limits[key] || [0, 10];
+      return [key, clamp(source[key], min, max, min)];
+    }));
+  }
+
+  function normalizeTown(value) {
+    const source = isRecord(value) ? value : {};
+    return Object.fromEntries(WORLD_KEYS.map((key) => [key, clamp(source[key], 0, CONTENT.world[key].values.length - 1, 0)]));
   }
 
   function normalizeHistory(value) {
     if (!Array.isArray(value)) return [];
-    return value.map((entry) => {
-      if (!isRecord(entry)) return null;
-      return {
-        generation: clamp(entry.generation, 1, 9999, 1),
-        profileId: safeText(entry.profileId, 40),
-        goalId: safeText(entry.goalId, 40),
-        outcomeKey: safeText(entry.outcomeKey, 40),
-        outcomeTitle: safeText(entry.outcomeTitle, 100),
-        goalProgress: clamp(entry.goalProgress, 0, 20, 0),
-        goalTarget: clamp(entry.goalTarget, 1, 20, 1),
-        actions: Array.isArray(entry.actions) ? entry.actions.filter(isRecord).slice(0, 12).map((action) => ({
-          round: clamp(action.round, 1, 99, 1),
-          id: safeText(action.id, 60),
-          label: safeText(action.label, 100)
-        })) : [],
-        legacyIds: safeList(entry.legacyIds, 4, 60),
-        town: isRecord(entry.town) ? Object.fromEntries(Object.keys(CONTENT.town).map((key) => [key, clamp(entry.town[key], 0, 3, 0)])) : {},
-        echo: safeText(entry.echo) || "这一世留下了一件还会继续起作用的东西。"
-      };
-    }).filter(Boolean).slice(-MAX_HISTORY);
+    return value.slice(-MAX_HISTORY).filter(isRecord).map((entry) => ({
+      generation: clamp(entry.generation, 1, 9999, 1),
+      age: clamp(entry.age, 1, 120, 75),
+      profileId: safeText(entry.profileId, 50),
+      talentId: safeText(entry.talentId, 50),
+      goalId: safeText(entry.goalId, 50),
+      outcomeTitle: safeText(entry.outcomeTitle, 120),
+      outcomeCopy: safeText(entry.outcomeCopy, MAX_TEXT_LENGTH),
+      goalProgress: clamp(entry.goalProgress, 0, 99, 0),
+      goalTarget: clamp(entry.goalTarget, 1, 99, 8),
+      bestSkill: safeText(entry.bestSkill, 50),
+      actions: Array.isArray(entry.actions) ? entry.actions.slice(-CONTENT.maxRounds).filter(isRecord).map((action) => ({
+        round: clamp(action.round, 1, CONTENT.maxRounds, 1),
+        age: clamp(action.age, 1, 120, 6),
+        label: safeText(action.label, 100),
+        result: safeText(action.result, MAX_TEXT_LENGTH),
+        success: action.success !== false,
+      })) : [],
+      legacyIds: safeList(entry.legacyIds, CONTENT.maxLegacyChoices, 60),
+      achievementIds: safeList(entry.achievementIds, 20, 60),
+      secretIds: safeList(entry.secretIds, 20, 60),
+    }));
+  }
+
+  function oldToNewId(id) {
+    return LEGACY_ID_MAP[id] || id;
   }
 
   function normalizeLife(savedLife) {
-    if (!isRecord(savedLife)) return null;
-    const resources = isRecord(savedLife.resources) ? savedLife.resources : {};
-    const traits = isRecord(savedLife.traits) ? savedLife.traits : {};
-    const relationships = isRecord(savedLife.relationships) ? savedLife.relationships : {};
-    const current = {
+    if (!isRecord(savedLife) || !isRecord(savedLife.skills)) return null;
+    const resources = normalizeMap(savedLife.resources, RESOURCE_KEYS, Object.fromEntries(RESOURCE_KEYS.map((key) => [key, [0, CONTENT.resources[key].max]])));
+    const skills = normalizeMap(savedLife.skills, SKILL_KEYS, Object.fromEntries(SKILL_KEYS.map((key) => [key, [0, 10]])));
+    const relationships = normalizeMap(savedLife.relationships, RELATIONSHIP_KEYS, Object.fromEntries(RELATIONSHIP_KEYS.map((key) => [key, [0, 10]])));
+    return {
+      status: savedLife.status === "complete" ? "complete" : "active",
       generation: clamp(savedLife.generation, 1, 9999, 1),
-      seed: clamp(savedLife.seed, 0, 4294967295, makeLifeSeed(savedLife.generation, 0)),
-      profileId: CONTENT.profiles.some((item) => item.id === savedLife.profileId) ? savedLife.profileId : CONTENT.profiles[0].id,
-      goalId: CONTENT.goals.some((item) => item.id === savedLife.goalId) ? savedLife.goalId : CONTENT.goals[0].id,
+      age: clamp(savedLife.age, 1, 120, 6),
       round: clamp(savedLife.round, 0, CONTENT.maxRounds - 1, 0),
-      maxRounds: CONTENT.maxRounds,
-      resources: Object.fromEntries(Object.keys(RESOURCE_LIMITS).map((key) => [key, clamp(resources[key], ...RESOURCE_LIMITS[key], RESOURCE_LIMITS[key][0])])),
-      traits: Object.fromEntries(Object.keys(TRAIT_LIMITS).map((key) => [key, clamp(traits[key], ...TRAIT_LIMITS[key], TRAIT_LIMITS[key][0])])),
-      relationships: Object.fromEntries(Object.keys(RELATIONSHIP_LIMITS).map((key) => [key, clamp(relationships[key], ...RELATIONSHIP_LIMITS[key], RELATIONSHIP_LIMITS[key][0])])),
-      goalProgress: clamp(savedLife.goalProgress, 0, getGoal(savedLife.goalId).target, 0),
-      flags: safeList(savedLife.flags, 30, 60),
-      inheritedLegacyIds: safeList(savedLife.inheritedLegacyIds, 4, 60),
-      actionLog: Array.isArray(savedLife.actionLog) ? savedLife.actionLog.filter(isRecord).slice(0, CONTENT.maxRounds).map((action) => ({
-        round: clamp(action.round, 1, 99, 1), id: safeText(action.id, 60), label: safeText(action.label, 100)
-      })) : [],
-      lastAction: isRecord(savedLife.lastAction) ? {
-        id: safeText(savedLife.lastAction.id, 60),
-        label: safeText(savedLife.lastAction.label, 100),
-        result: safeText(savedLife.lastAction.result),
-        future: safeText(savedLife.lastAction.future),
-        changes: safeList(savedLife.lastAction.changes, 12, 100),
-        goalDelta: clamp(savedLife.lastAction.goalDelta, 0, 5, 0)
-      } : null,
-      outcome: isRecord(savedLife.outcome) ? {
-        key: safeText(savedLife.outcome.key, 40), title: safeText(savedLife.outcome.title, 100), copy: safeText(savedLife.outcome.copy), echo: safeText(savedLife.outcome.echo)
-      } : null,
-      legacyCandidates: safeList(savedLife.legacyCandidates, 12, 60),
-      selectedLegacies: safeList(savedLife.selectedLegacies, 2, 60),
-      status: savedLife.status === "complete" ? "complete" : "active"
+      seed: clamp(savedLife.seed, 0, 4294967295, makeLifeSeed(savedLife.generation, savedLife.profileId, savedLife.talentId, savedLife.goalId, savedLife.inheritedLegacyIds)),
+      profileId: getProfile(savedLife.profileId).id,
+      talentId: getTalent(savedLife.talentId).id,
+      goalId: getGoal(savedLife.goalId).id,
+      resources,
+      maxResources: { energy: clamp(savedLife.maxResources?.energy, 10, 12, 10) },
+      skills,
+      relationships,
+      town: normalizeTown(savedLife.town),
+      flags: safeList(savedLife.flags, 80, 80),
+      secrets: safeList(savedLife.secrets, CONTENT.secrets.length, 60),
+      progress: normalizeMap(savedLife.progress, CONTENT.goals.map((goal) => goal.id), Object.fromEntries(CONTENT.goals.map((goal) => [goal.id, [0, goal.target]]))),
+      inheritedLegacyIds: safeList(savedLife.inheritedLegacyIds, CONTENT.maxLegacyChoices, 60),
+      actions: Array.isArray(savedLife.actions) ? savedLife.actions.slice(-CONTENT.maxRounds).filter(isRecord) : [],
+      lastAction: isRecord(savedLife.lastAction) ? savedLife.lastAction : null,
+      outcome: isRecord(savedLife.outcome) ? savedLife.outcome : null,
+      legacyCandidates: safeList(savedLife.legacyCandidates, 20, 60),
+      selectedLegacies: safeList(savedLife.selectedLegacies, CONTENT.maxLegacyChoices, 60),
+      newAchievements: safeList(savedLife.newAchievements, 20, 60),
+      newSecrets: safeList(savedLife.newSecrets, 20, 60),
     };
-    return current;
   }
 
   function normalizeState(saved) {
-    const fresh = cloneDefault();
+    const fresh = clone(DEFAULT_STATE);
+    if (!isRecord(saved)) return fresh;
     const savedWorld = isRecord(saved.world) ? saved.world : {};
-    const world = { ...fresh.world, ...savedWorld };
-    const savedTown = isRecord(savedWorld.town) ? savedWorld.town : {};
-    world.completedLives = clamp(savedWorld.completedLives, 0, 9999, 0);
-    world.town = Object.fromEntries(Object.keys(CONTENT.town).map((key) => [key, clamp(savedTown[key], 0, 3, 0)]));
-    world.people = isRecord(savedWorld.people)
-      ? Object.fromEntries(Object.keys(RELATIONSHIP_LIMITS).map((key) => [key, clamp(savedWorld.people[key], 0, 4, 0)]))
-      : { ...fresh.world.people };
-    world.legacyBank = safeList(savedWorld.legacyBank, 4, 60);
-    world.history = normalizeHistory(savedWorld.history);
-    world.lastEcho = safeText(savedWorld.lastEcho) || fresh.world.lastEcho;
-    const currentLife = normalizeLife(saved.currentLife);
-    let screen = ["start", "game", "ending", "archive"].includes(saved.screen) ? saved.screen : "start";
-    if (screen === "archive" && !world.history.length) screen = "start";
-    if ((screen === "game" || screen === "ending") && !currentLife) screen = "start";
-    return {
-      ...fresh,
-      version: SAVE_VERSION,
-      world,
-      settings: { ...fresh.settings, ...(isRecord(saved.settings) ? saved.settings : {}) },
-      currentLife,
-      screen,
-      notice: safeText(saved.notice, 180)
+    const oldTown = isRecord(savedWorld.town) ? savedWorld.town : {};
+    const world = {
+      completedLives: clamp(savedWorld.completedLives, 0, 9999, 0),
+      town: normalizeTown({ ...oldTown, shop: oldTown.shop ?? 0, archive: oldTown.archive ?? 0 }),
+      history: normalizeHistory(savedWorld.history),
+      legacyBank: safeList(savedWorld.legacyBank, CONTENT.maxLegacyChoices, 60).map(oldToNewId).filter((id, index, list) => getLegacy(id) && list.indexOf(id) === index),
+      collectedLegacyIds: safeList(savedWorld.collectedLegacyIds, CONTENT.legacies.length, 60).map(oldToNewId).filter((id, index, list) => getLegacy(id) && list.indexOf(id) === index),
+      achievements: safeList(savedWorld.achievements, CONTENT.achievements.length, 60).filter((id, index, list) => getAchievement(id) && list.indexOf(id) === index),
+      secrets: safeList(savedWorld.secrets, CONTENT.secrets.length, 60).filter((id, index, list) => getSecret(id) && list.indexOf(id) === index),
+      totals: {
+        choices: clamp(savedWorld.totals?.choices, 0, 99999, 0),
+        tests: clamp(savedWorld.totals?.tests, 0, 99999, 0),
+        testWins: clamp(savedWorld.totals?.testWins, 0, 99999, 0),
+      },
     };
+    const isRichSave = Number(saved.version) === SAVE_VERSION && isRecord(saved.currentLife) && isRecord(saved.currentLife.skills);
+    const currentLife = isRichSave ? normalizeLife(saved.currentLife) : null;
+    fresh.version = SAVE_VERSION;
+    fresh.world = world;
+    fresh.currentLife = currentLife;
+    fresh.screen = currentLife && ["start", "game", "ending"].includes(saved.screen) ? saved.screen : "start";
+    fresh.settings.fontScale = Boolean(saved.settings?.fontScale);
+    fresh.notice = safeText(saved.notice, MAX_TEXT_LENGTH);
+    return fresh;
   }
 
   function loadState() {
-    let previousVersionFound = false;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      const saved = raw ? JSON.parse(raw) : null;
-      if (isSavePayload(saved)) return normalizeState(saved);
-      previousVersionFound = LEGACY_STORAGE_KEYS.some((key) => Boolean(localStorage.getItem(key)));
+      if (raw) {
+        const saved = JSON.parse(raw);
+        if (Number(saved.version) === SAVE_VERSION) return normalizeState(saved);
+      }
+      const fresh = clone(DEFAULT_STATE);
+      if (LEGACY_STORAGE_KEYS.some((key) => Boolean(localStorage.getItem(key)))) {
+        fresh.notice = "检测到旧版人生存档。旧存档仍被保留；丰富版将从新一世开始，避免把两套规则混在一起。";
+      }
+      return fresh;
     } catch (error) {
-      previousVersionFound = false;
+      return { ...clone(DEFAULT_STATE), notice: "本地存档读取失败，当前可以重新开始；请先导出备份。" };
     }
-    const fresh = cloneDefault();
-    if (previousVersionFound) fresh.notice = "检测到旧版镇志。旧版仍保留在旧提交中；当前切片从新的世代玩法开始。";
-    return fresh;
   }
 
   function showToast(message) {
     const toast = $("#toast");
     if (!toast) return;
-    toast.textContent = message;
+    toast.textContent = safeText(message, 180);
     toast.classList.add("is-visible");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2200);
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2600);
   }
 
-  function persist(message) {
+  function persist(message = "已保存") {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      if (message) showToast(message);
+      state.version = SAVE_VERSION;
+      const payload = JSON.stringify(state);
+      if (payload.length > MAX_SAVE_BYTES) throw new Error("save-too-large");
+      localStorage.setItem(STORAGE_KEY, payload);
       const status = $("#save-status");
-      if (status) status.textContent = "已保存到本地";
-      return true;
+      if (status) status.textContent = message;
     } catch (error) {
       const status = $("#save-status");
-      if (status) status.textContent = "仅保留在当前页面";
-      showToast("本地存档暂不可用，当前页面仍可继续");
-      return false;
+      if (status) status.textContent = "保存失败，请导出备份";
+      showToast("本地保存失败，但当前页面仍可继续；请导出存档");
     }
   }
 
@@ -235,139 +291,226 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "echo-town-generation-save.json";
+      link.download = `echo-town-save-v${SAVE_VERSION}.json`;
       link.click();
       URL.revokeObjectURL(url);
-      showToast("新世代存档已导出");
+      showToast("存档已导出");
     } catch (error) {
-      showToast("当前浏览器不支持导出存档");
+      showToast("存档导出失败");
     }
   }
 
   function importSave(file) {
-    if (!file) return;
-    if (Number(file.size) > MAX_SAVE_BYTES) {
-      showToast("存档文件过大，未做修改");
+    if (!file || file.size > MAX_SAVE_BYTES) {
+      showToast("导入失败：文件超过 512 KiB");
       return;
     }
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const imported = JSON.parse(reader.result);
-        if (!isSavePayload(imported)) throw new Error("unsupported save version");
-        state = normalizeState(imported);
-        persist("世代存档已导入");
+        if (!isRecord(imported) || Number(imported.version) !== SAVE_VERSION) throw new Error("wrong-version");
+        const normalized = normalizeState(imported);
+        if (!normalized || normalized.version !== SAVE_VERSION) throw new Error("invalid-save");
+        state = normalized;
+        persist("已导入并保存");
         render();
+        showToast("存档已导入");
       } catch (error) {
-        showToast("存档格式不正确或不是当前切片版本，未做修改");
+        showToast("导入失败：需要丰富版 v5 存档，当前存档未改变");
       }
     };
-    reader.onerror = () => showToast("存档读取失败，未做修改");
+    reader.onerror = () => showToast("导入失败：无法读取文件");
     reader.readAsText(file);
   }
 
-  function createLife(profileId, goalId) {
+  function createLife(profileId, talentId, goalId) {
     const profile = getProfile(profileId);
+    const talent = getTalent(talentId);
+    const legacyIds = state.world.legacyBank.slice(0, CONTENT.maxLegacyChoices);
     const life = {
+      status: "active",
       generation: state.world.completedLives + 1,
-      seed: makeLifeSeed(state.world.completedLives + 1, state.world.history.length),
-      profileId: profile.id,
-      goalId: getGoal(goalId).id,
+      age: CONTENT.rounds[0].age,
       round: 0,
-      maxRounds: CONTENT.maxRounds,
-      resources: { money: 0, energy: 0, health: 3 },
-      traits: { craft: 0, care: 0, nerve: 0, insight: 0 },
-      relationships: { master: 0, neighbor: 0, apprentice: 0 },
-      goalProgress: 0,
+      seed: makeLifeSeed(state.world.completedLives + 1, profile.id, talent.id, goalId, legacyIds),
+      profileId: profile.id,
+      talentId: talent.id,
+      goalId: getGoal(goalId).id,
+      resources: defaultMap(RESOURCE_KEYS),
+      maxResources: { energy: 10 },
+      skills: defaultMap(SKILL_KEYS),
+      relationships: defaultMap(RELATIONSHIP_KEYS),
+      town: clone(state.world.town),
       flags: [...(profile.flags || [])],
-      inheritedLegacyIds: [...state.world.legacyBank],
-      actionLog: [],
+      secrets: [],
+      progress: defaultMap(CONTENT.goals.map((goal) => goal.id)),
+      inheritedLegacyIds: [...legacyIds],
+      actions: [],
       lastAction: null,
       outcome: null,
       legacyCandidates: [],
       selectedLegacies: [],
-      status: "active"
+      newAchievements: [],
+      newSecrets: [],
     };
     Object.entries(profile.start || {}).forEach(([key, value]) => {
-      if (key in RESOURCE_LIMITS) life.resources[key] = clamp(value, ...RESOURCE_LIMITS[key], 0);
-      if (key in TRAIT_LIMITS) life.traits[key] = clamp(value, ...TRAIT_LIMITS[key], 0);
-      if (key in RELATIONSHIP_LIMITS) life.relationships[key] = clamp(value, ...RELATIONSHIP_LIMITS[key], 0);
+      if (key in life.resources) life.resources[key] = clamp(value, 0, CONTENT.resources[key].max, 0);
     });
-    state.world.legacyBank.map(getLegacy).filter(Boolean).forEach((legacy) => applyEffect(life, legacy.effect, false));
+    Object.entries(profile.skills || {}).forEach(([key, value]) => {
+      if (key in life.skills) life.skills[key] = clamp(value, 0, 10, 0);
+    });
+    Object.entries(profile.relationships || {}).forEach(([key, value]) => {
+      if (key in life.relationships) life.relationships[key] = clamp(value, 0, 10, 0);
+    });
+    applyEffect(life, talent.effect, false);
+    legacyIds.map(getLegacy).filter(Boolean).forEach((legacy) => applyEffect(life, legacy.effect, false));
+    life.resources.energy = clamp(life.resources.energy, 0, life.maxResources.energy, life.resources.energy);
+    life.age = CONTENT.rounds[0].age;
     return life;
   }
 
-  function addValue(target, key, amount, limits) {
-    if (!Object.prototype.hasOwnProperty.call(limits, key)) return;
-    const [min, max] = limits[key];
-    target[key] = clamp((target[key] || 0) + Number(amount || 0), min, max, min);
-  }
-
-  function addWorld(key, amount = 1) {
-    if (!Object.prototype.hasOwnProperty.call(CONTENT.town, key)) return;
-    state.world.town[key] = clamp((state.world.town[key] || 0) + Number(amount || 0), 0, 3, 0);
+  function addValue(target, key, amount, min, max) {
+    if (!(key in target)) return;
+    target[key] = clamp(Number(target[key]) + Number(amount || 0), min, max, min);
   }
 
   function applyEffect(life, effect = {}, includeTown = true) {
-    Object.entries(effect.resources || {}).forEach(([key, amount]) => addValue(life.resources, key, amount, RESOURCE_LIMITS));
-    Object.entries(effect.traits || {}).forEach(([key, amount]) => addValue(life.traits, key, amount, TRAIT_LIMITS));
-    Object.entries(effect.relationships || {}).forEach(([key, amount]) => addValue(life.relationships, key, amount, RELATIONSHIP_LIMITS));
-    if (includeTown) Object.entries(effect.town || {}).forEach(([key, amount]) => addWorld(key, amount));
-    (effect.flags || []).forEach((flag) => {
-      if (typeof flag === "string" && !life.flags.includes(flag)) life.flags.push(flag);
+    const beforeFlags = new Set(life.flags);
+    const beforeSecrets = new Set(life.secrets);
+    Object.entries(effect.maxResources || {}).forEach(([key, amount]) => {
+      if (key in life.maxResources) life.maxResources[key] = clamp(life.maxResources[key] + Number(amount || 0), 10, 12, 10);
     });
-  }
-
-  function captureMetrics(life) {
+    Object.entries(effect.resources || {}).forEach(([key, amount]) => {
+      if (key in life.resources) addValue(life.resources, key, amount, 0, key === "energy" ? life.maxResources.energy : CONTENT.resources[key].max);
+    });
+    Object.entries(effect.skills || {}).forEach(([key, amount]) => addValue(life.skills, key, amount, 0, 10));
+    Object.entries(effect.relationships || {}).forEach(([key, amount]) => addValue(life.relationships, key, amount, 0, 10));
+    if (includeTown) Object.entries(effect.town || {}).forEach(([key, amount]) => {
+      if (key in life.town) addValue(life.town, key, amount, 0, CONTENT.world[key].values.length - 1);
+    });
+    life.flags = [...new Set([...life.flags, ...safeList(effect.flags, 20, 80)])].slice(0, 80);
+    life.secrets = [...new Set([...life.secrets, ...safeList(effect.secrets, CONTENT.secrets.length, 60)])].filter((id) => getSecret(id));
     return {
-      ...Object.fromEntries(Object.entries(life.resources).map(([key, value]) => [`resources.${key}`, value])),
-      ...Object.fromEntries(Object.entries(life.traits).map(([key, value]) => [`traits.${key}`, value])),
-      ...Object.fromEntries(Object.entries(life.relationships).map(([key, value]) => [`relationships.${key}`, value])),
-      ...Object.fromEntries(Object.entries(state.world.town).map(([key, value]) => [`town.${key}`, value]))
+      newFlags: life.flags.filter((flag) => !beforeFlags.has(flag)),
+      newSecrets: life.secrets.filter((secret) => !beforeSecrets.has(secret)),
     };
   }
 
-  function getMetricLabel(path) {
-    const key = path.split(".").pop();
-    return METRIC_LABELS[key] || key;
-  }
-
-  function formatDelta(label, delta) {
-    if (!delta) return "";
-    return `${label} ${delta > 0 ? "+" : "−"}${Math.abs(delta)}`;
-  }
-
-  function getMetricChanges(before, after) {
-    return Object.keys(after).map((path) => {
-      const delta = after[path] - before[path];
-      return delta ? formatDelta(getMetricLabel(path), delta) : "";
-    }).filter(Boolean).slice(0, 12);
+  function getLifeStat(life, group, key) {
+    if (group === "resources") return Number(life.resources[key] || 0);
+    if (group === "skills") return Number(life.skills[key] || 0);
+    if (group === "relationships") return Number(life.relationships[key] || 0);
+    if (group === "town") return Number(life.town[key] || 0);
+    return 0;
   }
 
   function requirementMet(life, requirement) {
     if (!requirement) return true;
     if (requirement.type === "any") return (requirement.requirements || []).some((item) => requirementMet(life, item));
+    if (requirement.type === "all") return (requirement.requirements || []).every((item) => requirementMet(life, item));
+    if (requirement.type === "resource") return getLifeStat(life, "resources", requirement.key) >= Number(requirement.min || 0);
+    if (requirement.type === "skill") return getLifeStat(life, "skills", requirement.key) >= Number(requirement.min || 0);
+    if (requirement.type === "relationship") return getLifeStat(life, "relationships", requirement.key) >= Number(requirement.min || 0);
+    if (requirement.type === "world") return getLifeStat(life, "town", requirement.key) >= Number(requirement.min || 0);
     if (requirement.type === "flag") return life.flags.includes(requirement.key);
-    if (requirement.type === "flagAny") return (requirement.keys || []).some((key) => life.flags.includes(key));
-    if (requirement.type === "resource") return Number(life.resources[requirement.key] || 0) >= Number(requirement.min || 0);
-    if (requirement.type === "trait") return Number(life.traits[requirement.key] || 0) >= Number(requirement.min || 0);
-    if (requirement.type === "relationship") return Number(life.relationships[requirement.key] || 0) >= Number(requirement.min || 0);
-    if (requirement.type === "town") return Number(state.world.town[requirement.key] || 0) >= Number(requirement.min || 0);
+    if (requirement.type === "secret") return life.secrets.includes(requirement.key);
+    if (requirement.type === "age") return life.age >= Number(requirement.min || 0);
     return true;
   }
 
   function requirementReason(requirement) {
-    return requirement.label || "当前基础还不够";
+    if (!requirement) return "";
+    if (requirement.type === "any" || requirement.type === "all") return requirement.label || "需要满足前置条件";
+    return requirement.label || "需要满足前置条件";
   }
 
   function getAvailability(life, action) {
     const failed = (action.requires || []).find((requirement) => !requirementMet(life, requirement));
-    return failed ? { available: false, reason: requirementReason(failed) } : { available: true, reason: "" };
+    return { available: !failed, reason: failed ? requirementReason(failed) : "" };
   }
 
   function getAction(actionId) {
     const round = getRound(state.currentLife);
-    return round?.actions.find((item) => item.id === actionId) || null;
+    return round?.actions.find((action) => action.id === actionId) || null;
+  }
+
+  function captureMetrics(life) {
+    return {
+      ...Object.fromEntries(RESOURCE_KEYS.map((key) => [`resources.${key}`, life.resources[key]])),
+      ...Object.fromEntries(SKILL_KEYS.map((key) => [`skills.${key}`, life.skills[key]])),
+      ...Object.fromEntries(RELATIONSHIP_KEYS.map((key) => [`relationships.${key}`, life.relationships[key]])),
+      ...Object.fromEntries(WORLD_KEYS.map((key) => [`town.${key}`, life.town[key]])),
+    };
+  }
+
+  function getMetricLabel(path) {
+    const [group, key] = path.split(".");
+    if (group === "resources") return CONTENT.resources[key]?.label || key;
+    if (group === "skills") return CONTENT.skills[key]?.label || key;
+    if (group === "relationships") return CONTENT.relationships[key]?.label || key;
+    if (group === "town") return CONTENT.world[key]?.label || key;
+    return key;
+  }
+
+  function formatDelta(label, delta) {
+    return `${label}${delta > 0 ? "+" : ""}${delta}`;
+  }
+
+  function getMetricChanges(before, after) {
+    return Object.keys(before).map((path) => {
+      const delta = after[path] - before[path];
+      return delta ? formatDelta(getMetricLabel(path), delta) : null;
+    }).filter(Boolean);
+  }
+
+  function getSkillLevel(value) {
+    if (value >= 8) return 4;
+    if (value >= 6) return 3;
+    if (value >= 4) return 2;
+    if (value >= 2) return 1;
+    return 0;
+  }
+
+  function getSkillLevelName(key, value) {
+    return CONTENT.skills[key]?.levels[getSkillLevel(value)] || "入门";
+  }
+
+  function getBestSkill(life) {
+    return SKILL_KEYS.slice().sort((left, right) => life.skills[right] - life.skills[left])[0];
+  }
+
+  function deterministicRoll(life, action) {
+    const raw = hashSeed(`${life.seed}:${life.round}:${action.id}`);
+    return raw % 3;
+  }
+
+  function unlockAchievements(life) {
+    const unlocked = [];
+    CONTENT.achievements.forEach((achievement) => {
+      if (state.world.achievements.includes(achievement.id)) return;
+      const passed = (achievement.requires || []).every((requirement) => achievementRequirementMet(life, requirement));
+      if (passed) {
+        state.world.achievements.push(achievement.id);
+        unlocked.push(achievement.id);
+      }
+    });
+    life.newAchievements = [...new Set([...(life.newAchievements || []), ...unlocked])];
+    return unlocked;
+  }
+
+  function achievementRequirementMet(life, requirement) {
+    if (!requirement) return true;
+    if (requirement.type === "world") return Number(state.world[requirement.key] || 0) >= Number(requirement.min || 0);
+    if (requirement.type === "count") return Array.isArray(state.world[requirement.group]) && state.world[requirement.group].length >= Number(requirement.min || 0);
+    if (requirement.type === "anyStat") return Object.values(life[requirement.group] || {}).some((value) => Number(value) >= Number(requirement.min || 0));
+    if (requirement.type === "statCount") return Object.values(life[requirement.group] || life.town || {}).filter((value) => Number(value) >= Number(requirement.min || 0)).length >= Number(requirement.count || 1);
+    if (requirement.type === "lifeStat") return getLifeStat(life, requirement.group, requirement.key) >= Number(requirement.min || 0);
+    if (requirement.type === "secret") return state.world.secrets.includes(requirement.key) || life.secrets.includes(requirement.key);
+    if (requirement.type === "flag") return life.flags.includes(requirement.key);
+    if (requirement.type === "any") return (requirement.requirements || []).some((item) => achievementRequirementMet(life, item));
+    if (requirement.type === "all") return (requirement.requirements || []).every((item) => achievementRequirementMet(life, item));
+    return false;
   }
 
   function resolveAction(actionId) {
@@ -377,68 +520,96 @@
     if (!action) return;
     const availability = getAvailability(life, action);
     if (!availability.available) {
-      showToast(availability.reason);
+      showToast(availability.reason || "这个行动现在还做不了");
       return;
     }
     const before = captureMetrics(life);
-    applyEffect(life, action.effect, true);
-    const goalPoints = action.goalPoints || action.effect?.goalPoints || {};
-    const goalDelta = Number(goalPoints[life.goalId] || 0);
-    const goal = getGoal(life.goalId);
-    life.goalProgress = clamp(life.goalProgress + goalDelta, 0, goal.target, 0);
+    const beforeLevels = Object.fromEntries(SKILL_KEYS.map((key) => [key, getSkillLevel(life.skills[key])]));
+    const baseResult = applyEffect(life, action.effect);
+    const goalDelta = Object.entries(action.goalPoints || {}).forEach(([goalId, amount]) => {
+      life.progress[goalId] = clamp(Number(life.progress[goalId] || 0) + Number(amount || 0), 0, getGoal(goalId)?.target || 8, 0);
+    });
+    void goalDelta;
+    let testResult = null;
+    if (action.test) {
+      const test = action.test;
+      const roll = deterministicRoll(life, action);
+      const luckBonus = life.flags.includes("talent-luck") ? 2 : 0;
+      const score = Number(life.skills[test.skill] || 0) + roll + luckBonus;
+      const success = score >= Number(test.difficulty || 0);
+      applyEffect(life, success ? test.success : test.failure);
+      testResult = { label: test.label, score, difficulty: test.difficulty, roll, success, text: success ? test.successText : test.failureText };
+      state.world.totals.tests += 1;
+      if (success) state.world.totals.testWins += 1;
+    }
+    if (before.resources?.pressure >= 8 && life.resources.pressure <= 6 && life.resources.happiness >= 7) life.flags.push("second-chance");
     const after = captureMetrics(life);
+    const newLevels = SKILL_KEYS.filter((key) => getSkillLevel(life.skills[key]) > beforeLevels[key]).map((key) => `${CONTENT.skills[key].label}达到${getSkillLevelName(key, life.skills[key])}`);
+    const newSecrets = [...new Set([...(baseResult.newSecrets || []), ...life.secrets.filter((secret) => !state.world.secrets.includes(secret))])];
+    state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
+    const round = getRound(life);
+    const stage = getStage(round.stage);
+    const nextRound = CONTENT.rounds[life.round + 1];
+    const stageBreak = nextRound && nextRound.stage !== round.stage ? getStage(nextRound.stage) : null;
     life.lastAction = {
-      id: action.id,
-      label: action.label,
-      result: action.result,
+      actionId: action.id,
+      title: action.label,
+      result: testResult?.text ? `${testResult.text} ${action.result}` : action.result,
       future: action.future,
       changes: getMetricChanges(before, after),
-      goalDelta
+      newLevels,
+      newSecrets,
+      tags: action.tags || [],
+      test: testResult,
+      stageBreak: stageBreak ? { label: stageBreak.label, range: stageBreak.range, hint: stageBreak.hint } : null,
     };
-    life.actionLog.push({ round: life.round + 1, id: action.id, label: action.label });
-    persist();
+    life.actions.push({ round: life.round + 1, age: life.age, label: action.label, result: life.lastAction.result, success: testResult ? testResult.success : true });
+    life.actions = life.actions.slice(-CONTENT.maxRounds);
+    state.world.totals.choices += 1;
+    unlockAchievements(life);
+    persist("选择已保存");
     render();
-    setTimeout(() => $("#advance-round")?.focus(), 30);
   }
 
   function getOutcome(life) {
     const goal = getGoal(life.goalId);
-    const complete = life.goalProgress >= goal.target;
-    const close = life.goalProgress >= Math.max(1, goal.target - 1);
-    if (complete) {
-      return {
-        key: "goal-complete",
-        title: `${goal.label}：做到了`,
-        copy: `你没有把所有事情都做完，但你把“${goal.label}”推进到了可以交给下一双手的程度。`,
-        echo: `第${life.generation}世，你把${goal.measure}推进到了${life.goalProgress}/${goal.target}。`
-      };
-    }
-    if (close) {
-      return {
-        key: "goal-close",
-        title: "差一步，也留下了基础",
-        copy: `这一世没有完全抵达“${goal.label}”，但你留下的资源、关系和选择，让下一世不必从原点开始。`,
-        echo: `第${life.generation}世，${goal.measure}停在${life.goalProgress}/${goal.target}，还差的一步留给后来的人。`
-      };
-    }
-    return {
-      key: "goal-open",
-      title: "目标没有做完，但方向留下了",
-      copy: `你没有完成“${goal.label}”，也没有白走这一世。下一世可以从你已经碰过的地方继续。`,
-      echo: `第${life.generation}世没有完成${goal.measure}，但留下了一个明确的起点。`
-    };
+    const goalProgress = Number(life.progress[life.goalId] || 0);
+    const best = life.skills[getBestSkill(life)];
+    const relationshipTotal = Object.values(life.relationships).reduce((sum, value) => sum + value, 0);
+    if (life.resources.health <= 0) return { title: "你走得太急，身体先替你按下了暂停。", copy: "这一生并不只由完成了什么组成。你留下了许多方法，却也提醒下一世：不要把自己当成不会坏的机器。", tone: "代价", score: Math.max(1, Math.round(goalProgress + relationshipTotal / 4)) };
+    if (goalProgress >= goal.target && best >= 8) return { title: "你把想做的事，做成了别人可以继续的事。", copy: "这不是一条人人都能复制的路，但它在你的手里变成了真实的履历、关系和方法。", tone: "传说", score: 100 };
+    if (goalProgress >= goal.target && life.resources.happiness >= 6) return { title: "你把这一生过成了自己认得出的样子。", copy: "目标完成不是人生的标准答案，但它证明你曾经在有限的时间里，把重要的东西放到了前面。", tone: "圆满", score: 85 };
+    if (relationshipTotal >= 18 || life.resources.happiness >= 8) return { title: "有人会替你记得，你曾经来过。", copy: "你没有完成所有目标，但很多人的日子因为遇见你而少了一点孤单。", tone: "有人记得", score: 70 };
+    return { title: "你没有得到标准答案，但留下了下一步。", copy: "有些人生要等下一世回头看，才知道哪一次选择其实已经改变了方向。", tone: "未完", score: 55 };
   }
 
   function getLegacyCandidates(life) {
-    return CONTENT.legacies.filter((legacy) => (legacy.requires || []).every((requirement) => requirementMet(life, requirement))).slice(0, 6);
+    const available = CONTENT.legacies.filter((legacy) => (legacy.requires || []).every((requirement) => requirementMet(life, requirement)));
+    const unique = [];
+    available.forEach((legacy) => {
+      if (!unique.some((item) => item.id === legacy.id)) unique.push(legacy);
+    });
+    return unique.slice(0, 10);
   }
 
-  function summarizeTown() {
-    return Object.keys(CONTENT.town).map((key) => ({
-      key,
-      label: CONTENT.town[key].label,
-      value: CONTENT.town[key].values[clamp(state.world.town[key], 0, 3, 0)]
-    }));
+  function buildHistoryEntry(life) {
+    const goal = getGoal(life.goalId);
+    return {
+      generation: life.generation,
+      age: life.age,
+      profileId: life.profileId,
+      talentId: life.talentId,
+      goalId: life.goalId,
+      outcomeTitle: life.outcome.title,
+      outcomeCopy: life.outcome.copy,
+      goalProgress: life.progress[life.goalId],
+      goalTarget: goal.target,
+      bestSkill: getBestSkill(life),
+      actions: life.actions.slice(-CONTENT.maxRounds),
+      legacyIds: [],
+      achievementIds: life.newAchievements || [],
+      secretIds: life.newSecrets || [],
+    };
   }
 
   function finishLife() {
@@ -447,203 +618,261 @@
     life.status = "complete";
     life.outcome = getOutcome(life);
     life.legacyCandidates = getLegacyCandidates(life).map((legacy) => legacy.id);
-    state.world.completedLives = Math.max(state.world.completedLives, life.generation);
-    Object.keys(RELATIONSHIP_LIMITS).forEach((key) => {
-      state.world.people[key] = Math.max(state.world.people[key] || 0, life.relationships[key] || 0);
-    });
-    state.world.lastEcho = life.outcome.echo;
-    state.world.history.push({
-      generation: life.generation,
-      profileId: life.profileId,
-      goalId: life.goalId,
-      outcomeKey: life.outcome.key,
-      outcomeTitle: life.outcome.title,
-      goalProgress: life.goalProgress,
-      goalTarget: getGoal(life.goalId).target,
-      actions: [...life.actionLog],
-      legacyIds: [],
-      town: { ...state.world.town },
-      echo: life.outcome.echo
-    });
+    state.world.completedLives += 1;
+    state.world.town = clone(life.town);
+    unlockAchievements(life);
+    state.world.history.push(buildHistoryEntry(life));
     state.world.history = state.world.history.slice(-MAX_HISTORY);
     state.screen = "ending";
-    persist();
+    persist("这一生已封存");
     render();
   }
 
   function advanceRound() {
     const life = state.currentLife;
     if (!life || life.status !== "active" || !life.lastAction) return;
-    if (life.round >= CONTENT.maxRounds - 1) {
+    if (life.round >= CONTENT.rounds.length - 1) {
       finishLife();
       return;
     }
     life.round += 1;
+    life.age = CONTENT.rounds[life.round].age;
     life.lastAction = null;
-    persist();
+    persist("人生继续保存");
     render();
-    setTimeout(() => $("[data-action='choose-action']")?.focus(), 30);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function toggleLegacy(legacyId) {
     const life = state.currentLife;
-    if (!life || life.status !== "complete" || !life.legacyCandidates.includes(legacyId)) return;
+    if (!life || life.status !== "complete") return;
+    if (!life.legacyCandidates.includes(legacyId)) return;
     const index = life.selectedLegacies.indexOf(legacyId);
-    if (index >= 0) {
-      life.selectedLegacies.splice(index, 1);
-    } else if (life.selectedLegacies.length < 2) {
-      life.selectedLegacies.push(legacyId);
-    } else {
-      showToast("最多选择两件遗产");
-      return;
-    }
-    persist();
+    if (index >= 0) life.selectedLegacies.splice(index, 1);
+    else if (life.selectedLegacies.length < CONTENT.maxLegacyChoices) life.selectedLegacies.push(legacyId);
+    else showToast(`最多选择 ${CONTENT.maxLegacyChoices} 件遗产`);
     render();
   }
 
   function applyLegacyToWorld(legacy) {
-    if (!legacy) return;
-    Object.entries(legacy.effect?.town || {}).forEach(([key, amount]) => addWorld(key, amount));
+    Object.entries(legacy.effect?.town || {}).forEach(([key, amount]) => {
+      if (key in state.world.town) addValue(state.world.town, key, amount, 0, CONTENT.world[key].values.length - 1);
+    });
   }
 
   function confirmLegacies() {
     const life = state.currentLife;
-    if (!life || life.status !== "complete" || !life.selectedLegacies.length) {
-      showToast("至少选择一件遗产，下一世才知道从哪里开始");
-      return;
-    }
-    life.selectedLegacies.map(getLegacy).filter(Boolean).forEach(applyLegacyToWorld);
-    state.world.legacyBank = [...life.selectedLegacies];
+    if (!life || life.status !== "complete" || life.selectedLegacies.length < 1) return;
+    const selected = life.selectedLegacies.map(getLegacy).filter(Boolean);
+    selected.forEach(applyLegacyToWorld);
+    state.world.legacyBank = selected.map((legacy) => legacy.id);
+    state.world.collectedLegacyIds = [...new Set([...state.world.collectedLegacyIds, ...state.world.legacyBank])].slice(-CONTENT.legacies.length);
     const historyEntry = state.world.history[state.world.history.length - 1];
-    if (historyEntry && historyEntry.generation === life.generation) historyEntry.legacyIds = [...life.selectedLegacies];
+    if (historyEntry) historyEntry.legacyIds = [...state.world.legacyBank];
+    unlockAchievements(life);
     state.currentLife = null;
     state.screen = "start";
-    persist("遗产已交给下一世");
+    state.notice = `上一世留下了：${selected.map((legacy) => legacy.label).join("、")}。下一世会从这些基础开始。`;
+    persist("遗产已交接");
     render();
-    setTimeout(() => $("#profile-options button")?.focus(), 30);
   }
 
   function startLife() {
-    if (state.currentLife?.status === "active" && !window.confirm("当前人生还没有结算，开启新一世会放弃这一页。确定吗？")) return;
-    state.notice = "";
-    state.currentLife = createLife(setup.profileId, setup.goalId);
+    if (state.currentLife?.status === "active") {
+      state.screen = "game";
+      render();
+      return;
+    }
+    state.currentLife = createLife(setup.profileId, setup.talentId, setup.goalId);
     state.screen = "game";
-    persist();
+    state.notice = "";
+    persist("新一世已开始");
     render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderTown(containerId, town) {
+    const container = $(containerId);
+    if (!container) return;
+    container.innerHTML = WORLD_KEYS.map((key) => {
+      const level = clamp(town[key], 0, CONTENT.world[key].values.length - 1, 0);
+      const world = CONTENT.world[key];
+      return `<div class="town-state-row"><span>${escapeHtml(world.label)}</span><strong>${escapeHtml(world.values[level])}</strong></div>`;
+    }).join("");
   }
 
   function renderStart() {
     const active = state.currentLife?.status === "active";
-    $("#continue-life").classList.toggle("is-hidden", !active);
-    $("#start-life").textContent = state.world.completedLives ? "开始下一世" : "开始第一世";
-    $("#start-notice").textContent = state.notice || "";
-    $("#start-notice").classList.toggle("is-hidden", !state.notice);
-    $("#generation-label").textContent = state.world.completedLives ? `已经走过 ${state.world.completedLives} 世` : "还没有人写下第一行";
-    $("#start-echo").textContent = state.world.lastEcho;
-    $("#start-town").innerHTML = summarizeTown().map((item) => `<div class="town-mini-item"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join("");
-    $("#view-archive").classList.toggle("is-hidden", !state.world.history.length);
-    $("#profile-options").innerHTML = CONTENT.profiles.map((profile) => `<button class="selection-card ${setup.profileId === profile.id ? "is-selected" : ""}" type="button" data-action="select-profile" data-profile-id="${profile.id}"><span class="selection-check">${setup.profileId === profile.id ? "✓" : ""}</span><strong>${escapeHtml(profile.label)}</strong><span>${escapeHtml(profile.detail)}</span></button>`).join("");
-    $("#goal-options").innerHTML = CONTENT.goals.map((goal) => `<button class="selection-card ${setup.goalId === goal.id ? "is-selected" : ""}" type="button" data-action="select-goal" data-goal-id="${goal.id}"><span class="selection-check">${setup.goalId === goal.id ? "✓" : ""}</span><strong>${escapeHtml(goal.label)}</strong><span>${escapeHtml(goal.detail)}</span></button>`).join("");
     const profile = getProfile(setup.profileId);
+    const talent = getTalent(setup.talentId);
     const goal = getGoal(setup.goalId);
-    $("#start-summary").textContent = `你将以“${profile.label}”开始，目标是“${goal.label}”。`;
-    $("#incoming-legacy").innerHTML = state.world.legacyBank.length
-      ? `<p class="section-note">上一世留下的基础，会直接改变这一世的起点：</p>${state.world.legacyBank.map((id) => { const legacy = getLegacy(id); return legacy ? `<div class="incoming-item"><strong>${escapeHtml(legacy.label)}</strong><span>${escapeHtml(legacy.nextUse)}</span></div>` : ""; }).join("")}`
-      : `<p class="empty-note">这是第一世。你会从一个普通但具体的处境开始。</p>`;
+    $("#generation-label").textContent = state.world.completedLives ? `已走过 ${state.world.completedLives} 世` : "还没有人写下第一行";
+    $("#start-echo").textContent = state.world.history.length ? `“${state.world.history[state.world.history.length - 1].outcomeTitle}”` : "“这座镇子还没有收到上一世留下的东西。”";
+    renderTown("#start-town", state.world.town);
+    $("#start-life").textContent = active ? "进入当前人生 →" : `开始第 ${state.world.completedLives + 1} 世 →`;
+    $("#continue-life").classList.toggle("is-hidden", !active);
+    $("#view-archive").classList.toggle("is-hidden", state.world.history.length === 0);
+    const notice = $("#start-notice");
+    notice.textContent = state.notice;
+    notice.classList.toggle("is-hidden", !state.notice);
+    $("#achievement-count").textContent = `${state.world.achievements.length} / ${CONTENT.achievements.length}`;
+    $("#secret-count").textContent = `${state.world.secrets.length} / ${CONTENT.secrets.length}`;
+    $("#legacy-count-home").textContent = `${state.world.collectedLegacyIds.length} / ${CONTENT.legacies.length}`;
+    $("#profile-options").innerHTML = CONTENT.profiles.map((item) => `<button class="selection-card ${item.id === setup.profileId ? "is-selected" : ""}" data-action="choose-profile" data-id="${item.id}" aria-pressed="${item.id === setup.profileId}"><span class="selection-check">${item.id === setup.profileId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
+    $("#talent-options").innerHTML = CONTENT.talents.map((item) => `<button class="selection-card ${item.id === setup.talentId ? "is-selected" : ""}" data-action="choose-talent" data-id="${item.id}" aria-pressed="${item.id === setup.talentId}"><span class="selection-check">${item.id === setup.talentId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
+   $("#goal-options").innerHTML = CONTENT.goals.map((item) => `<button class="selection-card ${item.id === setup.goalId ? "is-selected" : ""}" data-action="choose-goal" data-id="${item.id}" aria-pressed="${item.id === setup.goalId}"><span class="selection-check">${item.id === setup.goalId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
+   $("#start-summary").innerHTML = `<strong>${escapeHtml(profile.label)}</strong> · 天赋“${escapeHtml(talent.label)}” · 本世愿望“${escapeHtml(goal.label)}”`;
+    const previewLife = createLife(profile.id, talent.id, goal.id);
+   $("#start-preview").innerHTML = [
+      ...RESOURCE_KEYS.slice(0, 4).map((key) => `<span>${escapeHtml(CONTENT.resources[key].label)} ${previewLife.resources[key] || 0}</span>`),
+      ...SKILL_KEYS.slice(0, 3).map((key) => `<span>${escapeHtml(CONTENT.skills[key].label)} ${previewLife.skills[key] || 0}</span>`),
+    ].join("");
+    const incoming = $("#incoming-legacy");
+    incoming.innerHTML = state.world.legacyBank.length ? `<span class="incoming-title">上一世的基础</span>${state.world.legacyBank.map((id) => { const legacy = getLegacy(id); return legacy ? `<div class="incoming-item"><strong>${escapeHtml(legacy.label)}</strong><span>${escapeHtml(legacy.nextUse)}</span></div>` : ""; }).join("")}` : `<span class="empty-note">第一世没有遗产；以后每一世都可以亲手选择带走什么。</span>`;
   }
 
-  function renderResource(key, value, max) {
-    const label = METRIC_LABELS[key];
-    return `<div class="resource-row"><div class="resource-heading"><span>${escapeHtml(label)}</span><strong>${value} / ${max}</strong></div><div class="resource-bar"><span style="width:${Math.max(0, Math.min(100, (value / max) * 100))}%"></span></div></div>`;
+  function renderResourceList(life) {
+    $("#resource-list").innerHTML = RESOURCE_KEYS.map((key) => {
+      const resource = CONTENT.resources[key];
+      const max = key === "energy" ? life.maxResources.energy : resource.max;
+      const value = life.resources[key];
+      const percent = Math.round((value / max) * 100);
+      return `<div class="resource-item"><div class="resource-heading"><span>${escapeHtml(resource.label)}</span><strong>${value} / ${max}</strong></div><div class="resource-bar ${key === "pressure" ? "is-pressure" : ""}"><span style="width:${percent}%"></span></div></div>`;
+    }).join("");
+  }
+
+  function renderSkillList(life) {
+    $("#skill-list").innerHTML = SKILL_KEYS.map((key) => {
+      const skill = CONTENT.skills[key];
+      const value = life.skills[key];
+      const level = getSkillLevel(value);
+      return `<div class="skill-row"><div class="skill-heading"><span>${escapeHtml(skill.label)}</span><strong>${escapeHtml(skill.levels[level])} · ${value}/10</strong></div><div class="skill-bar"><span style="width:${value * 10}%"></span></div></div>`;
+    }).join("");
+  }
+
+  function renderRelationshipList(life) {
+    $("#relationship-list").innerHTML = RELATIONSHIP_KEYS.map((key) => `<div class="relationship-row"><span>${escapeHtml(CONTENT.relationships[key].label)}</span><strong>${life.relationships[key]} / 10</strong></div>`).join("");
+  }
+
+  function renderLifeTags(life) {
+    const flags = life.flags.filter((flag) => FLAG_LABELS[flag]).slice(-8);
+    $("#life-tags").innerHTML = flags.length ? flags.map((flag) => `<span class="tag-chip">${escapeHtml(FLAG_LABELS[flag])}</span>`).join("") : `<span class="empty-note">每一次行动都会写下一枚标签。</span>`;
   }
 
   function renderGame() {
     const life = state.currentLife;
     if (!life) return;
     const round = getRound(life);
+    const stage = getStage(round.stage);
     const goal = getGoal(life.goalId);
-    const profile = getProfile(life.profileId);
-    const feedbackVisible = Boolean(life.lastAction);
-    $("#game-generation").textContent = `第 ${life.generation} 世 · ${profile.label}`;
-    $("#round-label").textContent = `第 ${life.round + 1} / ${CONTENT.maxRounds} 回合`;
-    $("#round-progress").setAttribute("aria-valuenow", String(life.round + 1));
-    $("#round-progress").style.width = `${((life.round + 1) / CONTENT.maxRounds) * 100}%`;
-    $("#phase-label").textContent = CONTENT.phases[round.phase]?.label || "这一回合";
-    $("#phase-hint").textContent = CONTENT.phases[round.phase]?.hint || "";
+    const progress = Number(life.progress[life.goalId] || 0);
+    const percent = Math.round(((life.round + 1) / CONTENT.maxRounds) * 100);
+    $("#game-generation").textContent = `第 ${life.generation} 世 · ${life.age} 岁`;
+    $("#round-label").textContent = `成长节点 ${life.round + 1} / ${CONTENT.maxRounds}`;
+    $("#stage-label").textContent = `${stage.label} · ${stage.range}`;
+    $("#stage-hint").textContent = stage.hint;
+    document.querySelectorAll(".life-map [data-stage]").forEach((item) => item.classList.toggle("is-current", item.dataset.stage === stage.id));
+    $("#round-progress").setAttribute("aria-valuenow", life.round + 1);
+    $("#round-progress").setAttribute("aria-valuemax", CONTENT.maxRounds);
+    $("#round-progress span").style.width = `${percent}%`;
     $("#goal-label").textContent = goal.label;
     $("#goal-detail").textContent = goal.detail;
-    $("#goal-progress-label").textContent = `${life.goalProgress} / ${goal.target}`;
-    $("#goal-progress").style.width = `${Math.min(100, (life.goalProgress / goal.target) * 100)}%`;
-    $("#situation-label").textContent = `当前处境：${profile.label}`;
+    $("#goal-progress-label").textContent = `${progress} / ${goal.target}`;
+    $("#goal-progress").style.width = `${Math.min(100, Math.round((progress / goal.target) * 100))}%`;
+    $("#situation-label").textContent = `${stage.label} · ${round.age} 岁`;
     $("#event-title").textContent = round.title;
     $("#event-copy").textContent = round.copy;
-    $("#inherited-strip").classList.toggle("is-hidden", !life.inheritedLegacyIds.length);
-    $("#inherited-strip").innerHTML = life.inheritedLegacyIds.length ? `<strong>上一世带来的起点</strong>${life.inheritedLegacyIds.map((id) => { const legacy = getLegacy(id); return legacy ? `<span>${escapeHtml(legacy.label)}：${escapeHtml(legacy.nextUse)}</span>` : ""; }).join("")}` : "";
+    $("#inherited-strip").innerHTML = life.inheritedLegacyIds.length ? `<strong>你从上一世接过来</strong>${life.inheritedLegacyIds.map((id) => { const legacy = getLegacy(id); return legacy ? `<span>${escapeHtml(legacy.label)}：${escapeHtml(legacy.nextUse)}</span>` : ""; }).join("")}` : `<strong>这是第一世</strong><span>这一次的每个选择，都将成为以后可以继承的基础。</span>`;
+    $("#inherited-strip").classList.remove("is-hidden");
     $("#action-list").innerHTML = round.actions.map((action, index) => {
       const availability = getAvailability(life, action);
-      const disabled = feedbackVisible || !availability.available;
-      return `<button class="action-card ${availability.available ? "" : "is-locked"}" type="button" data-action="choose-action" data-action-id="${action.id}" ${disabled ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail)}</span><em>${escapeHtml(action.cost)}</em></span><span class="action-result"><b>${escapeHtml(action.preview)}</b>${availability.available ? `<small>选择后会告诉你下一步</small>` : `<small>🔒 ${escapeHtml(availability.reason)}</small>`}</span></button>`;
+      const locked = !availability.available;
+      const test = action.test ? `<span class="action-test">${escapeHtml(action.test.label)}：${escapeHtml(CONTENT.skills[action.test.skill]?.label || action.test.skill)} + 命运点 ≥ ${action.test.difficulty}</span>` : "";
+      const tags = (action.tags || []).map((tag) => `<em>${escapeHtml(tag)}</em>`).join("");
+      return `<button class="action-card ${locked ? "is-locked" : ""}" data-action="choose-action" data-action-id="${action.id}" ${locked ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail)}</span><small>${escapeHtml(action.cost)}</small>${test}${locked ? `<b class="action-lock">锁定：${escapeHtml(availability.reason)}</b>` : `<span class="action-tags">${tags}</span>`}</span><span class="action-result"><b>${escapeHtml(action.preview)}</b><small>选后会写入人生记录，并影响后面的路线。</small></span></button>`;
     }).join("");
-    $("#feedback").classList.toggle("is-hidden", !feedbackVisible);
-    if (feedbackVisible) {
-      $("#feedback-title").textContent = `你选择了：${life.lastAction.label}`;
+    const feedback = $("#feedback");
+    feedback.classList.toggle("is-hidden", !life.lastAction);
+    if (life.lastAction) {
+      $("#feedback-title").textContent = life.lastAction.title;
       $("#feedback-copy").textContent = life.lastAction.result;
       $("#feedback-future").textContent = life.lastAction.future;
-      $("#feedback-changes").innerHTML = life.lastAction.changes.length ? life.lastAction.changes.map((item) => `<span>${escapeHtml(item)}</span>`).join("") : `<span>没有数值变化，但你留下了一个方向。</span>`;
-      $("#advance-round").textContent = life.round >= CONTENT.maxRounds - 1 ? "查看这一世结算 →" : "进入下一回合 →";
+      $("#feedback-changes").innerHTML = [...life.lastAction.changes, ...life.lastAction.newLevels].map((change) => `<span>${escapeHtml(change)}</span>`).join("") || `<span>这次没有数值变化，但它会留在你的履历里。</span>`;
+      $("#feedback-test").innerHTML = life.lastAction.test ? `<strong>${life.lastAction.test.success ? "检定成功" : "检定未通过"}</strong><span>${escapeHtml(life.lastAction.test.label)}：${life.lastAction.test.score} / ${life.lastAction.test.difficulty}（命运点 ${life.lastAction.test.roll}）</span>` : "";
+      $("#feedback-secret").innerHTML = life.lastAction.newSecrets.length ? life.lastAction.newSecrets.map((id) => { const secret = getSecret(id); return secret ? `<div><strong>发现彩蛋：${escapeHtml(secret.label)}</strong><span>${escapeHtml(secret.detail)}</span></div>` : ""; }).join("") : "";
+      $("#feedback-stage").innerHTML = life.lastAction.stageBreak ? `<strong>下一阶段：${escapeHtml(life.lastAction.stageBreak.label)} · ${escapeHtml(life.lastAction.stageBreak.range)}</strong><span>${escapeHtml(life.lastAction.stageBreak.hint)}</span>` : "";
+      $("#advance-round").textContent = life.round >= CONTENT.maxRounds - 1 ? "封存这一生，选择遗产 →" : "继续长大 →";
     }
-    $("#resource-list").innerHTML = [
-      renderResource("money", life.resources.money, RESOURCE_LIMITS.money[1]),
-      renderResource("energy", life.resources.energy, RESOURCE_LIMITS.energy[1]),
-      renderResource("health", life.resources.health, RESOURCE_LIMITS.health[1])
-    ].join("");
-    $("#trait-list").innerHTML = [
-      ["craft", life.traits.craft], ["care", life.traits.care], ["nerve", life.traits.nerve], ["insight", life.traits.insight]
-    ].map(([key, value]) => `<span class="trait-chip"><b>${value}</b>${METRIC_LABELS[key]}</span>`).join("");
-    $("#relationship-list").innerHTML = Object.entries(life.relationships).map(([key, value]) => `<div class="relationship-row"><span>${escapeHtml(METRIC_LABELS[key])}</span><strong>${value}</strong></div>`).join("");
-    $("#town-list").innerHTML = summarizeTown().map((item) => `<div class="town-state-row"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join("");
+    renderResourceList(life);
+    renderSkillList(life);
+    renderRelationshipList(life);
+    renderLifeTags(life);
+    renderTown("#town-list", life.town);
+    const nextRounds = CONTENT.rounds.slice(life.round + 1, life.round + 4);
+    $("#upcoming-list").innerHTML = nextRounds.length ? nextRounds.map((item) => `<span>${item.age}岁 · ${escapeHtml(item.title)}</span>`).join("") : `<span>人生的最后一页已经来到。</span>`;
   }
 
   function renderEnding() {
     const life = state.currentLife;
     if (!life) return;
     const goal = getGoal(life.goalId);
-    const profile = getProfile(life.profileId);
-    const outcome = life.outcome || getOutcome(life);
+    $("#ending-title").textContent = life.outcome.title;
+    $("#ending-copy").textContent = life.outcome.copy;
+    $("#ending-context").textContent = `第 ${life.generation} 世 · ${life.age} 岁 · ${getProfile(life.profileId).label} · 天赋：${getTalent(life.talentId).label}`;
+    $("#ending-goal").innerHTML = `<strong>${life.progress[life.goalId]} / ${goal.target}</strong><span>${escapeHtml(goal.label)} · ${escapeHtml(life.outcome.tone)}</span>`;
+    $("#ending-score").textContent = `${life.outcome.score} 分`;
+    $("#ending-best-skill").textContent = `${CONTENT.skills[getBestSkill(life)].label} · ${life.skills[getBestSkill(life)]}/10`;
+    $("#ending-actions-count").textContent = `${life.actions.length} 个选择`;
+    $("#ending-echo").textContent = life.lastAction?.future || "你留下的基础，会在下一世变成新的选择。";
+    renderTown("#ending-changes", life.town);
+    $("#ending-achievements").innerHTML = life.newAchievements.length ? life.newAchievements.map((id) => { const item = getAchievement(id); return item ? `<div class="reward-item"><strong>${escapeHtml(item.icon)} ${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">这一世没有新成就，但每个选择仍写进了镇志。</span>`;
+    $("#ending-secrets").innerHTML = life.newSecrets.length ? life.newSecrets.map((id) => { const item = getSecret(id); return item ? `<div class="reward-item"><strong>彩蛋：${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">还有一些彩蛋藏在不同的选择路线里。</span>`;
     const candidates = life.legacyCandidates.map(getLegacy).filter(Boolean);
-    $("#ending-title").textContent = outcome.title;
-    $("#ending-copy").textContent = outcome.copy;
-    $("#ending-context").textContent = `第 ${life.generation} 世 · ${profile.label} · 目标完成度 ${life.goalProgress} / ${goal.target}`;
-    $("#ending-goal").innerHTML = `<strong>${escapeHtml(goal.label)}</strong><span>${life.goalProgress} / ${goal.target} · ${escapeHtml(goal.measure)}</span>`;
-    $("#ending-echo").textContent = outcome.echo;
-    $("#ending-changes").innerHTML = summarizeTown().map((item) => `<div class="town-state-row"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join("");
-    $("#legacy-count").textContent = `${life.selectedLegacies.length} / 2`;
-    $("#legacy-list").innerHTML = candidates.length ? candidates.map((legacy) => `<button class="legacy-card ${life.selectedLegacies.includes(legacy.id) ? "is-selected" : ""}" type="button" data-action="select-legacy" data-legacy-id="${legacy.id}"><span class="legacy-check">${life.selectedLegacies.includes(legacy.id) ? "✓" : ""}</span><strong>${escapeHtml(legacy.label)}</strong><span>${escapeHtml(legacy.detail)}</span><em>下一世：${escapeHtml(legacy.nextUse)}</em></button>`).join("") : `<p class="empty-note">这一世还没有形成可交接的特殊遗产，但小镇状态和人生记录仍会保留。</p>`;
+    $("#legacy-count").textContent = `${life.selectedLegacies.length} / ${CONTENT.maxLegacyChoices}`;
+    $("#legacy-list").innerHTML = candidates.map((legacy) => `<button class="legacy-card ${life.selectedLegacies.includes(legacy.id) ? "is-selected" : ""}" data-action="choose-legacy" data-id="${legacy.id}" aria-pressed="${life.selectedLegacies.includes(legacy.id)}"><span class="legacy-check">${life.selectedLegacies.includes(legacy.id) ? "✓" : "＋"}</span><strong>${escapeHtml(legacy.label)}</strong><span>${escapeHtml(legacy.detail)}</span><em>下一世：${escapeHtml(legacy.nextUse)}</em></button>`).join("");
     const confirm = $("#confirm-legacy");
-    confirm.disabled = !life.selectedLegacies.length;
-    confirm.textContent = life.selectedLegacies.length ? "把遗产交给下一世 →" : "先选择至少一件遗产";
+    confirm.disabled = life.selectedLegacies.length < 1;
+    confirm.textContent = life.selectedLegacies.length ? `把 ${life.selectedLegacies.length} 件基础交给下一世 →` : "先选择至少一件遗产";
+  }
+
+  function renderAchievements() {
+    $("#achievement-list").innerHTML = CONTENT.achievements.map((item) => {
+      const unlocked = state.world.achievements.includes(item.id);
+      return `<div class="achievement-item ${unlocked ? "is-unlocked" : ""}"><span class="achievement-icon">${unlocked ? escapeHtml(item.icon) : "?"}</span><div><strong>${unlocked ? escapeHtml(item.label) : "未解锁的成就"}</strong><span>${unlocked ? escapeHtml(item.detail) : "完成更多人生，看看它会在什么时候出现。"}</span></div></div>`;
+    }).join("");
+  }
+
+  function renderSecrets() {
+    $("#secret-list").innerHTML = CONTENT.secrets.map((item) => {
+      const found = state.world.secrets.includes(item.id);
+      return `<div class="secret-item ${found ? "is-found" : ""}"><span>${found ? "◌" : "?"}</span><div><strong>${found ? escapeHtml(item.label) : "尚未听见的回声"}</strong><span>${found ? escapeHtml(item.detail) : "它藏在某一个不急着求结果的选择里。"}</span></div></div>`;
+    }).join("");
   }
 
   function renderArchive() {
     $("#archive-life-count").textContent = `${state.world.completedLives} 世`;
-    $("#archive-town").innerHTML = summarizeTown().map((item) => `<div class="town-state-row"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`).join("");
+    $("#archive-achievement-count").textContent = `${state.world.achievements.length} / ${CONTENT.achievements.length}`;
+    $("#archive-secret-count").textContent = `${state.world.secrets.length} / ${CONTENT.secrets.length}`;
+    $("#archive-legacy-count").textContent = `${state.world.collectedLegacyIds.length} / ${CONTENT.legacies.length}`;
+    renderTown("#archive-town", state.world.town);
+    renderAchievements();
+    renderSecrets();
     const history = [...state.world.history].reverse();
     $("#archive-timeline").innerHTML = history.length ? history.map((entry) => {
-      const goal = getGoal(entry.goalId);
       const profile = getProfile(entry.profileId);
-      const legacies = (entry.legacyIds || []).map(getLegacy).filter(Boolean).map((legacy) => `<span class="archive-tag">带出：${escapeHtml(legacy.label)}</span>`).join("");
-      const actions = (entry.actions || []).slice(-3).map((action) => `<span class="archive-tag">${escapeHtml(action.label)}</span>`).join("");
-      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${escapeHtml(profile.label)}</span></div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · 完成度 ${entry.goalProgress} / ${entry.goalTarget}</p><p class="archive-echo">${escapeHtml(entry.echo)}</p><div class="archive-tags">${actions}${legacies || "<span class=\"archive-tag\">没有选择特殊遗产</span>"}</div></article>`;
-    }).join("") : `<p class="empty-note">还没有完整的一世。先完成一次结算，镇志才会记录你留下了什么。</p>`;
+      const talent = getTalent(entry.talentId);
+      const goal = getGoal(entry.goalId);
+      const legacyTags = (entry.legacyIds || []).map((id) => getLegacy(id)).filter(Boolean).map((item) => `<span class="archive-tag">带出：${escapeHtml(item.label)}</span>`).join("");
+      const actionTags = (entry.actions || []).slice(-5).map((action) => `<span class="archive-tag">${escapeHtml(action.label)}</span>`).join("");
+      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${entry.age} 岁封存</span><span>${escapeHtml(profile.label)}</span></div><div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · ${entry.goalProgress} / ${entry.goalTarget} · 天赋“${escapeHtml(talent.label)}”</p><p class="archive-echo">${escapeHtml(entry.outcomeCopy)}</p><div class="archive-tags">${actionTags}${legacyTags || "<span class=\"archive-tag\">没有交接特殊遗产</span>"}</div></div></article>`;
+    }).join("") : `<div class="empty-archive"><strong>镇志还没有第一页。</strong><span>完成一世以后，这里会记录你的目标、选择、遗产和留下的回声。</span></div>`;
   }
 
   function render() {
-    document.body.classList.toggle("large-text", state.settings.fontScale === "large");
-    $("#font-toggle").setAttribute("aria-pressed", String(state.settings.fontScale === "large"));
-    $("#screen-start").classList.toggle("is-hidden", state.screen !== "start");
-    $("#screen-game").classList.toggle("is-hidden", state.screen !== "game");
-    $("#screen-ending").classList.toggle("is-hidden", state.screen !== "ending");
-    $("#screen-archive").classList.toggle("is-hidden", state.screen !== "archive");
+    document.body.classList.toggle("large-text", state.settings.fontScale);
+    $("#font-toggle").setAttribute("aria-pressed", String(state.settings.fontScale));
+    $("#font-toggle").textContent = state.settings.fontScale ? "普通字" : "大字模式";
+    ["start", "game", "ending", "archive"].forEach((screen) => $(`#screen-${screen}`).classList.toggle("is-hidden", state.screen !== screen));
     renderStart();
     if (state.screen === "game") renderGame();
     if (state.screen === "ending") renderEnding();
@@ -651,33 +880,27 @@
   }
 
   function handleAction(action, element) {
-    if (action === "select-profile") {
-      setup.profileId = element.dataset.profileId;
-      render();
-    }
-    if (action === "select-goal") {
-      setup.goalId = element.dataset.goalId;
-      render();
-    }
+    if (action === "choose-profile") { setup.profileId = element.dataset.id; render(); }
+    if (action === "choose-talent") { setup.talentId = element.dataset.id; render(); }
+    if (action === "choose-goal") { setup.goalId = element.dataset.id; render(); }
     if (action === "start-life") startLife();
     if (action === "continue-life") { state.screen = "game"; render(); }
     if (action === "choose-action") resolveAction(element.dataset.actionId);
     if (action === "advance-round") advanceRound();
-    if (action === "select-legacy") toggleLegacy(element.dataset.legacyId);
+    if (action === "choose-legacy") { toggleLegacy(element.dataset.id); }
     if (action === "confirm-legacy") confirmLegacies();
     if (action === "home") { state.screen = "start"; persist(); render(); }
     if (action === "view-archive") { state.screen = "archive"; render(); }
-    if (action === "toggle-font") {
-      state.settings.fontScale = state.settings.fontScale === "large" ? "normal" : "large";
-      persist(state.settings.fontScale === "large" ? "已切换大字模式" : "已恢复普通字号");
-      render();
-    }
+    if (action === "toggle-font") { state.settings.fontScale = !state.settings.fontScale; persist(); render(); }
     if (action === "export-save") exportSave();
-    if (action === "erase-save" && window.confirm("确定清除当前世代存档和小镇记忆吗？旧版存档不会被改动。")) {
-      try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* 页面仍可继续 */ }
-      state = cloneDefault();
-      render();
-      showToast("当前世代存档已清除");
+    if (action === "erase-save") {
+      if (window.confirm("确定清除丰富版当前世代吗？导出的 JSON 备份不会被删除。")) {
+        state = clone(DEFAULT_STATE);
+        setup = { profileId: "town-child", talentId: "slow-and-steady", goalId: "learn" };
+        try { localStorage.removeItem(STORAGE_KEY); } catch (error) { /* 页面仍可继续 */ }
+        render();
+        showToast("丰富版当前世代已清除");
+      }
     }
   }
 
@@ -685,24 +908,12 @@
     const element = event.target.closest("[data-action]");
     if (element) handleAction(element.dataset.action, element);
   });
-
+  $("#import-input").addEventListener("change", (event) => importSave(event.target.files?.[0]));
   document.addEventListener("keydown", (event) => {
-    const life = state.currentLife;
-    if (state.screen !== "game" || !life || life.status !== "active" || life.lastAction) return;
-    const index = Number(event.key) - 1;
-    const action = getRound(life)?.actions[index];
+    if (state.screen !== "game" || !state.currentLife || state.currentLife.lastAction || !["1", "2", "3"].includes(event.key)) return;
+    const action = getRound(state.currentLife)?.actions[Number(event.key) - 1];
     if (action) resolveAction(action.id);
   });
-
-  $("#import-input").addEventListener("change", (event) => {
-    importSave(event.target.files[0]);
-    event.target.value = "";
-  });
-
-  window.addEventListener("beforeunload", () => {
-    if (state.currentLife) persist();
-  });
-
-  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
   render();
 })();
