@@ -1,5 +1,5 @@
 {
-  "content_version": "4.0.0",
+  "content_version": "5.0.0",
   "project_id": "echo-town-life-sim",
   "rules": {
     "life_rounds": 23,
@@ -9,6 +9,7 @@
     "life_actions": 7,
     "jobs": 6,
     "items": 6,
+    "moments": 12,
     "action_points_per_round": 3,
     "profiles": 5,
     "talents": 8,
@@ -52,7 +53,9 @@
   "life_action_ids": ["routine-study", "routine-repair", "routine-social", "routine-care", "routine-rest", "routine-explore", "routine-record"],
   "job_ids": ["shop-shift", "tutor-shift", "market-shift", "courier-shift", "night-shift", "town-job"],
   "item_ids": ["toolkit", "study-notebook", "warm-coat", "old-phone", "first-aid", "camera"],
+  "moment_ids": ["first-study", "first-repair", "first-wage", "first-purchase", "first-bill", "debt-on-paper", "change-of-work", "night-route", "care-at-home", "town-duty", "write-it-down", "leave-a-door"],
+  "stage_art_ids": ["childhood", "adolescence", "youth", "middle", "later"],
   "achievement_ids": ["first-page", "three-lives", "master-of-one", "well-rounded", "town-builder", "legacy-collector", "good-neighbor", "second-chance", "thirteenth-chime", "echo-heard", "old-friend", "leave-a-light", "first-pay", "balance-sheet", "three-jobs", "kept-breath"],
   "secret_ids": ["thirteenth-chime", "echo-not-glitch", "river-number", "empty-seat", "coin-under-floor", "night-radio", "paper-fold", "open-door-secret", "last-bus", "pocket-receipt"],
-  "runtime_files": ["development/game/index.html", "development/game/content.js", "development/game/game.js", "development/game/styles.css", "development/game/sw.js"]
+  "runtime_files": ["development/game/index.html", "development/game/content.js", "development/game/audio.js", "development/game/game.js", "development/game/styles.css", "development/game/sw.js"]
 }

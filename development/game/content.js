@@ -17,12 +17,22 @@
   });
 
   const CONTENT = {
-    version: "4.0.0",
+    version: "5.0.0",
     maxRounds: 23,
     maxLegacyChoices: 3,
     actionPointsPerRound: 3,
     maxInventory: 6,
     maxLifeLog: 120,
+    maxMoments: 12,
+    media: {
+      stageArt: {
+        childhood: { src: "assets/stage-childhood.png", alt: "童年：河岸边的旧院子与收音机", caption: "童年 · 先学会对一件小事耐心" },
+        adolescence: { src: "assets/stage-adolescence.png", alt: "少年：学校走廊与河桥", caption: "少年 · 成绩、朋友与期待开始拉扯" },
+        youth: { src: "assets/stage-youth.png", alt: "初入社会：小镇车站、自行车与通向远方的路", caption: "初入社会 · 第一次把选择写进履历" },
+        middle: { src: "assets/stage-middle.png", alt: "成家立业：厨房、修理铺与雨中的河桥", caption: "成家立业 · 把日子和责任一起接住" },
+        later: { src: "assets/stage-later.png", alt: "后半生：暮色河桥、灯笼与旧笔记本", caption: "后半生 · 想一想什么值得留下" },
+      },
+    },
     livingCosts: [
       { maxAge: 11, cost: 0, label: "家里承担日常" },
       { maxAge: 17, cost: 1, label: "零花与交通" },
@@ -61,6 +71,20 @@
       { id: "youth", label: "初入社会", range: "18—29岁", hint: "第一次离开熟悉的地方，选择会开始变成履历。" },
       { id: "middle", label: "成家立业", range: "30—49岁", hint: "钱、关系、责任与理想同时找上门来。" },
       { id: "later", label: "后半生", range: "50—75岁", hint: "你开始决定哪些东西值得留下，哪些东西可以放手。" },
+    ],
+    moments: [
+      { id: "first-study", label: "把一页读懂", detail: "第一次把时间留给一件还不会、但愿意学会的事。", trigger: { type: "life-action", actionId: "routine-study" } },
+      { id: "first-repair", label: "让东西重新运转", detail: "手上的小工具和一件坏掉的东西，替你打开了手艺路线。", trigger: { type: "life-action", actionId: "routine-repair" } },
+      { id: "first-wage", label: "第一笔工资", detail: "钱第一次不是长辈塞给你的，而是你用时间换来的。", trigger: { type: "flag", key: "first-wage" } },
+      { id: "first-purchase", label: "为生活买一件东西", detail: "你没有只把钱攒在账上，而是买回了一点时间、能力或余地。", trigger: { type: "flag", key: "bought-item" } },
+      { id: "first-bill", label: "第一次自己付账", detail: "生活费落在账本上，人生从愿望变成了需要安排的日子。", trigger: { type: "bill" } },
+      { id: "debt-on-paper", label: "压力有了名字", detail: "账单没有完全付清，但你至少看见了代价从哪里来。", trigger: { type: "flag", key: "in-debt" } },
+      { id: "change-of-work", label: "换一条谋生的路", detail: "你试过不止一种工作，知道收入、身体和方向并不总能同时满足。", trigger: { type: "job-change" } },
+      { id: "night-route", label: "天黑以后还在赶路", detail: "夜班或远路留下的不是传奇，而是身体认真记住的一笔账。", trigger: { type: "flag", key: "worked-night" } },
+      { id: "care-at-home", label: "有人需要你", detail: "你把一个行动点给了家里的人，关系因此多了一层重量。", trigger: { type: "life-action", actionId: "routine-care" } },
+      { id: "town-duty", label: "替小镇接一件事", detail: "第一次用自己的能力处理公共生活，而不只是自己的问题。", trigger: { type: "job", jobId: "town-job" } },
+      { id: "write-it-down", label: "普通日子也值得记录", detail: "你把收入、支出和一个不想忘的细节，交给了未来的自己。", trigger: { type: "life-action", actionId: "routine-record" } },
+      { id: "leave-a-door", label: "留一扇没有锁上的门", detail: "这一世的结尾不只属于你，也给下一世一个可以走进去的地方。", trigger: { type: "event", actionId: "leave-open-door" } },
     ],
     skills: {
       study: { label: "学识", levels: ["没学会", "入门", "熟练", "专长", "精通"] },

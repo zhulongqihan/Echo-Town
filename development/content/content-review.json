@@ -1,6 +1,6 @@
 {
-  "review_version": "4.0.0",
-  "content_version": "4.0.0",
+  "review_version": "5.0.0",
+  "content_version": "5.0.0",
   "baseline_no_ai": true,
   "runtime_ai": false,
   "policy": {
@@ -59,6 +59,27 @@
     {"id":"first-aid","owner":"A04","reviewer":"A00","status":"approved"},
     {"id":"camera","owner":"A04","reviewer":"A00","status":"approved"}
   ],
+  "moments": [
+    {"id":"first-study","trigger":"life-action:routine-study","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"first-repair","trigger":"life-action:routine-repair","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"first-wage","trigger":"flag:first-wage","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"first-purchase","trigger":"flag:bought-item","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"first-bill","trigger":"bill","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"debt-on-paper","trigger":"flag:in-debt","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"change-of-work","trigger":"job-change","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"night-route","trigger":"flag:worked-night","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"care-at-home","trigger":"life-action:routine-care","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"town-duty","trigger":"job:town-job","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"write-it-down","trigger":"life-action:routine-record","owner":"A04","reviewer":"A00","status":"approved"},
+    {"id":"leave-a-door","trigger":"event:leave-open-door","owner":"A04","reviewer":"A00","status":"approved"}
+  ],
+  "media": {
+    "stage_art": ["childhood", "adolescence", "youth", "middle", "later"],
+    "audio": "local-web-audio-synth",
+    "owner": "A04",
+    "reviewer": "A00",
+    "status": "approved"
+  },
   "checks": {
     "goal_and_action_clarity": "passed",
     "five_stage_growth_arc": "passed",

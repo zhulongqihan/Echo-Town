@@ -1,5 +1,5 @@
-const CACHE_NAME = "echo-town-generation-v9";
-const APP_SHELL = ["./", "./index.html", "./styles.css", "./content.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"];
+const CACHE_NAME = "echo-town-generation-v10";
+const APP_SHELL = ["./", "./index.html", "./styles.css", "./content.js", "./audio.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg", "./assets/stage-childhood.png", "./assets/stage-adolescence.png", "./assets/stage-youth.png", "./assets/stage-middle.png", "./assets/stage-later.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));

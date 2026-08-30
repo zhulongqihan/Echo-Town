@@ -42,6 +42,7 @@ def main() -> int:
         "life_actions": 7,
         "jobs": 6,
         "items": 6,
+        "moments": 12,
         "action_points_per_round": 3,
         "profiles": 5,
         "talents": 8,
@@ -55,9 +56,9 @@ def main() -> int:
         if rules.get(key) != expected:
             fail(f"规则 {key} 应为 {expected}")
 
-    if manifest.get("content_version") != "4.0.0" or review.get("content_version") != "4.0.0":
-        fail("内容版本没有统一到4.0.0")
-    if review.get("review_version") != "4.0.0":
+    if manifest.get("content_version") != "5.0.0" or review.get("content_version") != "5.0.0":
+        fail("内容版本没有统一到5.0.0")
+    if review.get("review_version") != "5.0.0":
         fail("内容审阅记录版本不正确")
     if review.get("baseline_no_ai") is not True or review.get("runtime_ai") is not False:
         fail("内容审阅没有明确运行时无AI")
@@ -72,6 +73,8 @@ def main() -> int:
     life_action_ids = manifest.get("life_action_ids", [])
     job_ids = manifest.get("job_ids", [])
     item_ids = manifest.get("item_ids", [])
+    moment_ids = manifest.get("moment_ids", [])
+    stage_art_ids = manifest.get("stage_art_ids", [])
     unique(profiles, "人生起点")
     unique(talents, "天赋")
     unique(goals, "人生愿望")
@@ -82,6 +85,8 @@ def main() -> int:
     unique(life_action_ids, "生活行动")
     unique(job_ids, "工作")
     unique(item_ids, "物品")
+    unique(moment_ids, "人生片段")
+    unique(stage_art_ids, "阶段画面")
 
     if len(rounds) != rules["life_rounds"]:
         fail("成长节点数量不正确")
@@ -93,6 +98,10 @@ def main() -> int:
         fail("成就或彩蛋数量不正确")
     if len(life_action_ids) != rules["life_actions"] or len(job_ids) != rules["jobs"] or len(item_ids) != rules["items"]:
         fail("生活行动、工作或物品数量不正确")
+    if len(moment_ids) != rules["moments"]:
+        fail("人生片段数量不正确")
+    if stage_art_ids != [stage.get("id") for stage in manifest.get("stages", [])] and len(stage_art_ids) != rules["stages"]:
+        fail("阶段画面数量不正确")
 
     all_actions: list[str] = []
     stages: set[str] = set()
@@ -122,6 +131,13 @@ def main() -> int:
         for entry in entries:
             if entry.get("owner") != "A04" or entry.get("reviewer") != "A00" or entry.get("status") != "approved":
                 fail(f"{group_name} {entry.get('id')} 缺少内容负责人审阅状态")
+    if [entry.get("id") for entry in review.get("moments", [])] != moment_ids:
+        fail("内容审阅记录没有覆盖全部人生片段")
+    for entry in review.get("moments", []):
+        if entry.get("owner") != "A04" or entry.get("reviewer") != "A00" or entry.get("status") != "approved":
+            fail(f"人生片段 {entry.get('id')} 缺少内容负责人审阅状态")
+    if review.get("media", {}).get("stage_art") != stage_art_ids or review.get("media", {}).get("audio") != "local-web-audio-synth":
+        fail("媒体审阅记录不完整")
     for key, value in review.get("checks", {}).items():
         if value != "passed":
             fail(f"内容检查项 {key} 尚未通过")
@@ -138,11 +154,13 @@ def main() -> int:
         "lifeActions:",
         "jobs:",
         "items:",
+        "moments:",
+        "stageArt:",
     ]
     for marker in required_content_markers:
         if marker not in content:
             fail(f"运行时内容缺少 {marker}")
-    for value in profiles + talents + goals + [item for action in all_actions for item in [action]] + legacy_ids + achievement_ids + secret_ids + life_action_ids + job_ids + item_ids:
+    for value in profiles + talents + goals + [item for action in all_actions for item in [action]] + legacy_ids + achievement_ids + secret_ids + life_action_ids + job_ids + item_ids + moment_ids + stage_art_ids:
         if f'"{value}"' not in content:
             fail(f"运行时内容缺少ID {value}")
 

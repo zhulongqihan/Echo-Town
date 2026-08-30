@@ -2,9 +2,10 @@
   "use strict";
 
   const CONTENT = window.EchoTownContent;
+  const AUDIO = window.EchoTownAudio || { supported: false, setEnabled: () => false, setStage: () => {}, play: () => {}, isEnabled: () => false, getStatus: () => ({ supported: false, enabled: false }) };
   const STORAGE_KEY = "echo-town-generation-save";
-  const LEGACY_STORAGE_KEYS = ["echo-town-generation-save-v5", "echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"];
-  const SAVE_VERSION = 6;
+  const LEGACY_STORAGE_KEYS = ["echo-town-generation-save-v6", "echo-town-generation-save-v5", "echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"];
+  const SAVE_VERSION = 7;
   const MAX_SAVE_BYTES = 512 * 1024;
   const MAX_HISTORY = 40;
   const MAX_TEXT_LENGTH = 280;
@@ -57,11 +58,12 @@
       collectedLegacyIds: [],
       achievements: [],
       secrets: [],
+      moments: [],
       totals: { choices: 0, tests: 0, testWins: 0, workShifts: 0, moneyEarned: 0, moneySpent: 0 },
     },
     currentLife: null,
     screen: "start",
-    settings: { fontScale: false },
+    settings: { fontScale: false, sound: false },
     notice: "",
   };
 
@@ -154,6 +156,32 @@
     return CONTENT.stages.find((item) => item.id === id) || CONTENT.stages[0];
   }
 
+  function getMoment(id) {
+    return CONTENT.moments.find((item) => item.id === id) || null;
+  }
+
+  function momentTriggerMet(life, trigger, context = {}) {
+    if (!trigger) return false;
+    if (trigger.type === "flag") return life.flags.includes(trigger.key);
+    if (trigger.type === "life-action") return context.type === "life-action" && context.actionId === trigger.actionId;
+    if (trigger.type === "job") return context.type === "job" && context.jobId === trigger.jobId;
+    if (trigger.type === "job-change") return life.jobHistory.length >= 2;
+    if (trigger.type === "bill") return context.type === "bill";
+    if (trigger.type === "event") return context.type === "event" && context.actionId === trigger.actionId;
+    return false;
+  }
+
+  function collectMoments(life, context = {}) {
+    const newMoments = CONTENT.moments
+      .filter((moment) => !life.moments.includes(moment.id) && momentTriggerMet(life, moment.trigger, context))
+      .map((moment) => moment.id);
+    if (!newMoments.length) return [];
+    life.moments = [...new Set([...life.moments, ...newMoments])].slice(0, CONTENT.maxMoments);
+    life.newMoments = [...new Set([...(life.newMoments || []), ...newMoments])].slice(0, CONTENT.maxMoments);
+    state.world.moments = [...new Set([...(state.world.moments || []), ...newMoments])].slice(0, CONTENT.maxMoments);
+    return newMoments;
+  }
+
   function getRound(life) {
     return CONTENT.rounds[clamp(life.round, 0, CONTENT.rounds.length - 1, 0)];
   }
@@ -212,6 +240,8 @@
       legacyIds: safeList(entry.legacyIds, CONTENT.maxLegacyChoices, 60),
       achievementIds: safeList(entry.achievementIds, 20, 60),
       secretIds: safeList(entry.secretIds, 20, 60),
+      momentIds: safeList(entry.momentIds, CONTENT.maxMoments, 60),
+      jobHistory: safeList(entry.jobHistory, CONTENT.jobs.length, 60),
     }));
   }
 
@@ -245,6 +275,7 @@
       inventory: safeList(savedLife.inventory, CONTENT.maxInventory, 60).filter((id, index, list) => getItem(id) && list.indexOf(id) === index),
       jobId: getJob(savedLife.jobId)?.id || "none",
       jobShifts: clamp(savedLife.jobShifts, 0, CONTENT.maxLifeLog, 0),
+      jobHistory: safeList(savedLife.jobHistory, CONTENT.jobs.length, 60).filter((id, index, list) => getJob(id) && list.indexOf(id) === index),
       cashflow: {
         income: clamp(savedLife.cashflow?.income, 0, 99999, 0),
         expenses: clamp(savedLife.cashflow?.expenses, 0, 99999, 0),
@@ -268,6 +299,8 @@
       selectedLegacies: safeList(savedLife.selectedLegacies, CONTENT.maxLegacyChoices, 60),
       newAchievements: safeList(savedLife.newAchievements, 20, 60),
       newSecrets: safeList(savedLife.newSecrets, 20, 60),
+      moments: safeList(savedLife.moments, CONTENT.maxMoments, 60).filter((id, index, list) => CONTENT.moments.some((item) => item.id === id) && list.indexOf(id) === index),
+      newMoments: safeList(savedLife.newMoments, CONTENT.maxMoments, 60).filter((id, index, list) => CONTENT.moments.some((item) => item.id === id) && list.indexOf(id) === index),
     };
   }
 
@@ -284,6 +317,7 @@
       collectedLegacyIds: safeList(savedWorld.collectedLegacyIds, CONTENT.legacies.length, 60).map(oldToNewId).filter((id, index, list) => getLegacy(id) && list.indexOf(id) === index),
       achievements: safeList(savedWorld.achievements, CONTENT.achievements.length, 60).filter((id, index, list) => getAchievement(id) && list.indexOf(id) === index),
       secrets: safeList(savedWorld.secrets, CONTENT.secrets.length, 60).filter((id, index, list) => getSecret(id) && list.indexOf(id) === index),
+      moments: safeList(savedWorld.moments, CONTENT.maxMoments, 60).filter((id, index, list) => CONTENT.moments.some((item) => item.id === id) && list.indexOf(id) === index),
       totals: {
         choices: clamp(savedWorld.totals?.choices, 0, 99999, 0),
         tests: clamp(savedWorld.totals?.tests, 0, 99999, 0),
@@ -300,6 +334,7 @@
     fresh.currentLife = currentLife;
     fresh.screen = currentLife && ["start", "game", "ending"].includes(saved.screen) ? saved.screen : "start";
     fresh.settings.fontScale = Boolean(saved.settings?.fontScale);
+    fresh.settings.sound = Boolean(saved.settings?.sound);
     fresh.notice = safeText(saved.notice, MAX_TEXT_LENGTH);
     return fresh;
   }
@@ -328,6 +363,28 @@
     toast.classList.add("is-visible");
     window.clearTimeout(toastTimer);
     toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 2600);
+  }
+
+  function renderAudioControl() {
+    const button = $("#audio-toggle");
+    if (!button) return;
+    const status = AUDIO.getStatus();
+    button.disabled = false;
+    button.setAttribute("aria-pressed", String(Boolean(status.enabled)));
+    button.textContent = !status.supported ? "配乐不可用" : status.enabled ? "关闭配乐" : "打开配乐";
+    button.title = !status.supported ? "当前浏览器不支持本地配乐，文字反馈仍可正常使用" : status.enabled ? "关闭阶段配乐与行动音效" : "打开阶段配乐与行动音效";
+  }
+
+  function toggleAudio() {
+    if (!AUDIO.supported) {
+      showToast("当前浏览器不支持配乐，游戏文字与画面不受影响");
+      return;
+    }
+    const enabled = !AUDIO.isEnabled();
+    const activated = AUDIO.setEnabled(enabled);
+    state.settings.sound = Boolean(enabled && activated);
+    persist(state.settings.sound ? "配乐已打开" : "配乐已关闭");
+    render();
   }
 
   function persist(message = "已保存") {
@@ -408,6 +465,7 @@
       inventory: [],
       jobId: "none",
       jobShifts: 0,
+      jobHistory: [],
       cashflow: { income: 0, expenses: 0, debt: 0 },
       lifeLog: [],
       lifeFeedback: null,
@@ -422,6 +480,8 @@
       selectedLegacies: [],
       newAchievements: [],
       newSecrets: [],
+      moments: [],
+      newMoments: [],
     };
     Object.entries(profile.start || {}).forEach(([key, value]) => {
       if (key in life.resources) life.resources[key] = clamp(value, 0, CONTENT.resources[key].max, 0);
@@ -558,6 +618,7 @@
     }
     const before = captureMetrics(life);
     const beforeItems = new Set(life.inventory);
+    const beforeWorldSecrets = new Set(state.world.secrets);
     const effect = getLifeActionEffect(life, action);
     const firstWage = Boolean(action.jobId && life.jobShifts === 0);
     effect.flags = [...(effect.flags || []), ...(firstWage ? ["first-wage"] : [])];
@@ -571,6 +632,7 @@
     if (action.jobId) {
       life.jobId = action.jobId;
       life.jobShifts += 1;
+      if (!life.jobHistory.includes(action.jobId)) life.jobHistory.push(action.jobId);
       state.world.totals.workShifts += 1;
       state.world.totals.moneyEarned += Math.max(0, Number(effect.resources?.money || 0));
     }
@@ -578,20 +640,24 @@
     const expenses = Math.max(0, -Number(effect.resources?.money || 0));
     life.cashflow.income += income;
     life.cashflow.expenses += expenses;
-    state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
     const after = captureMetrics(life);
     const newItems = life.inventory.filter((item) => !beforeItems.has(item));
-    const newSecrets = [...new Set([...(applied.newSecrets || []), ...life.secrets.filter((secret) => !state.world.secrets.includes(secret))])];
+    const newSecrets = [...new Set([...(applied.newSecrets || []), ...life.secrets.filter((secret) => !beforeWorldSecrets.has(secret))])];
+    state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
     life.newSecrets = [...new Set([...(life.newSecrets || []), ...newSecrets])];
+    life.flags = [...new Set([...life.flags, ...(action.jobId ? ["worked"] : [])])];
+    const newMoments = collectMoments(life, action.jobId ? { type: "job", jobId: action.jobId } : { type: "life-action", actionId: action.id });
     life.lifeFeedback = {
       title: action.label,
       copy: action.jobId ? `${action.label}结束了。${action.detail}` : `${action.label}完成了。${action.detail}`,
       changes: getMetricChanges(before, after),
       newItems,
       newSecrets,
+      newMoments,
     };
+    AUDIO.play(action.jobId ? "coin" : "click");
+    if (newMoments.length) AUDIO.play("moment");
     pushLifeLog(life, { label: action.label, result: life.lifeFeedback.copy, kind: action.jobId ? "工作" : "生活" });
-    life.flags = [...new Set([...life.flags, ...(action.jobId ? ["worked"] : [])])];
     unlockAchievements(life);
     persist("生活安排已保存");
     render();
@@ -616,7 +682,10 @@
     state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
     const after = captureMetrics(life);
     life.newSecrets = [...new Set([...(life.newSecrets || []), ...newSecrets])];
-    life.lifeFeedback = { title: `买下：${item.label}`, copy: item.detail, changes: getMetricChanges(before, after), newItems: [item.id], newSecrets };
+    const newMoments = collectMoments(life, { type: "buy", itemId: item.id });
+    life.lifeFeedback = { title: `买下：${item.label}`, copy: item.detail, changes: getMetricChanges(before, after), newItems: [item.id], newSecrets, newMoments };
+    AUDIO.play("coin");
+    if (newMoments.length) AUDIO.play("moment");
     pushLifeLog(life, { label: `购买${item.label}`, result: item.detail, kind: "消费" });
     unlockAchievements(life);
     persist("物品已加入库存");
@@ -720,6 +789,7 @@
     }
     const before = captureMetrics(life);
     const beforeLevels = Object.fromEntries(SKILL_KEYS.map((key) => [key, getSkillLevel(life.skills[key])]));
+    const beforeWorldSecrets = new Set(state.world.secrets);
     const baseResult = applyEffect(life, action.effect);
     addGoalPoints(life, action.goalPoints || {});
     let testResult = null;
@@ -737,8 +807,9 @@
     if (before.resources?.pressure >= 8 && life.resources.pressure <= 6 && life.resources.happiness >= 7) life.flags.push("second-chance");
     const after = captureMetrics(life);
     const newLevels = SKILL_KEYS.filter((key) => getSkillLevel(life.skills[key]) > beforeLevels[key]).map((key) => `${CONTENT.skills[key].label}达到${getSkillLevelName(key, life.skills[key])}`);
-    const newSecrets = [...new Set([...(baseResult.newSecrets || []), ...life.secrets.filter((secret) => !state.world.secrets.includes(secret))])];
+    const newSecrets = [...new Set([...(baseResult.newSecrets || []), ...life.secrets.filter((secret) => !beforeWorldSecrets.has(secret))])];
     state.world.secrets = [...new Set([...state.world.secrets, ...life.secrets])];
+    const newMoments = collectMoments(life, { type: "event", actionId: action.id });
     const round = getRound(life);
     const stage = getStage(round.stage);
     const nextRound = CONTENT.rounds[life.round + 1];
@@ -754,7 +825,10 @@
       tags: action.tags || [],
       test: testResult,
       stageBreak: stageBreak ? { label: stageBreak.label, range: stageBreak.range, hint: stageBreak.hint } : null,
+      newMoments,
     };
+    AUDIO.play(testResult && !testResult.success ? "error" : "success");
+    if (newMoments.length) AUDIO.play("moment");
     life.lifeFeedback = null;
     life.actions.push({ round: life.round + 1, age: life.age, label: action.label, result: life.lastAction.result, success: testResult ? testResult.success : true });
     life.actions = life.actions.slice(-CONTENT.maxRounds);
@@ -802,6 +876,8 @@
       jobId: life.jobId,
       cashflow: clone(life.cashflow),
       inventory: [...life.inventory],
+      jobHistory: [...life.jobHistory],
+      momentIds: [...life.moments],
       lifeLog: life.lifeLog.slice(-12),
       actions: life.actions.slice(-CONTENT.maxRounds),
       legacyIds: [],
@@ -815,6 +891,7 @@
     if (!life || life.status !== "active") return;
     life.status = "complete";
     life.outcome = getOutcome(life);
+    AUDIO.play("ending");
     life.legacyCandidates = getLegacyCandidates(life).map((legacy) => legacy.id);
     state.world.completedLives += 1;
     state.world.town = clone(life.town);
@@ -845,13 +922,17 @@
       applyEffect(life, { resources: { money: -paid } });
     }
     const after = captureMetrics(life);
+    const newMoments = collectMoments(life, { type: "bill", shortfall });
     life.lifeFeedback = {
       title: shortfall ? "生活账单没有完全付清" : "生活账单已结算",
       copy: shortfall ? `这一阶段的${bill.label}是${bill.cost}元，你先付了${paid}元，剩下的压力会留在账上。` : `这一阶段的${bill.label}花了${paid}元，日子暂时稳住了。`,
       changes: getMetricChanges(before, after),
       newItems: [],
       newSecrets: [],
+      newMoments,
     };
+    AUDIO.play(shortfall ? "error" : "bill");
+    if (newMoments.length) AUDIO.play("moment");
     if (shortfall) pushLifeLog(life, { label: "生活账单", result: life.lifeFeedback.copy, kind: "账单" });
   }
 
@@ -948,6 +1029,8 @@
     $("#achievement-count").textContent = `${state.world.achievements.length} / ${CONTENT.achievements.length}`;
     $("#secret-count").textContent = `${state.world.secrets.length} / ${CONTENT.secrets.length}`;
     $("#legacy-count-home").textContent = `${state.world.collectedLegacyIds.length} / ${CONTENT.legacies.length}`;
+    const startMomentCount = $("#moment-count");
+    if (startMomentCount) startMomentCount.textContent = `${state.world.moments.length} / ${CONTENT.maxMoments}`;
     $("#profile-options").innerHTML = CONTENT.profiles.map((item) => `<button class="selection-card ${item.id === setup.profileId ? "is-selected" : ""}" data-action="choose-profile" data-id="${item.id}" aria-pressed="${item.id === setup.profileId}"><span class="selection-check">${item.id === setup.profileId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
     $("#talent-options").innerHTML = CONTENT.talents.map((item) => `<button class="selection-card ${item.id === setup.talentId ? "is-selected" : ""}" data-action="choose-talent" data-id="${item.id}" aria-pressed="${item.id === setup.talentId}"><span class="selection-check">${item.id === setup.talentId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
    $("#goal-options").innerHTML = CONTENT.goals.map((item) => `<button class="selection-card ${item.id === setup.goalId ? "is-selected" : ""}" data-action="choose-goal" data-id="${item.id}" aria-pressed="${item.id === setup.goalId}"><span class="selection-check">${item.id === setup.goalId ? "●" : "○"}</span><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></button>`).join("");
@@ -989,6 +1072,17 @@
     $("#life-tags").innerHTML = flags.length ? flags.map((flag) => `<span class="tag-chip">${escapeHtml(FLAG_LABELS[flag])}</span>`).join("") : `<span class="empty-note">每一次行动都会写下一枚标签。</span>`;
   }
 
+  function renderMomentList(containerId, foundIds, showLocked = false) {
+    const container = $(containerId);
+    if (!container) return;
+    const found = new Set(foundIds || []);
+    container.innerHTML = CONTENT.moments.map((moment) => {
+      const unlocked = found.has(moment.id);
+      if (!unlocked && !showLocked) return "";
+      return `<article class="moment-item ${unlocked ? "is-found" : "is-locked"}"><span class="moment-mark">${unlocked ? "✦" : "·"}</span><div><strong>${unlocked ? escapeHtml(moment.label) : "尚未发生的片段"}</strong><span>${unlocked ? escapeHtml(moment.detail) : "它会在某个真实的生活安排里出现。"}</span></div></article>`;
+    }).join("") || `<span class="empty-note">先安排一次生活，给这一世留下第一段具体记忆。</span>`;
+  }
+
   function renderLifeManagement(life) {
     const blocked = Boolean(life.lastAction);
     const nextRound = CONTENT.rounds[life.round + 1];
@@ -1005,7 +1099,7 @@
     $("#life-action-list").innerHTML = CONTENT.lifeActions.map(renderOption).join("");
     $("#job-list").innerHTML = CONTENT.jobs.map(renderOption).join("");
     const currentJob = getJob(life.jobId);
-    $("#job-status").innerHTML = currentJob ? `<strong>${escapeHtml(currentJob.label)}</strong><span>已上班 ${life.jobShifts} 班 · 这份工作会留在履历里</span>` : `<strong>还没有固定工作</strong><span>你可以先学习、休息，也可以在15岁以后找一份合适的班。</span>`;
+    $("#job-status").innerHTML = currentJob ? `<strong>${escapeHtml(currentJob.label)}</strong><span>已上班 ${life.jobShifts} 班 · 试过 ${life.jobHistory.length} 种工作</span>` : `<strong>还没有固定工作</strong><span>你可以先学习、休息，也可以在15岁以后找一份合适的班。</span>`;
     $("#inventory-limit").textContent = `${life.inventory.length} / ${CONTENT.maxInventory} 格`;
     $("#inventory-list").innerHTML = life.inventory.length ? life.inventory.map((id) => { const item = getItem(id); return item ? `<span class="inventory-item"><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.detail)}</small></span>` : ""; }).join("") : `<span class="empty-note">库存还是空的。钱不只用来存，也可以买回时间和选择。</span>`;
     $("#shop-list").innerHTML = CONTENT.items.map((item) => {
@@ -1015,7 +1109,9 @@
       return `<button class="shop-item ${unavailable ? "is-locked" : ""}" data-action="buy-item" data-item-id="${item.id}" ${unavailable ? "disabled" : ""}><span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.detail)}</small></span><b>${owned ? "已拥有" : `${item.price} 元 · ${reason}`}</b></button>`;
     }).join("");
     const feedback = life.lifeFeedback;
-    $("#life-feedback").innerHTML = feedback ? `<strong>${escapeHtml(feedback.title)}</strong><span>${escapeHtml(feedback.copy)}</span><div>${[...(feedback.changes || []), ...(feedback.newItems || []).map((id) => `获得${getItem(id)?.label || id}`), ...(feedback.newSecrets || []).map((id) => `发现彩蛋：${getSecret(id)?.label || id}`)].map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>` : `<span>先安排生活，再处理本节点事件。3点行动可以自由组合。</span>`;
+    $("#life-feedback").innerHTML = feedback ? `<strong>${escapeHtml(feedback.title)}</strong><span>${escapeHtml(feedback.copy)}</span><div>${[...(feedback.changes || []), ...(feedback.newItems || []).map((id) => `获得${getItem(id)?.label || id}`), ...(feedback.newSecrets || []).map((id) => `发现彩蛋：${getSecret(id)?.label || id}`), ...(feedback.newMoments || []).map((id) => `人生片段：${getMoment(id)?.label || id}`)].map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>` : `<span>先安排生活，再处理本节点事件。3点行动可以自由组合。</span>`;
+    $("#life-moment-count").textContent = `${life.moments.length} / ${CONTENT.maxMoments}`;
+    renderMomentList("#life-moments", life.moments);
   }
 
   function renderGame() {
@@ -1023,6 +1119,24 @@
     if (!life) return;
     const round = getRound(life);
     const stage = getStage(round.stage);
+    const art = CONTENT.media?.stageArt?.[stage.id];
+    const artContainer = $("#event-art");
+    const artImage = $("#stage-art");
+    if (art && artImage) {
+      if (!artImage.dataset.fallbackBound) {
+        artImage.addEventListener("error", () => {
+          artImage.hidden = true;
+          if (artContainer) artContainer.classList.add("is-unavailable");
+        });
+        artImage.dataset.fallbackBound = "true";
+      }
+      artImage.src = art.src;
+      artImage.alt = art.alt;
+      artImage.hidden = false;
+      if (artContainer) artContainer.classList.remove("is-unavailable");
+      $("#stage-art-caption").textContent = art.caption;
+    }
+    AUDIO.setStage(stage.id, life.resources.pressure);
     const goal = getGoal(life.goalId);
     const progress = Number(life.progress[life.goalId] || 0);
     const percent = Math.round(((life.round + 1) / CONTENT.maxRounds) * 100);
@@ -1062,6 +1176,7 @@
       $("#feedback-test").innerHTML = life.lastAction.test ? `<strong>${life.lastAction.test.success ? "检定成功" : "检定未通过"}</strong><span>${escapeHtml(life.lastAction.test.label)}：${life.lastAction.test.score} / ${life.lastAction.test.difficulty}（命运点 ${life.lastAction.test.roll}）</span>` : "";
       $("#feedback-secret").innerHTML = life.lastAction.newSecrets.length ? life.lastAction.newSecrets.map((id) => { const secret = getSecret(id); return secret ? `<div><strong>发现彩蛋：${escapeHtml(secret.label)}</strong><span>${escapeHtml(secret.detail)}</span></div>` : ""; }).join("") : "";
       $("#feedback-stage").innerHTML = life.lastAction.stageBreak ? `<strong>下一阶段：${escapeHtml(life.lastAction.stageBreak.label)} · ${escapeHtml(life.lastAction.stageBreak.range)}</strong><span>${escapeHtml(life.lastAction.stageBreak.hint)}</span>` : "";
+      $("#feedback-moment").innerHTML = life.lastAction.newMoments?.length ? life.lastAction.newMoments.map((id) => { const moment = getMoment(id); return moment ? `<div><strong>人生片段：${escapeHtml(moment.label)}</strong><span>${escapeHtml(moment.detail)}</span></div>` : ""; }).join("") : "";
       $("#advance-round").textContent = life.round >= CONTENT.maxRounds - 1 ? "封存这一生，选择遗产 →" : "继续长大 →";
     }
     renderResourceList(life);
@@ -1090,6 +1205,7 @@
     renderTown("#ending-changes", life.town);
     $("#ending-achievements").innerHTML = life.newAchievements.length ? life.newAchievements.map((id) => { const item = getAchievement(id); return item ? `<div class="reward-item"><strong>${escapeHtml(item.icon)} ${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">这一世没有新成就，但每个选择仍写进了镇志。</span>`;
     $("#ending-secrets").innerHTML = life.newSecrets.length ? life.newSecrets.map((id) => { const item = getSecret(id); return item ? `<div class="reward-item"><strong>彩蛋：${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">还有一些彩蛋藏在不同的选择路线里。</span>`;
+    $("#ending-moments").innerHTML = life.newMoments.length ? life.newMoments.map((id) => { const item = getMoment(id); return item ? `<div class="reward-item"><strong>片段：${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></div>` : ""; }).join("") : `<span class="empty-note">这一世还没有收集到新片段，下一次生活安排可能会留下它。</span>`;
     const candidates = life.legacyCandidates.map(getLegacy).filter(Boolean);
     $("#legacy-count").textContent = `${life.selectedLegacies.length} / ${CONTENT.maxLegacyChoices}`;
     $("#legacy-list").innerHTML = candidates.map((legacy) => `<button class="legacy-card ${life.selectedLegacies.includes(legacy.id) ? "is-selected" : ""}" data-action="choose-legacy" data-id="${legacy.id}" aria-pressed="${life.selectedLegacies.includes(legacy.id)}"><span class="legacy-check">${life.selectedLegacies.includes(legacy.id) ? "✓" : "＋"}</span><strong>${escapeHtml(legacy.label)}</strong><span>${escapeHtml(legacy.detail)}</span><em>下一世：${escapeHtml(legacy.nextUse)}</em></button>`).join("");
@@ -1117,9 +1233,11 @@
     $("#archive-achievement-count").textContent = `${state.world.achievements.length} / ${CONTENT.achievements.length}`;
     $("#archive-secret-count").textContent = `${state.world.secrets.length} / ${CONTENT.secrets.length}`;
     $("#archive-legacy-count").textContent = `${state.world.collectedLegacyIds.length} / ${CONTENT.legacies.length}`;
+    $("#archive-moment-count").textContent = `${state.world.moments.length} / ${CONTENT.maxMoments}`;
     renderTown("#archive-town", state.world.town);
     renderAchievements();
     renderSecrets();
+    renderMomentList("#moment-list", state.world.moments, true);
     const history = [...state.world.history].reverse();
     $("#archive-timeline").innerHTML = history.length ? history.map((entry) => {
       const profile = getProfile(entry.profileId);
@@ -1128,8 +1246,9 @@
       const legacyTags = (entry.legacyIds || []).map((id) => getLegacy(id)).filter(Boolean).map((item) => `<span class="archive-tag">带出：${escapeHtml(item.label)}</span>`).join("");
       const actionTags = (entry.actions || []).slice(-5).map((action) => `<span class="archive-tag">${escapeHtml(action.label)}</span>`).join("");
       const lifeTags = (entry.lifeLog || []).slice(-4).map((item) => `<span class="archive-tag archive-life-tag">${escapeHtml(item.label)}</span>`).join("");
+      const momentTags = (entry.momentIds || []).map((id) => getMoment(id)).filter(Boolean).slice(-4).map((item) => `<span class="archive-tag archive-moment-tag">片段：${escapeHtml(item.label)}</span>`).join("");
       const job = getJob(entry.jobId);
-      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${entry.age} 岁封存</span><span>${escapeHtml(profile.label)}</span></div><div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · ${entry.goalProgress} / ${entry.goalTarget} · 天赋“${escapeHtml(talent.label)}”</p><p class="archive-echo">${escapeHtml(entry.outcomeCopy)}</p><p class="archive-economy">${entry.activityCount || 23} 次生活与事件安排 · ${job ? escapeHtml(job.label) : "没有固定工作"} · 现金流 ${Number(entry.cashflow?.income || 0) - Number(entry.cashflow?.expenses || 0)} 元</p><div class="archive-tags">${lifeTags}${actionTags}${legacyTags || "<span class=\"archive-tag\">没有交接特殊遗产</span>"}</div></div></article>`;
+      return `<article class="archive-entry"><div class="archive-entry-top"><strong>第 ${entry.generation} 世</strong><span>${entry.age} 岁封存</span><span>${escapeHtml(profile.label)}</span></div><div><h2>${escapeHtml(entry.outcomeTitle)}</h2><p>${escapeHtml(goal.label)} · ${entry.goalProgress} / ${entry.goalTarget} · 天赋“${escapeHtml(talent.label)}”</p><p class="archive-echo">${escapeHtml(entry.outcomeCopy)}</p><p class="archive-economy">${entry.activityCount || 23} 次生活与事件安排 · ${job ? escapeHtml(job.label) : "没有固定工作"} · 现金流 ${Number(entry.cashflow?.income || 0) - Number(entry.cashflow?.expenses || 0)} 元</p><div class="archive-tags">${lifeTags}${actionTags}${momentTags}${legacyTags || "<span class=\"archive-tag\">没有交接特殊遗产</span>"}</div></div></article>`;
     }).join("") : `<div class="empty-archive"><strong>镇志还没有第一页。</strong><span>完成一世以后，这里会记录你的目标、选择、遗产和留下的回声。</span></div>`;
   }
 
@@ -1137,6 +1256,7 @@
     document.body.classList.toggle("large-text", state.settings.fontScale);
     $("#font-toggle").setAttribute("aria-pressed", String(state.settings.fontScale));
     $("#font-toggle").textContent = state.settings.fontScale ? "普通字" : "大字模式";
+    renderAudioControl();
     ["start", "game", "ending", "archive"].forEach((screen) => $(`#screen-${screen}`).classList.toggle("is-hidden", state.screen !== screen));
     renderStart();
     if (state.screen === "game") renderGame();
@@ -1159,6 +1279,7 @@
     if (action === "home") { state.screen = "start"; persist(); render(); }
     if (action === "view-archive") { state.screen = "archive"; render(); }
     if (action === "toggle-font") { state.settings.fontScale = !state.settings.fontScale; persist(); render(); }
+    if (action === "toggle-audio") toggleAudio();
     if (action === "export-save") exportSave();
     if (action === "erase-save") {
       if (window.confirm("确定清除丰富版当前世代吗？导出的 JSON 备份不会被删除。")) {

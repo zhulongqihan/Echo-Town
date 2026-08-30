@@ -325,6 +325,29 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-weight: 750; letter-spacing: -.0
 .life-feedback em { display: inline-block; margin: 3px 5px 0 0; padding: 3px 6px; border-radius: 4px; color: var(--success); background: #203a2f; font-size: 11px; font-style: normal; }
 .archive-economy { color: var(--accent-soft) !important; font-size: 11px !important; }
 .archive-life-tag { color: var(--accent-soft) !important; border-color: #4a5c62 !important; }
+.audio-toggle[aria-pressed="true"] { color: var(--accent); text-decoration-color: var(--accent); }
+.event-art { margin: 0 0 22px; overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: #0d141b; }
+.event-art img { display: block; width: 100%; aspect-ratio: 16 / 7; object-fit: cover; object-position: center; }
+.event-art figcaption { padding: 8px 11px; color: var(--muted); background: #111b25; font-size: 11px; letter-spacing: .02em; }
+.event-art.is-unavailable { padding: 14px; border-style: dashed; }
+.event-art.is-unavailable::after { content: "阶段画面暂时不可用，文字事件仍可继续"; color: var(--muted); font-size: 12px; }
+.moment-shelf { margin-top: 15px; padding-top: 5px; border-top: 1px solid var(--line); }
+.moment-list { display: grid; gap: 7px; margin-top: 8px; }
+.moment-item { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 9px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.moment-item.is-found { border-color: #596240; background: #1b2825; }
+.moment-item.is-locked { opacity: .54; }
+.moment-mark { color: var(--accent); font-size: 16px; line-height: 1.25; text-align: center; }
+.moment-item strong, .moment-item span { display: block; }
+.moment-item strong { color: var(--ink-soft); font-size: 12px; }
+.moment-item > div > span { margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.4; }
+.moment-collection { min-width: 0; }
+.archive-moment-tag { color: var(--success) !important; border-color: #526e62 !important; }
+.reward-card .moment-list { margin-top: 15px; }
+.reward-card .moment-item { background: #182921; }
+
+@media (min-width: 1051px) {
+  .archive-collections { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 @media (max-width: 640px) {
   .event-card { margin-top: 22px; padding: 16px; }
@@ -335,4 +358,8 @@ h1, h2, h3 { margin: 0; color: var(--ink); font-weight: 750; letter-spacing: -.0
   .life-action-points { grid-column: 2; justify-self: start; }
   .management-columns, .shop-list { grid-template-columns: minmax(0, 1fr); }
   .shop-item { align-items: start; }
+  .header-tools { flex-wrap: wrap; justify-content: flex-end; }
+  .event-art { margin-bottom: 17px; }
+  .event-art img { aspect-ratio: 16 / 9; }
+  .archive-collections { grid-template-columns: minmax(0, 1fr); }
 }
