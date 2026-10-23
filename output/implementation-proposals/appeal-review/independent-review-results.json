@@ -1,0 +1,255 @@
+{
+  "baseline": "2bd084d769d48d25d8bba4711513b0981b65b646",
+  "fixtures": [
+    {
+      "name": "goal-guidance-15",
+      "valid": true,
+      "bytes": 5718
+    },
+    {
+      "name": "goal-guidance-17",
+      "valid": true,
+      "bytes": 6189
+    },
+    {
+      "name": "variant-guidance-32",
+      "valid": true,
+      "bytes": 9930
+    }
+  ],
+  "goalGuidance": {
+    "age": 15,
+    "skills": {
+      "study": 2,
+      "craft": 5,
+      "expression": 0,
+      "empathy": 4,
+      "courage": 1
+    },
+    "goal": {
+      "id": "craft:adolescence",
+      "stageId": "adolescence",
+      "stageLabel": "少年",
+      "routeId": "craft",
+      "label": "挣到第一笔手艺工资",
+      "detail": "把练习用在别人真正需要的地方。",
+      "conditions": [
+        {
+          "label": "手艺达到 4",
+          "met": true,
+          "current": 5,
+          "target": 4
+        },
+        {
+          "label": "少年阶段完成一次修理铺工作",
+          "met": false,
+          "current": 0,
+          "target": 1
+        }
+      ],
+      "completed": false,
+      "status": "pending",
+      "progress": 1,
+      "target": 2
+    },
+    "pursuit": {
+      "id": "pursuit:craft:join-repair",
+      "routeId": "craft",
+      "round": 5,
+      "age": 15,
+      "actionId": "join-repair",
+      "label": "加入修理社",
+      "detail": "从给工具编号、清理工作台开始。",
+      "actionLabel": "加入修理社",
+      "status": "ready",
+      "checks": [
+        {
+          "label": "为这件事留出精力 2",
+          "met": true
+        }
+      ],
+      "reserveEnergy": 2,
+      "nextStep": {
+        "label": "接下来：加入修理社",
+        "detail": "准备已经足够，可结束生活安排后做这件事。",
+        "command": {
+          "type": "EVENT_ACTION",
+          "id": "join-repair"
+        },
+        "available": false
+      }
+    },
+    "recommendations": [
+      {
+        "id": "routine-repair",
+        "reason": "本次仍可获得手艺+1"
+      },
+      {
+        "id": "routine-explore",
+        "reason": "本次仍可获得心气+1、家人期待-1、胆识+1"
+      },
+      {
+        "id": "routine-care",
+        "reason": "本次仍可获得体谅+1、家人+1"
+      }
+    ],
+    "work": {
+      "available": true,
+      "reason": "",
+      "requirements": [
+        {
+          "label": "需要年满 15 岁",
+          "met": true
+        },
+        {
+          "label": "需要手艺 1",
+          "met": true
+        }
+      ],
+      "cost": "2 行动点 · 精力 -2",
+      "changes": [
+        "钱+7",
+        "精力-2",
+        "压力+1",
+        "手艺+1",
+        "修理铺+1"
+      ],
+      "benefits": [
+        {
+          "path": "resources.money",
+          "label": "钱",
+          "delta": 7
+        },
+        {
+          "path": "skills.craft",
+          "label": "手艺",
+          "delta": 1
+        },
+        {
+          "path": "town.shop",
+          "label": "修理铺",
+          "delta": 1
+        }
+      ],
+      "growth": [
+        {
+          "key": "craft",
+          "label": "手艺",
+          "current": 5,
+          "cap": 6,
+          "requested": 1,
+          "applied": 1,
+          "capped": false,
+          "nextAge": 19,
+          "nextCap": 8,
+          "reason": ""
+        }
+      ],
+      "notices": [],
+      "remaining": {
+        "money": 21,
+        "energy": 9,
+        "actionPoints": 0
+      },
+      "test": null,
+      "outcomes": null
+    }
+  },
+  "variantGuidance": {
+    "sourceTest": {
+      "label": "试修检定",
+      "score": 4,
+      "difficulty": 5,
+      "roll": 1,
+      "success": false,
+      "text": "旧车仍有异响，你把未解决的故障写了下来。"
+    },
+    "sourceChoice": "chain-craft-trial",
+    "future": {
+      "id": "pursuit:craft:chain-craft-workshop",
+      "routeId": "craft",
+      "round": 12,
+      "age": 36,
+      "actionId": "chain-craft-workshop",
+      "label": "按试修记录接第一批订单",
+      "detail": "把费用和交付要求写在同一张单上，再检验自己的方法。",
+      "actionLabel": "按试修记录接第一批订单",
+      "status": "upcoming",
+      "checks": [
+        {
+          "label": "需要完成前一段经历（成功或失败均可）",
+          "met": true
+        },
+        {
+          "label": "需要手艺 4",
+          "met": false
+        },
+        {
+          "label": "为这件事留出钱 10",
+          "met": false
+        },
+        {
+          "label": "为这件事留出精力 1",
+          "met": true
+        },
+        {
+          "label": "订单交付检定最低 3 / 7，仍有失败可能",
+          "met": false
+        }
+      ],
+      "reserveEnergy": 1,
+      "nextStep": {
+        "label": "36 岁：按试修记录接第一批订单",
+        "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+        "command": null,
+        "available": false
+      }
+    },
+    "actual": {
+      "label": "先用小单补完旧维修单",
+      "detail": "21岁那次试修没有通过。先接范围较小的返修单，多花一点精力核查，只承担这一笔能交代清楚的维修。",
+      "cost": "钱 −6 · 精力 −2 · 手艺检定 6",
+      "test": {
+        "skill": "craft",
+        "difficulty": 6,
+        "label": "小单返修检定",
+        "success": {
+          "resources": {
+            "money": 3
+          },
+          "skills": {
+            "craft": 1
+          },
+          "town": {
+            "shop": 1
+          }
+        },
+        "failure": {
+          "resources": {
+            "pressure": 2
+          }
+        },
+        "successText": "这次故障核查通过了，小单按约交付。规模较小，没有顺带扩张集市。",
+        "failureText": "小单仍需要返工。你保留了问题记录，没有把它算成已交付。"
+      },
+      "journeyVariant": "journey-craft-repair-v1"
+    }
+  },
+  "differential": [
+    {
+      "route": "craft",
+      "checks": 103,
+      "mismatch": null
+    },
+    {
+      "route": "study",
+      "checks": 103,
+      "mismatch": null
+    },
+    {
+      "route": "community",
+      "checks": 105,
+      "mismatch": null
+    }
+  ]
+}

@@ -830,21 +830,22 @@
     }
     const before = captureMetrics(life);
     const opportunityEffect = getOpportunityEffect(opportunity);
+    const copy = CONTENT.getOpportunityCopy(opportunity, life);
     const applied = applyTransaction(life, opportunityEffect, "opportunity", opportunity.id);
     recordEvidence(life, opportunity.id, "opportunity");
     const milestones = addGoalPoints(life, opportunity.goalPoints || {});
     life.opportunity.selectedId = opportunity.id;
     life.opportunity.skipped = false;
-    life.opportunity.history = [...(life.opportunity.history || []), { age: life.age, id: opportunity.id, label: opportunity.label }].slice(-CONTENT.maxRounds);
+    life.opportunity.history = [...(life.opportunity.history || []), { age: life.age, id: opportunity.id, label: copy.label }].slice(-CONTENT.maxRounds);
     life.opportunityFeedback = {
-      title: `机会已接住：${opportunity.label}`,
-      copy: opportunity.detail,
+      title: `机会已接住：${copy.label}`,
+      copy: copy.result,
       changes: getMetricChanges(before, captureMetrics(life)),
       newSecrets: applied.newSecrets || [],
       milestones,
       tags: opportunity.tags || [],
     };
-    pushLifeLog(life, { label: opportunity.label, result: opportunity.detail, kind: "机会" });
+    pushLifeLog(life, { label: copy.label, result: copy.result, kind: "机会" });
     state.world.totals.choices += 1;
     if (applied.newSecrets?.length) {
       state.world.secrets = [...new Set([...state.world.secrets, ...applied.newSecrets])];
@@ -1356,7 +1357,7 @@
   }
 
   function getChallengeDefinitions() {
-    return [{ id: "craft-start-v1", label: "手艺人的第一世", seed: 277191004, routeId: "craft", rulesVersion: CONTENT.version, detail: "同样的起点与机会，尝试完成手艺传承并留足生活。挑战进度独立保存。" }];
+    return [{ id: "craft-start-v1", label: "手艺人的第一世", seed: 277191004, routeId: "craft", rulesVersion: global.EchoTownSave.MODE_CONTRACT.rulesVersion, detail: "同样的起点与机会，尝试完成手艺传承并留足生活。挑战进度独立保存。" }];
   }
 
   function createChallengeState(id) {
@@ -1583,9 +1584,141 @@
     return { label: action.test.label || "行动检定", minimum, maximum: minimum + 2, difficulty: Number(action.test.difficulty || 0), attributeBonus };
   }
 
+  function getPreviewBenefits(life, projected) {
+    const before = captureMetrics(life);
+    const after = captureMetrics(projected);
+    return Object.keys(before).filter((path) => /^(resources|skills|relationships|town)\./.test(path)).map((path) => {
+      const delta = after[path] - before[path];
+      const helpful = ["resources.pressure", "resources.expectation"].includes(path) ? delta < 0 : delta > 0;
+      return helpful ? { path, label: getMetricLabel(path), delta } : null;
+    }).filter(Boolean);
+  }
+
+  function getGrowthPreview(life, effect, projected) {
+    const cap = getGrowthCap(life);
+    const stage = getStage(getRound(life).stage);
+    return Object.entries(effect.skills || {}).filter(([, amount]) => amount > 0).map(([key, amount]) => {
+      const current = life.skills[key];
+      const applied = projected.skills[key] - current;
+      const next = CONTENT.rounds.find((round, index) => index > life.round && Number(CONTENT.strategy.trainingCaps[round.stage]) > Math.max(cap, current));
+      const nextCap = next ? CONTENT.strategy.trainingCaps[next.stage] : null;
+      const label = CONTENT.skills[key].label;
+      const capped = applied < amount;
+      let reason = "";
+      if (capped) {
+        reason = label + (applied > 0 ? "本次只能增加 " + applied : current > cap ? "现有 " + current + " 保留不变，已高于" : "已到") + (applied > 0 ? "，达到" : "") + stage.label + "增长上限 " + cap;
+        reason += next ? "；" + next.age + " 岁起上限 " + nextCap : "；之后可把本领用于工作、关系或交接";
+      }
+      return { key, label, current, cap, requested: amount, applied, capped, nextAge: next?.age || null, nextCap, reason };
+    });
+  }
+
+  function fixedPursuitRequirementsMet(life, requirements) {
+    return (requirements || []).every((requirement) => {
+      if (requirement.type === "any") return requirement.requirements.some((item) => fixedPursuitRequirementsMet(life, [item]));
+      if (requirement.type === "all") return fixedPursuitRequirementsMet(life, requirement.requirements);
+      if (["evidence", "legacy", "strategy-goal", "route", "project", "flag", "secret"].includes(requirement.type)) return requirementMet(life, requirement);
+      return true;
+    });
+  }
+
+  function pursuitChecks(life, action) {
+    const checks = (action.requires || []).map((requirement) => ({ label: requirementReason(requirement), met: requirementMet(life, requirement) }));
+    for (const key of ["money", "energy", "health"]) {
+      const amount = Math.max(0, -Number(action.effect?.resources?.[key] || 0)) + Math.max(0, -Number(action.test?.success?.resources?.[key] || 0), -Number(action.test?.failure?.resources?.[key] || 0));
+      if (amount) checks.push({ label: "为这件事留出" + CONTENT.resources[key].label + " " + amount, met: life.resources[key] >= amount });
+    }
+    const test = getTestPreview(life, action);
+    if (test) checks.push({ label: test.label + "最低 " + test.minimum + " / " + test.difficulty + (test.minimum < test.difficulty ? "，仍有失败可能" : "，已准备充分"), met: test.minimum >= test.difficulty });
+    return checks;
+  }
+
+  // This small search spends only the remaining AP on copies. It neither
+  // records evidence nor awards projected effects to the actual life.
+  function findPursuitPreparation(life, action) {
+    const queue = [{ life: clone(life), actions: [] }];
+    let playable = null;
+    while (queue.length) {
+      const candidate = queue.shift();
+      if (getAvailability(candidate.life, action).available) {
+        playable = playable || candidate;
+        if (pursuitChecks(candidate.life, action).every((check) => check.met)) return candidate;
+      }
+      if (!candidate.life.actionPoints) continue;
+      for (const preparation of [...getLifeActions(), ...getJobs()]) {
+        if (!getLifeAvailability(candidate.life, preparation).available) continue;
+        const projected = clone(candidate.life);
+        applyEffect(projected, getLifeActionEffect(projected, preparation));
+        projected.actionPoints -= Number(preparation.points || 1);
+        projected.lifeLog = [...(projected.lifeLog || []), { age: projected.age, label: preparation.label }];
+        queue.push({ life: projected, actions: [...candidate.actions, preparation.id] });
+      }
+    }
+    return playable;
+  }
+
+  function getNextPursuit(life = state.currentLife) {
+    if (!life || life.status !== "active") return null;
+    for (const candidate of STRATEGY.getPursuitCandidates(life)) {
+      const futureLife = candidate.round === life.round ? life : { ...life, round: candidate.round, age: candidate.age };
+      const action = getAction(candidate.actionId, futureLife);
+      if (!fixedPursuitRequirementsMet(life, action.requires)) continue;
+      const current = candidate.round === life.round;
+      const preparation = current ? findPursuitPreparation(life, action) : null;
+      if (current && !preparation) continue;
+      const checks = pursuitChecks(life, action);
+      const ready = checks.every((check) => check.met);
+      const command = current && preparation.actions.length ? { type: "LIFE_ACTION", id: preparation.actions[0] } : current ? { type: "EVENT_ACTION", id: action.id } : null;
+      const source = command?.type === "LIFE_ACTION" ? getLifeAction(command.id) || getJob(command.id) : action;
+      const available = command ? previewAction(command, life).available : false;
+      const reserveEnergy = Math.max(0, -Number(action.effect?.resources?.energy || 0)) + Math.max(0, -Number(action.test?.success?.resources?.energy || 0), -Number(action.test?.failure?.resources?.energy || 0));
+      return { ...candidate, label: action.label, detail: action.detail, actionLabel: action.label, status: !current ? "upcoming" : ready ? "ready" : "preparing", checks, reserveEnergy,
+        nextStep: { label: command?.type === "LIFE_ACTION" ? "先" + source.label : (current ? "接下来：" : candidate.age + " 岁：") + action.label,
+          detail: !current ? "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。" : command?.type === "LIFE_ACTION" ? "补足这次选择的实际准备，再处理人生事件。" : !ready ? "可以尝试，但检定仍有失败可能；结果会按实际经历保留。" : getLifePhase({ currentLife: life }) === "management" ? "准备已经足够，可结束生活安排后做这件事。" : "准备已经足够，按当前步骤继续。", command, available } };
+    }
+    return null;
+  }
+
+  function getProjectActionPurpose(life, id) {
+    if (!PROJECTS || life.projects?.current?.status !== "active" || life.lastAction) return "";
+    const view = PROJECTS.getView(life);
+    const step = view.steps.find((item) => item.age === life.age && item.status === "pending");
+    const definition = PROJECTS.getDefinition(life.projects.current.id);
+    return step && definition.steps[step.id].some((choice) => choice.type === "LIFE_ACTION" && choice.actionId === id) ? "完成项目这一步：" + step.label : "";
+  }
+
+  function getLifeRecommendations(life = state.currentLife, pursuit = getNextPursuit(life)) {
+    if (!life || getLifePhase({ currentLife: life }) !== "management") return [];
+    const route = life.strategy?.routeId;
+    const routeSkill = { craft: "craft", study: "study", community: "empathy" }[route];
+    const preparedAction = pursuit?.nextStep.command?.type === "LIFE_ACTION" ? pursuit.nextStep.command.id : null;
+    return getLifeActions().map((action, index) => {
+      const command = { type: "LIFE_ACTION", id: action.id };
+      const preview = previewAction(command, life);
+      if (!preview.available) return null;
+      const project = getProjectActionPurpose(life, action.id);
+      const purposes = STRATEGY.getActionPurposes(life, action.id, "life");
+      if (!preview.benefits.length && !project && !purposes.length) return null;
+      const positive = preview.benefits;
+      let score = positive.reduce((sum, item) => sum + Math.abs(item.delta) * (item.path.startsWith("skills.") ? 4 : item.path.startsWith("relationships.") ? 3 : item.path.startsWith("town.") ? 3 : 1), 0);
+      if (positive.some((item) => item.path === "skills." + routeSkill)) score += 5;
+      if (route === "community" && positive.some((item) => item.path.startsWith("relationships."))) score += 4;
+      if (project) score += 80;
+      if (purposes.length) score += 20;
+      if (action.id === preparedAction) score += 100;
+      if (positive.some((item) => item.path === "resources.energy") && (life.resources.energy <= 3 || (pursuit?.round === life.round && life.resources.energy < pursuit.reserveEnergy))) score += 50;
+      if (positive.some((item) => item.path === "resources.health") && life.resources.health <= 3) score += 30;
+      if (positive.some((item) => item.path === "resources.pressure") && life.resources.pressure >= 8) score += 30;
+      const reserve = pursuit?.round === life.round && preview.remaining.energy < pursuit.reserveEnergy;
+      if (reserve && action.id !== preparedAction) score -= 45;
+      const reason = project || (action.id === preparedAction ? "为「" + pursuit.actionLabel + "」补足准备" : purposes[0]) || "本次仍可获得" + positive.slice(0, 3).map((item) => formatDelta(item.label, item.delta)).join("、");
+      return { id: action.id, label: action.label, command, reason: reason + (reserve ? "；注意给人生事件留出 " + pursuit.reserveEnergy + " 精力" : ""), preview, score, index };
+    }).filter(Boolean).sort((left, right) => right.score - left.score || left.index - right.index).slice(0, 3).map(({ score, index, ...item }) => item);
+  }
+
   function previewAction(command, sourceLife = state.currentLife) {
     const life = sourceLife;
-    if (!life || life.status !== "active") return { available: false, reason: "请先开始这一世", cost: "", changes: [], remaining: {}, test: null };
+    if (!life || life.status !== "active") return { available: false, reason: "请先开始这一世", cost: "", changes: [], benefits: [], growth: [], notices: [], remaining: {}, test: null };
     const type = command.type;
     let action;
     if (type === "LIFE_ACTION") action = getLifeAction(command.id) || getJob(command.id);
@@ -1595,7 +1728,7 @@
       const item = getItem(command.id);
       if (item) action = { ...item, points: 1, effect: { resources: { money: -item.price }, items: [item.id] } };
     }
-    if (!action) return { available: false, reason: "行动不存在", cost: "", changes: [], remaining: {}, test: null };
+    if (!action) return { available: false, reason: "行动不存在", cost: "", changes: [], benefits: [], growth: [], notices: [], remaining: {}, test: null };
     const phase = getLifePhase({ currentLife: life });
     const expected = { OPPORTUNITY: "opportunity", LIFE_ACTION: "management", BUY_ITEM: "management", EVENT_ACTION: "event" }[type];
     let availability = type === "OPPORTUNITY" ? getOpportunityAvailability(life, action) : type === "LIFE_ACTION" || type === "BUY_ITEM" ? getLifeAvailability(life, action) : getAvailability(life, action);
@@ -1614,7 +1747,10 @@
       if (delta < 0) costs.push(CONTENT.resources[key].label + " " + delta);
     }
     const changes = getMetricChanges(captureMetrics(life), captureMetrics(projected));
-    if (Object.entries(effect.skills || {}).some(([key, value]) => value > 0 && projected.skills[key] === life.skills[key])) changes.push("该能力已到本阶段增长上限 " + getGrowthCap(life));
+    const growth = getGrowthPreview(life, effect, projected);
+    const benefits = getPreviewBenefits(life, projected);
+    const notices = growth.filter((item) => item.capped).map((item) => item.reason);
+    changes.push(...notices);
     if (command.id === "take-risk-loan") changes.push("负债+20（借款不计收入）");
     const test = getTestPreview(life, action);
     const outcomes = {};
@@ -1630,7 +1766,7 @@
     const requirements = (action.requires || []).map((requirement) => ({ label: requirementReason(requirement), met: requirementMet(life, requirement) }));
     if (action.minAge) requirements.unshift({ label: "需要年满 " + action.minAge + " 岁", met: life.age >= action.minAge });
     if (action.maxAge) requirements.push({ label: "不晚于 " + action.maxAge + " 岁", met: life.age <= action.maxAge });
-    return { ...availability, requirements, cost: costs.join(" · ") || "不消耗行动点或资源", changes, remaining: { money: projected.resources.money, energy: projected.resources.energy, actionPoints: Math.max(0, life.actionPoints - ap) }, test, outcomes: test ? outcomes : null };
+    return { ...availability, requirements, cost: costs.join(" · ") || "不消耗行动点或资源", changes, benefits, growth, notices, remaining: { money: projected.resources.money, energy: projected.resources.energy, actionPoints: Math.max(0, life.actionPoints - ap) }, test, outcomes: test ? outcomes : null };
   }
 
   function validateCommandPhase(command) {
@@ -1745,6 +1881,8 @@
     },
     dispatch,
     previewAction,
+    getNextPursuit,
+    getLifeRecommendations,
     getLifePhase,
     getProjectView: (life = state.currentLife) => PROJECTS ? PROJECTS.getView(life) : null,
     getJobs,

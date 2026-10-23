@@ -1,4 +1,4 @@
-const CACHE_NAME = "echo-town-desktop-v9-7";
+const CACHE_NAME = "echo-town-desktop-v9-8";
 const APP_SHELL = ["./", "./index.html", "./styles.css", "./journey.css", "./content.js", "./strategy.js", "./projects.js", "./journey.js", "./save.js", "./engine.js", "./modes.js", "./audio.js", "./scene.js", "./journey-card.js", "./journey-ui.js", "./ui.js", "./game.js", "./manifest.webmanifest", "./favicon.svg", "./icon-192.svg", "./icon-512.svg"];
 const MEDIA = ["./assets/stage-childhood.webp", "./assets/stage-adolescence.webp", "./assets/stage-youth.webp", "./assets/stage-middle.webp", "./assets/stage-later.webp", "./assets/scene-school.webp", "./assets/scene-festival.webp", "./assets/scene-station.webp", "./assets/scene-flood.webp", "./assets/scene-cinema.webp"];
 self.addEventListener("install", (event) => {

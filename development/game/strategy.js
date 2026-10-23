@@ -465,9 +465,59 @@
     return CONTENT.rounds[boundedRound(life.round)].actions.filter(function (action) { return action.strategy && !action.strategy.conservative; });
   }
 
+  // A read-only route through actual choices. These are suggestions, not new
+  // goals, rewards or saved achievements. A closed event window is never replayed.
+  const PURSUIT_ACTIONS = {
+    craft: ["fix-radio", "share-notes", "rest-at-home", "repair-lantern", "chain-craft-promise", "join-repair", "stay-for-family", "chain-craft-trial", "fix-bicycle", "return-workshop", "ask-family-share", "chain-craft-workshop", "open-workshop", "talk-through", "repair-bridge-adult", "teach-youth", "train-successor", "handoff-craft"],
+    study: ["read-comic", "front-seat", "rest-at-home", "tell-story", "invite-shy-child", "chain-study-plan", "join-literature", "ask-scholarship", "chain-study-trial", "publish-story", "take-promotion", "change-career", "chain-study-report", "trace-watergate", "return-school", "save-school", "record-life", "handoff-study"],
+    community: ["yard-play", "share-notes", "ask-for-help", "invite-shy-child", "comfort-friend", "chain-community-promise", "join-river-team", "stay-for-family", "mentor-newcomer", "keep-friendship", "community-speech", "chain-community-roster", "ask-family-share", "talk-through", "chain-community-flood", "organize-evacuation", "teach-youth", "invite-town-alumni", "call-family", "handoff-community"],
+  };
+
+  function getPursuitCandidates(life) {
+    if (!life || life.status !== "active") return [];
+    const routeId = validRoute(life.strategy?.routeId) ? life.strategy.routeId : defaultRoute(life);
+    const eventDone = Boolean(life.lastAction) || (life.strategy?.evidence || []).some(function (entry) { return entry.round === life.round && entry.kind === "event"; });
+    const candidates = [];
+    CONTENT.rounds.forEach(function (round, index) {
+      if (index < life.round || (index === life.round && eventDone)) return;
+      PURSUIT_ACTIONS[routeId].forEach(function (id) {
+        const action = round.actions.find(function (item) { return item.id === id; });
+        if (action) candidates.push({ id: "pursuit:" + routeId + ":" + id, routeId: routeId, round: index, age: round.age, actionId: id });
+      });
+    });
+    return candidates;
+  }
+
+  function getActionPurposes(life, id, kind) {
+    if (!life || life.status !== "active") return [];
+    const stageId = currentStage(life);
+    const canonical = canonicalKind(kind, id);
+    const routeId = validRoute(life.strategy?.routeId) ? life.strategy.routeId : defaultRoute(life);
+    if (!canonical || (life.strategy?.evidence || []).some(function (entry) { return entry.round === life.round && entry.kind === canonical && entry.id === id; })) return [];
+    function advances(condition) {
+      if (evaluate(life, condition, stageId).met) return false;
+      if (condition.type === "any" || condition.type === "all") return condition.conditions.some(advances);
+      if (condition.type === "proof") {
+        if (condition.ids && !condition.ids.includes(id)) return false;
+        if (condition.kind && condition.kind !== canonical) return false;
+        if (condition.success === false) return false;
+        const entries = matches(life, condition, stageId);
+        return !(condition.distinctRounds && entries.some(function (entry) { return entry.round === life.round; }));
+      }
+      if (condition.type === "ordered-proof" && condition.nextIds.includes(id) && condition.nextKind === canonical) {
+        return matches(life, { ids: condition.firstIds, kind: "event", excludeJourneyVariants: condition.excludeJourneyVariants }, stageId).some(function (entry) { return entry.round < life.round; }) && !matches(life, { ids: condition.nextIds, kind: canonical }, stageId).some(function (entry) { return entry.round === life.round; });
+      }
+      return false;
+    }
+    return GOALS.filter(function (definition) {
+      return definition.routeId === routeId && definition.stageId === stageId && !life.strategy?.goals?.[definition.id] && definition.conditions.some(advances);
+    }).map(function (definition) { return definition.label + "需要这次真实行动"; });
+  }
+
   global.EchoTownStrategy = {
     VERSION: VERSION, initLife: initLife, record: record, getGoals: getGoals, settleStage: settleStage,
     getWishStatus: getWishStatus, getOutcome: getOutcome, getRouteEvents: getRouteEvents, requirementMet: requirementMet,
     getAllGoals: getAllGoals, getConsequences: getConsequences,
+    getPursuitCandidates: getPursuitCandidates, getActionPurposes: getActionPurposes,
   };
 })(window);

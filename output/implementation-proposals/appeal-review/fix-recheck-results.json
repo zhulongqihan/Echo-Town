@@ -1,0 +1,52 @@
+{
+  "pending": [
+    {
+      "age": 15,
+      "status": "pending",
+      "uiText": "目标还需：少年阶段完成一次修理铺工作",
+      "jobAvailable": true
+    },
+    {
+      "age": 17,
+      "status": "pending",
+      "uiText": "目标还需：少年阶段完成一次修理铺工作",
+      "jobAvailable": true
+    }
+  ],
+  "future": {
+    "label": "先用小单补完旧维修单",
+    "age": 36,
+    "checks": [
+      {
+        "label": "需要完成前一段经历（成功或失败均可）",
+        "met": true
+      },
+      {
+        "label": "需要手艺 4",
+        "met": false
+      },
+      {
+        "label": "为这件事留出钱 6",
+        "met": false
+      },
+      {
+        "label": "为这件事留出精力 2",
+        "met": true
+      },
+      {
+        "label": "小单返修检定最低 3 / 6，仍有失败可能",
+        "met": false
+      }
+    ],
+    "readOnly": true,
+    "actualCost": "钱 −6 · 精力 −2 · 手艺检定 6",
+    "actualDifficulty": 6,
+    "bothOutcomeBranches": true
+  },
+  "challenge": {
+    "definitionRules": "6.2.0",
+    "exportRules": "6.2.0",
+    "oldEnvelopeImported": true,
+    "stateUnchanged": true
+  }
+}

@@ -16,6 +16,12 @@
   let drawerSourceKey = null;
   let drawerTab = "people";
 
+  // Resolve the same event/stage artwork chosen by UI.renderGame.
+  function getScenePlace(round) {
+    const art = CONTENT.media?.eventArt?.[round?.id] || CONTENT.media?.stageArt?.[round?.stage];
+    return art?.place || PLACES[round?.stage] || "回声镇";
+  }
+
   function text(selector, value) {
     const element = $(selector);
     if (element) element.textContent = String(value ?? "");
@@ -60,7 +66,9 @@
       const preview = ENGINE.previewAction({ type: "LIFE_ACTION", id: spot.id });
       const available = Boolean(preview.available && phase === "management");
       const reason = phase !== "management" ? "先处理右侧当前步骤" : preview.reason;
-      return `<button class="scene-hotspot ${available ? "is-ready" : "is-unavailable"}" style="--hotspot-x:${spot.x}%;--hotspot-y:${spot.y}%" data-action="life-action" data-life-action-id="${spot.id}" ${available ? "" : "disabled"} title="${escape(available ? preview.cost : reason)}"><span class="hotspot-dot" aria-hidden="true"></span><span>${escape(spot.label)}<small>${escape(available ? preview.cost : reason)}</small></span></button>`;
+      const capped = (preview.growth || []).filter((item) => item.capped && item.applied === 0).map((item) => item.label + "已达本阶段上限").join("、");
+      const hint = available ? [preview.cost, capped].filter(Boolean).join(" · ") : reason;
+      return `<button class="scene-hotspot ${available ? "is-ready" : "is-unavailable"}" style="--hotspot-x:${spot.x}%;--hotspot-y:${spot.y}%" data-action="life-action" data-life-action-id="${spot.id}" ${available ? "" : "disabled"} title="${escape(available ? [preview.cost, ...(preview.notices || [])].join("；") : reason)}"><span class="hotspot-dot" aria-hidden="true"></span><span>${escape(spot.label)}<small>${escape(hint)}</small></span></button>`;
     }).join("");
   }
 
@@ -217,7 +225,7 @@
       closeDrawer();
     }
     text("#scene-stage-caption", `${stage.label} · ${life.age} 岁`);
-    text("#scene-place-name", PLACES[stage.id] || "回声镇");
+    text("#scene-place-name", getScenePlace(round));
     text("#scene-current-title", round.title);
     text("#scene-current-copy", life.lastAction?.result || round.copy);
     text("#scene-current-label", life.lastAction ? "这一页已经发生" : "眼前的事情");
@@ -235,5 +243,5 @@
     if (drawerTab === "project" && $("#town-drawer")?.open) text("#drawer-title", TABS.project);
   }
 
-  global.EchoTownScene = { bind, render, openDrawer, closeDrawer };
+  global.EchoTownScene = { bind, render, openDrawer, closeDrawer, getScenePlace };
 })(window);

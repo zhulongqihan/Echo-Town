@@ -4,9 +4,9 @@
   "project_name": "回声镇：一生一局",
   "framework_gate": "F0B",
   "current_rule": "development",
-  "development_phase": "D7吸引力问题改进中",
+  "development_phase": "D7吸引力改进验收完成，阶段同步中",
   "development_authorization": "EVENT-20261023-028",
-  "state_synced_at": "2026-10-23T17:27:28+08:00",
+  "state_synced_at": "2026-10-23T18:23:10+08:00",
   "allowed_runtime_roots": [
     "development/"
   ],
@@ -214,6 +214,8 @@
     "product_commit": "de6c50038857c73cf50db4ed15c0f069618ba693",
     "remote_verified_at": "2026-10-23T16:53:03+08:00",
     "online_site_published": false,
-    "policy": "docs/repository_sync.md"
+    "policy": "docs/repository_sync.md",
+    "configuration_commit": "2bd084d769d48d25d8bba4711513b0981b65b646",
+    "current_delivery_status": "6.2.1本地验收与打包完成；本次产品提交推送后回填远端确认"
   }
 }

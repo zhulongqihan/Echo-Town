@@ -53,8 +53,6 @@
     getAvailability,
     hasItem,
     getLifeAvailability,
-    getLifeActionCopy,
-    getPrimaryLifeActionIds,
     getAction,
     getSkillLevel,
     getSkillLevelName,
@@ -148,6 +146,7 @@
       }
       if (["START_LIFE", "ADVANCE_ROUND", "CONFIRM_LEGACIES", "HOME", "CONTINUE_LIFE"].includes(command.type)) {
         window.scrollTo({ top: 0, behavior: "instant" });
+        if ($("#operation-scroll")) $("#operation-scroll").scrollTop = 0;
         if (selector && $(selector)) { $(selector).setAttribute("tabindex", "-1"); $(selector).focus({ preventScroll: true }); }
       } else if (selector) focusResult(selector);
     }
@@ -178,13 +177,8 @@
     return ENGINE.previewAction ? ENGINE.previewAction({ type, id }) : { available: fallback?.available ?? true, reason: fallback?.reason || "", changes: [], remaining: null, test: null };
   }
 
-  function previewText(result, fallback = "") {
-    const changes = (result.changes || []).map((item) => typeof item === "string" ? item : "").filter(Boolean).join(" · ");
-    return changes || fallback;
-  }
-
   function costText(result, fallback = "") {
-    if (typeof result.cost === "string") return [result.cost, ...(result.requirements || []).map((requirement) => `${requirement.met ? "✓" : "○"} ${requirement.label}`)].join(" · ");
+    if (typeof result.cost === "string") return result.cost === "不消耗行动点或资源" ? "不消耗行动点、现金或精力" : result.cost;
     if (!result.cost || typeof result.cost !== "object") return fallback;
     const keys = { actionPoints: "行动点", money: "元", energy: "精力", health: "身体", pressure: "压力" };
     const parts = Object.entries(keys).filter(([key]) => Number(result.cost[key]) > 0).map(([key, label]) => `${result.cost[key]} ${label}`);
@@ -198,6 +192,24 @@
       return `成功后：${format(result.outcomes.success)}；失败后：${format(result.outcomes.failure)}`;
     }
     return `执行后：${result.remaining.money} 元 · 精力 ${result.remaining.energy} · ${result.remaining.actionPoints} 行动点`;
+  }
+
+  function choiceMetrics(result, fallback = "") {
+    const costs = new Set(String(result.cost || "").split(" · ").map((part) => part.replace(/\s/g, "")));
+    const changes = (result.changes || []).filter((part) => !costs.has(part.replace(/\s/g, "")) && !result.notices?.includes(part));
+    const copy = result.available ? changes.join(" · ") || (Array.isArray(result.changes) ? "没有额外数值变化" : fallback) : result.reason;
+    const notices = (result.notices || []).join("；");
+    return `<span class="choice-metrics"><small>${escapeHtml(costText(result))}</small>${copy ? `<em>${escapeHtml(copy)}</em>` : ""}</span>${notices ? `<small class="growth-note">${escapeHtml(notices)}</small>` : ""}`;
+  }
+
+  function renderChoiceCalculation(selector, entries) {
+    const target = $(selector);
+    if (!target) return;
+    target.innerHTML = entries.map(({ label, result }) => {
+      const requirements = (result.requirements || []).map((item) => `${item.met ? "✓" : "○"} ${item.label}`).join(" · ");
+      const remaining = remainingText(result) || result.reason;
+      return `<div class="choice-calculation"><strong>${escapeHtml(label)}</strong>${requirements ? `<p>${escapeHtml(requirements)}</p>` : ""}<p>${escapeHtml(remaining || "没有额外门槛")}</p></div>`;
+    }).join("");
   }
 
   function getWish(life) {
@@ -421,12 +433,16 @@
     const resolved = opportunityResolved(life);
     const chosen = getOpportunity(opportunity.selectedId);
     $("#opportunity-state").textContent = chosen ? "已接住" : opportunity.skipped ? "已跳过" : "任选其一";
-    $("#opportunity-note").textContent = "不消耗行动点；现金和精力成本会当场扣除，也可以跳过。";
+    $("#opportunity-note").textContent = "不占行动点；标出的现金与精力当场扣除。";
+    const calculations = [];
     $("#opportunity-list").innerHTML = opportunity.drawnIds.map(getOpportunity).filter(Boolean).map((item) => {
       const result = preview("OPPORTUNITY", item.id, getOpportunityAvailability(life, item));
+      const copy = CONTENT.getOpportunityCopy(item, life);
+      calculations.push({ label: copy.label, result });
       const disabled = resolved || !result.available || Boolean(life.lastAction);
-      return `<button class="opportunity-card ${item.id === opportunity.selectedId ? "is-selected" : ""}" data-action="choose-opportunity" data-id="${item.id}" ${disabled ? "disabled" : ""}><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span><small>${escapeHtml(costText(result, item.cost))}</small><em>${escapeHtml(result.available ? previewText(result, item.preview) : result.reason)}</em><small class="action-remaining">${escapeHtml(remainingText(result))}</small></button>`;
+      return `<button class="opportunity-card ${item.id === opportunity.selectedId ? "is-selected" : ""}" data-action="choose-opportunity" data-id="${item.id}" ${disabled ? "disabled" : ""}><strong>${escapeHtml(copy.label)}</strong><span>${escapeHtml(copy.detail)}</span>${choiceMetrics(result, item.preview)}</button>`;
     }).join("") || `<span class="empty-note">这次没有新的机会，跳过后继续安排生活。</span>`;
+    renderChoiceCalculation("#opportunity-calculation", calculations);
     $("#skip-opportunity").classList.toggle("is-hidden", resolved);
     $("#skip-opportunity").disabled = resolved || Boolean(life.lastAction);
     const feedback = $("#opportunity-feedback");
@@ -435,29 +451,30 @@
     feedback.innerHTML = result ? `<strong>${escapeHtml(result.title)}</strong><span>${escapeHtml(result.copy)}</span><div>${(result.changes || []).map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>` : "";
   }
 
-  function renderLifeManagement(life) {
+  function renderLifeManagement(life, pursuit) {
     const blocked = Boolean(life.lastAction) || !opportunityResolved(life);
     const nextRound = CONTENT.rounds[life.round + 1];
     const bill = nextRound ? getLivingCost(nextRound.age) : { cost: 0 };
     $("#life-action-points").textContent = `${life.actionPoints} / ${CONTENT.actionPointsPerRound} 点`;
-    $("#management-note").textContent = "行动可分配给成长、关系或工作；也可提前结束，留住资源。";
+    const recommendations = ENGINE.getLifeRecommendations(life, pursuit);
+    const recommendationById = new Map(recommendations.map((item) => [item.id, item]));
+    $("#management-note").textContent = recommendations.length ? "按眼下能得到的成长与下一件事推荐；也可以提前结束。" : "当前可保留资源，直接面对这一节点的事。其它安排仍可自行选择。";
     $("#living-cost").textContent = nextRound ? `下个节点生活费 ${bill.cost} 元` : "已是最后一个节点";
     $("#cashflow").textContent = `收入 ${life.cashflow.income} · 支出 ${life.cashflow.expenses} · 借款 ${life.cashflow.debt} 元`;
     const renderOption = (action) => {
       const result = preview("LIFE_ACTION", action.id, getLifeAvailability(life, action));
       const disabled = blocked || !result.available;
       const reason = life.lastAction ? "本节点事件已结束" : !opportunityResolved(life) ? "先处理机会" : result.reason;
-      const copy = getLifeActionCopy(life, action);
-      return `<button class="life-action-card" data-action="life-action" data-life-action-id="${action.id}" ${disabled ? "disabled" : ""}><span class="life-action-body"><strong>${escapeHtml(action.label)} <span class="inline-cost">${action.points || 1} 行动点</span></strong><small>${escapeHtml(costText(result, copy.cost))}</small><em>${escapeHtml(disabled ? reason : previewText(result, copy.preview))}</em>${disabled ? "" : `<small class="action-remaining">${escapeHtml(remainingText(result))}</small>`}</span></button>`;
+      const recommendation = recommendationById.get(action.id)?.reason;
+      const hint = recommendation?.startsWith("本次仍可获得") ? recommendation.split("；").slice(1).join("；") : recommendation;
+      return `<button class="life-action-card" data-action="life-action" data-life-action-id="${action.id}" ${disabled ? "disabled" : ""}><span class="life-action-body"><strong>${escapeHtml(action.label)}</strong>${hint && !disabled ? `<small class="action-hint">${escapeHtml(hint)}</small>` : ""}${choiceMetrics(disabled ? { ...result, available: false, reason } : result)}</span></button>`;
     };
-    const primaryIds = getPrimaryLifeActionIds(life);
-    if (life.age >= 15 && (life.resources.energy <= 3 || life.resources.pressure >= 8)) primaryIds.unshift("routine-rest");
-    const primaryActions = [...new Set(primaryIds)].map(getLifeAction).filter(Boolean).slice(0, life.age >= 15 ? 1 : 3);
+    const primaryActions = recommendations.map((item) => getLifeAction(item.id)).filter(Boolean).slice(0, life.age >= 15 ? 2 : 3);
     const primarySet = new Set(primaryActions.map((action) => action.id));
     $("#life-action-list").innerHTML = primaryActions.map(renderOption).join("");
     const projectView = ENGINE.getProjectView(life);
     const communityAction = projectView?.unlock?.kind === "life" && projectView.unlock.unlocked ? ENGINE.getLifeAction(projectView.unlock.actionId) : null;
-    if (communityAction && life.age >= communityAction.minAge) {
+    if (communityAction && life.age >= communityAction.minAge && !primarySet.has(communityAction.id)) {
       $("#life-action-list").insertAdjacentHTML("beforeend", renderOption(communityAction));
       primarySet.add(communityAction.id);
     }
@@ -473,6 +490,7 @@
     $("#work-section").classList.toggle("is-hidden", life.age < 15);
     $("#job-list").innerHTML = visibleJobs.map(renderOption).join("");
     $("#other-job-list").innerHTML = jobs.filter((job) => !visibleJobIds.has(job.id)).map(renderOption).join("");
+    renderChoiceCalculation("#management-calculation", [...ENGINE.getLifeActions(), ...jobs.filter((job) => life.age >= job.minAge)].map((action) => ({ label: action.label, result: preview("LIFE_ACTION", action.id) })));
     const currentJob = getJob(life.jobId);
     $("#job-status").innerHTML = currentJob ? `<strong>${escapeHtml(currentJob.label)}</strong><span>上班 ${life.jobShifts} 次 · 做过 ${life.jobHistory.length} 种工作</span>` : `<span>15 岁以后，可以用行动点换取工资。</span>`;
     $("#inventory-limit").textContent = `${life.inventory.length} / ${CONTENT.maxInventory} 格`;
@@ -480,12 +498,13 @@
     $("#shop-list").innerHTML = CONTENT.items.map((item) => {
       const result = preview("BUY_ITEM", item.id, { available: !hasItem(life, item.id) && life.actionPoints > 0 && life.resources.money >= item.price && life.inventory.length < CONTENT.maxInventory });
       const owned = hasItem(life, item.id);
-      return `<button class="shop-item" data-action="buy-item" data-item-id="${item.id}" ${blocked || !result.available ? "disabled" : ""}><span><strong>${escapeHtml(item.label)} · ${item.price} 元</strong><small>${escapeHtml(item.detail)}</small><small>${escapeHtml(owned ? "已拥有" : result.available ? remainingText(result) : result.reason)}</small></span><b>${owned ? "已拥有" : "购买"}</b></button>`;
+      return `<button class="shop-item" data-action="buy-item" data-item-id="${item.id}" ${blocked || !result.available ? "disabled" : ""}><span><strong>${escapeHtml(item.label)} · ${item.price} 元 · 1 行动点</strong><small>${escapeHtml(item.detail)}</small><small>${escapeHtml(owned ? "已拥有" : result.available ? remainingText(result) : result.reason)}</small></span><b>${owned ? "已拥有" : "购买"}</b></button>`;
     }).join("");
     const feedback = life.lifeFeedback;
     const projectNotice = Boolean(life.projects?.current && ["开始建立固定客源", "已退出客源项目", "已接下项目", "已退出项目"].includes(feedback?.title));
     $("#life-feedback").classList.toggle("is-hidden", !feedback || projectNotice);
-    $("#life-feedback").innerHTML = feedback ? `<strong>${escapeHtml(feedback.title)}</strong><span>${escapeHtml(feedback.copy)}</span><div>${[...(feedback.changes || []), ...(feedback.newItems || []).map((id) => `获得${getItem(id)?.label || id}`), ...(feedback.newSecrets || []).map((id) => `彩蛋：${getSecret(id)?.label || id}`), ...(feedback.newMoments || []).map((id) => `片段：${getMoment(id)?.label || id}`)].map((item) => `<em>${escapeHtml(item)}</em>`).join("")}</div>` : "";
+    const receipt = feedback ? [...(feedback.changes || []), ...(feedback.newItems || []).map((id) => `获得${getItem(id)?.label || id}`), ...(feedback.newSecrets || []).map((id) => `彩蛋：${getSecret(id)?.label || id}`), ...(feedback.newMoments || []).map((id) => `片段：${getMoment(id)?.label || id}`)] : [];
+    $("#life-feedback").innerHTML = feedback ? `<details class="life-receipt"><summary><strong>${escapeHtml(feedback.title)}</strong><span>${receipt.map(escapeHtml).join(" · ")}</span></summary><p>${escapeHtml(feedback.copy)}</p></details>` : "";
     $("#management-more-summary").textContent = `物品 ${life.inventory.length}/${CONTENT.maxInventory} · 片段 ${life.moments.length}`;
     $("#life-moment-count").textContent = `${life.moments.length} / ${CONTENT.maxMoments}`;
     renderMomentList("#life-moments", life.moments);
@@ -496,10 +515,10 @@
     if (document.activeElement !== input) input.value = String(repayMaximum);
     $("[data-action='repay-debt']").disabled = repayMaximum < 1 || blocked;
     $("#repay-note").textContent = `待还 ${life.cashflow.debt} 元；不消耗行动点`;
-    $("#end-life-actions").textContent = `结束生活安排${life.actionPoints ? `（放弃余下 ${life.actionPoints} 点）` : ""} →`;
+    $("#end-life-actions").textContent = `去处理这一节点的事${life.actionPoints ? `（余下 ${life.actionPoints} 点不再使用）` : ""} →`;
   }
 
-  function renderStrategyFocus(life, round, stage) {
+  function renderStrategyFocus(life, round, stage, pursuit) {
     const summary = ENGINE.getStageGoals?.(life);
     const routeId = summary?.routeId || life.routeId || life.strategy?.routeId || "craft";
     const goals = summary?.goals || [];
@@ -507,13 +526,15 @@
     const stageRounds = CONTENT.rounds.filter((item) => item.stage === round.stage);
     const deadline = stageRounds[stageRounds.length - 1]?.age || life.age;
     const remaining = stageRounds.filter((item) => item.age >= life.age).length;
+    const goalReady = ["ready", "achieved"].includes(current?.status);
     $("#route-select").value = routeId;
-    $("#stage-goal-label").textContent = `${summary?.stageLabel || stage.label}目标 · ${deadline} 岁结算 · 余 ${remaining} 个节点`;
-    $("#chapter-focus-title").textContent = current?.label || ROUTES.find((route) => route.id === routeId)?.label || "给这一阶段留下成果";
+    $("#stage-goal-label").textContent = `${summary?.stageLabel || stage.label}目标${goalReady ? "已满足" : ""} · ${deadline} 岁结算 · 余 ${remaining} 个节点`;
+    $("#chapter-focus-title").textContent = goalReady && pursuit ? pursuit.label : current?.label || ROUTES.find((route) => route.id === routeId)?.label || "给这一阶段留下成果";
     const statuses = { pending: "进行中", ready: "条件已满足，阶段末记入成果", achieved: "已完成", missed: "未完成，仍可继续下一阶段", "legacy-settled": "旧制经历 · 不追补、不判失败" };
-    $("#chapter-focus-detail").textContent = current ? statuses[current.status] || current.detail : getStageFocus(stage.id).detail;
+    $("#chapter-focus-detail").textContent = goalReady && pursuit ? pursuit.detail : current ? statuses[current.status] || current.detail : getStageFocus(stage.id).detail;
+    $("#chapter-focus-detail").classList.toggle("is-hidden", Boolean(pursuit));
     const unmet = current?.conditions?.filter((condition) => !condition.met) || [];
-    $("#stage-goal-progress").textContent = current?.status === "legacy-settled" ? "新规则从后续完整阶段接入；原有资源与经历保留。" : unmet.length ? `下一步：${unmet.map((condition) => condition.label).join("；")}` : current ? "保持成果，继续安排这一段人生。" : "每个阶段独立结算，晚年也可以转向。";
+    $("#stage-goal-progress").textContent = current?.status === "legacy-settled" ? "新规则从后续完整阶段接入；原有资源与经历保留。" : unmet.length ? `目标还需：${unmet.map((condition) => condition.label).join("；")}` : pursuit ? goalReady && pursuit.age > life.age ? `${pursuit.age} 岁将遇到。现在可照顾关系、恢复精力，或继续其它成长。` : `${goalReady && pursuit.nextStep.command?.type === "EVENT_ACTION" ? "" : pursuit.nextStep.label + "。"}${pursuit.nextStep.detail || ""}` : "这一阶段已留下成果，可以保留资源，看看别的选择。";
     $("#stage-goal-list").innerHTML = goals.map((goal) => `<section class="goal-track ${goal.routeId === routeId ? "is-selected" : ""}"><strong>${escapeHtml(ROUTES.find((route) => route.id === goal.routeId)?.label || goal.label)} · ${escapeHtml(statuses[goal.status] || "进行中")}</strong><p>${escapeHtml(goal.detail || "")}</p><ul>${(goal.conditions || []).map((condition) => `<li class="${condition.met ? "is-met" : ""}">${condition.met ? "✓" : "○"} ${escapeHtml(condition.label)}${condition.current !== undefined && condition.target !== undefined ? `（${condition.current}/${condition.target}）` : ""}</li>`).join("")}</ul></section>`).join("");
     const next = CONTENT.rounds[life.round + 1];
     const bill = next ? getLivingCost(next.age).cost : 0;
@@ -539,11 +560,14 @@
     $("#life-management").classList.toggle("is-hidden", phase !== "management");
     $("#event-panel").classList.toggle("is-hidden", phase !== "event");
     $("#feedback").classList.toggle("is-hidden", phase !== "feedback");
+    $("#operation-actions").classList.toggle("is-hidden", !["management", "feedback"].includes(phase));
+    $("#end-life-actions").classList.toggle("is-hidden", phase !== "management");
+    $("#advance-round").classList.toggle("is-hidden", phase !== "feedback");
     $("#challenge-preview").classList.toggle("is-hidden", phase === "event" || phase === "feedback");
     const previous = [];
     if (opportunityResolved(life)) {
       const selected = getOpportunity(life.opportunity?.selectedId);
-      previous.push({ title: selected ? `机会：${selected.label}` : "机会：这次跳过", copy: life.opportunityFeedback?.copy || "没有为机会花费资源。", changes: life.opportunityFeedback?.changes || [] });
+      previous.push({ title: selected ? life.opportunityFeedback?.title || `机会：${selected.label}` : "机会：这次跳过", copy: life.opportunityFeedback?.copy || "没有为机会花费资源。", changes: life.opportunityFeedback?.changes || [] });
     }
     if (index >= 2) {
       const result = life.lifeFeedback;
@@ -636,7 +660,8 @@
       (condition.conditions || []).forEach(collectIds);
     };
     CONTENT.strategy.goals.find((goal) => goal.stageId === round.stage && goal.routeId === life.strategy.routeId)?.conditions.forEach(collectIds);
-    const score = (action) => Number(getAvailability(life, action).available) * 10 + Number(action.strategy?.routeId === life.strategy.routeId) * 3 + Number(goalIds.has(action.id)) * 2;
+    const pursuit = ENGINE.getNextPursuit(life);
+    const score = (action) => Number(getAvailability(life, action).available) * 10 + Number(action.id === pursuit?.actionId && pursuit.round === life.round) * 4 + Number(action.strategy?.routeId === life.strategy.routeId) * 3 + Number(goalIds.has(action.id)) * 2;
     const preferred = eventActions.filter((action) => !action.strategy?.conservative).slice().sort((a, b) => score(b) - score(a)).slice(0, 2);
     const conservative = eventActions.filter((action) => action.strategy?.conservative);
     const primaryIds = new Set([...preferred, ...conservative].map((action) => action.id));
@@ -645,9 +670,10 @@
       const result = preview("EVENT_ACTION", action.id, getAvailability(life, action));
       const locked = Boolean(life.lastAction) || !result.available;
       const test = result.test ? `<span class="action-test">${escapeHtml(result.test.label)}：预计 ${result.test.minimum}—${result.test.maximum}，门槛 ${result.test.difficulty}</span>` : "";
-      return `<button class="action-card" data-action="choose-action" data-action-id="${action.id}" data-shortcut="${index + 1}" ${locked ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail || "")}</span><small>${escapeHtml(costText(result, action.cost || ""))}</small>${test}<em>${escapeHtml(locked ? result.reason || "本节点已选择" : previewText(result, action.preview || ""))}</em>${locked ? "" : `<small class="action-remaining">${escapeHtml(remainingText(result))}</small>`}</span></button>`;
+      return `<button class="action-card" data-action="choose-action" data-action-id="${action.id}" data-shortcut="${index + 1}" ${locked ? "disabled" : ""}><span class="action-number">${index + 1}</span><span class="action-body"><strong>${escapeHtml(action.label)}</strong><span>${escapeHtml(action.detail || "")}</span>${test}${choiceMetrics(locked ? { ...result, available: false, reason: result.reason || "本节点已选择" } : result, action.preview || "")}</span></button>`;
     });
     $("#action-list").innerHTML = cards.slice(0, primaryIds.size).join("") + (cards.length > primaryIds.size ? `<details class="quiet-details other-event-actions"><summary>其它人生选择（${cards.length - primaryIds.size}）</summary><div class="action-list">${cards.slice(primaryIds.size).join("")}</div></details>` : "");
+    renderChoiceCalculation("#event-calculation", orderedActions.map((action) => ({ label: action.label, result: preview("EVENT_ACTION", action.id) })));
     const clues = CONTENT.sceneClues?.[round.id] || [];
     const sceneClues = $("#scene-clues");
     if (sceneClues) {
@@ -665,7 +691,7 @@
       sceneFeedback.innerHTML = sceneResult ? `<strong>${escapeHtml(sceneResult.title)}</strong><span>${escapeHtml(sceneResult.copy)}</span><div>${(sceneResult.changes || []).map((item) => `<em>${escapeHtml(item)}</em>`).join("") || "<em>这件小事没有改变数值，但已经留在你的记录里。</em>"}</div>` : "";
     }
     renderOpportunityPanel(life);
-    renderLifeManagement(life);
+    renderLifeManagement(life, pursuit);
     const feedback = $("#feedback");
     feedback.classList.toggle("is-hidden", !life.lastAction);
     if (life.lastAction) {
@@ -689,7 +715,7 @@
     renderLifeTags(life);
     renderTown("#town-list", life.town);
     const nextRounds = CONTENT.rounds.slice(life.round + 1, life.round + 4);
-    renderStrategyFocus(life, round, stage);
+    renderStrategyFocus(life, round, stage, pursuit);
     renderPhase(life, round);
     $("#upcoming-list").innerHTML = nextRounds.length ? nextRounds.map((item) => `<span>${item.age}岁 · ${escapeHtml(item.title)}</span>`).join("") : `<span>人生的最后一页已经来到。</span>`;
   }

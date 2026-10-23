@@ -50,7 +50,7 @@ process.stdout.write(JSON.stringify({base:box.base,effective:box.EchoTownContent
     require(result.returncode == 0, f"真实内容加载失败: {result.stderr}")
     loaded = json.loads(result.stdout)
     base, content = loaded["base"], loaded["effective"]
-    require(content["version"] == manifest["content_version"] == review["content_version"] == review["review_version"] == "6.2.0", "内容版本未统一到 6.2.0")
+    require(content["version"] == manifest["content_version"] == review["content_version"] == review["review_version"] == "6.2.1", "内容版本未统一到 6.2.1")
     require(review.get("baseline_no_ai") is True and review.get("runtime_ai") is False, "缺少运行时无 AI 的审阅声明")
     rules = manifest["rules"]
     expected = {"life_rounds":23,"stages":5,"actions_total":107,"base_actions_total":69,"added_actions_total":38,"actions_min_per_round":4,"conservative_actions":23,"life_actions":7,"jobs":6,"items":6,"moments":12,"action_points_per_round":2,"profiles":5,"talents":8,"goals":6,"legacy_choices":3,"legacy_count":16,"achievements":16,"secrets":11,"opportunities":18,"interests":12,"characters":8,"strategy_routes":3,"stage_goals":15,"event_chains":3,"image_count":10,"max_image_bytes":5*1024*1024}

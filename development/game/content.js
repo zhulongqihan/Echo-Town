@@ -17,7 +17,7 @@
   });
 
   const CONTENT = {
-    version: "6.2.0",
+    version: "6.2.1",
     maxRounds: 23,
     maxLegacyChoices: 3,
     actionPointsPerRound: 2,
@@ -59,18 +59,18 @@
     },
     media: {
       stageArt: {
-        childhood: { src: "assets/stage-childhood.webp", alt: "童年：河岸边的旧院子与收音机", caption: "童年 · 先学会对一件小事耐心" },
-        adolescence: { src: "assets/stage-adolescence.webp", alt: "少年：学校走廊与河桥", caption: "少年 · 成绩、朋友与期待开始拉扯" },
-        youth: { src: "assets/stage-youth.webp", alt: "初入社会：小镇车站、自行车与通向远方的路", caption: "初入社会 · 第一次把选择写进履历" },
-        middle: { src: "assets/stage-middle.webp", alt: "成家立业：厨房、修理铺与雨中的河桥", caption: "成家立业 · 把日子和责任一起接住" },
-        later: { src: "assets/stage-later.webp", alt: "后半生：暮色河桥、灯笼与旧笔记本", caption: "后半生 · 想一想什么值得留下" },
+        childhood: { src: "assets/stage-childhood.webp", place: "临河的老院子", alt: "童年：河岸边的旧院子与收音机", caption: "童年 · 先学会对一件小事耐心" },
+        adolescence: { src: "assets/stage-adolescence.webp", place: "学校与修理铺", alt: "少年：学校走廊与河桥", caption: "少年 · 成绩、朋友与期待开始拉扯" },
+        youth: { src: "assets/stage-youth.webp", place: "长河街口", alt: "初入社会：小镇车站、自行车与通向远方的路", caption: "初入社会 · 第一次把选择写进履历" },
+        middle: { src: "assets/stage-middle.webp", place: "灯还亮着的街坊", alt: "成家立业：厨房、修理铺与雨中的河桥", caption: "成家立业 · 把日子和责任一起接住" },
+        later: { src: "assets/stage-later.webp", place: "河桥边的晚风", alt: "后半生：暮色河桥、灯笼与旧笔记本", caption: "后半生 · 想一想什么值得留下" },
       },
       eventArt: {
-        "childhood-school": { src: "assets/scene-school.webp", alt: "临河学校的选择：河边走廊与三张课桌", caption: "学校 · 三个位置，三种看见世界的方式" },
-        "childhood-festival": { src: "assets/scene-festival.webp", alt: "回声镇灯会：河岸舞台、灯笼与讲故事的孩子", caption: "灯会 · 有灯，也要有人把故事说下去" },
-        "youth-departure": { src: "assets/scene-station.webp", alt: "长河车站：年轻人带着行李准备独自出发", caption: "车站 · 第一次把熟悉的路留在身后" },
-        "middle-flood": { src: "assets/scene-flood.webp", alt: "暴雨中的河桥：镇民搬运木箱、加固堤坝", caption: "暴雨 · 一座桥由许多双手一起守住" },
-        "later-farewell": { src: "assets/scene-cinema.webp", alt: "旧电影院：一位老人坐在散场后的银幕前", caption: "散场后 · 还有一束光替你留在原地" },
+        "childhood-school": { src: "assets/scene-school.webp", place: "临河学校", alt: "临河学校的选择：河边走廊与三张课桌", caption: "学校 · 三个位置，三种看见世界的方式" },
+        "childhood-festival": { src: "assets/scene-festival.webp", place: "河岸灯会", alt: "回声镇灯会：河岸舞台、灯笼与讲故事的孩子", caption: "灯会 · 有灯，也要有人把故事说下去" },
+        "youth-departure": { src: "assets/scene-station.webp", place: "长河车站", alt: "长河车站：年轻人带着行李准备独自出发", caption: "车站 · 第一次把熟悉的路留在身后" },
+        "middle-flood": { src: "assets/scene-flood.webp", place: "暴雨中的河桥", alt: "暴雨中的河桥：镇民搬运木箱、加固堤坝", caption: "暴雨 · 一座桥由许多双手一起守住" },
+        "later-farewell": { src: "assets/scene-cinema.webp", place: "旧电影院", alt: "旧电影院：一位老人坐在散场后的银幕前", caption: "散场后 · 还有一束光替你留在原地" },
       },
     },
     sceneClues: {
@@ -125,24 +125,24 @@
       { id: "routine-record", label: "写下今天的账", detail: "记下收入、支出和一个不想忘的细节。", minAge: 13, points: 1, cost: "1行动点 · 精力-1", preview: "+1 表达；记录目标+1；现金流更清楚", effect: { resources: { energy: -1 }, skills: { expression: 1 } }, goalPoints: { record: 1 }, bonusItem: "record", tags: ["记录", "复盘"] },
     ],
     opportunities: [
-      { id: "borrowed-book", label: "有人借给你一本书", detail: "书页里夹着一张没有署名的纸条：如果看完，讲给下一个人听。", maxAge: 11, cost: "不消耗行动点 · 选择后本节点不能接其他机会", preview: "+1 学识，解锁学习路线", effect: { skills: { study: 1 }, resources: { happiness: 1 }, flags: ["borrowed-book"] }, goalPoints: { learn: 1, record: 1 }, routeTags: ["study-route"], tags: ["学识", "传递"] },
-      { id: "repair-bench", label: "后院多了一张工作台", detail: "祁叔没有叫你帮忙，只把一把扳手放在最顺手的位置。", maxAge: 11, cost: "不消耗行动点 · 需要手艺或小镇基础", preview: "+1 手艺，师长关系+1", requires: [{ type: "any", requirements: [{ type: "skill", key: "craft", min: 1 }, { type: "world", key: "shop", min: 1 }] }], effect: { skills: { craft: 1 }, relationships: { mentor: 1 }, flags: ["bench-invite"] }, goalPoints: { learn: 1, town: 1 }, routeTags: ["craft-route"], tags: ["手艺", "师长"] },
-      { id: "school-duty", label: "老师把一项班级工作交给你", detail: "事情不大，却需要你记住每个人什么时候会迟到。", minAge: 8, maxAge: 17, cost: "精力-1 · 压力+1", preview: "表达+1、体谅+1、师长+1", effect: { resources: { pressure: 1, energy: -1 }, skills: { expression: 1, empathy: 1 }, relationships: { mentor: 1 }, flags: ["class-duty"] }, goalPoints: { learn: 1, home: 1, town: 1 }, routeTags: ["community-route"], tags: ["责任", "学校"] },
-      { id: "red-envelope", label: "过年时长辈悄悄塞来红包", detail: "钱不多，但你第一次可以决定是立刻花掉、攒下来，还是拿去买一件真正需要的东西。", maxAge: 17, cost: "不消耗行动点 · 选择会改变现金流", preview: "+6 钱，家庭关系+1", effect: { resources: { money: 6, happiness: 1 }, relationships: { family: 1 }, flags: ["red-envelope"] }, goalPoints: { home: 1 }, routeTags: ["care-route"], tags: ["家人", "经济"] },
-      { id: "club-invite", label: "社团把最后一个名额留给你", detail: "加入之后会少一段自由时间，但你会遇见一群正在认真做事的人。", minAge: 12, maxAge: 17, cost: "精力 -1", preview: "+1 朋友，解锁一条兴趣路线", effect: { relationships: { friend: 1 }, resources: { happiness: 1, energy: -1 }, flags: ["club-member"] }, goalPoints: { connection: 1 }, routeTags: ["interest-route"], tags: ["兴趣", "同伴"] },
-      { id: "first-crush", label: "有人把座位往你这边挪了一点", detail: "你可以把它当成一件小事，也可以认真记住对方喜欢什么。", minAge: 13, maxAge: 29, cost: "不消耗行动点 · 关系需要后续投入", preview: "+1 伴侣，心气+1", effect: { relationships: { partner: 1 }, resources: { happiness: 1 }, flags: ["first-crush"] }, goalPoints: { connection: 1, free: 1 }, routeTags: ["relationship-route"], tags: ["关系", "心气"] },
-      { id: "summer-job", label: "暑假有一份临时工作", detail: "老板说得很轻松：先来三天，看看你能不能把答应的事做完。", minAge: 15, maxAge: 29, cost: "精力-2", preview: "钱+5，留下暑期工作经历", effect: { resources: { money: 5, energy: -2 }, flags: ["summer-job"] }, goalPoints: { learn: 1, free: 1 }, routeTags: ["work-route"], tags: ["工作", "现金流"] },
-      { id: "move-out", label: "有人建议你搬到镇外住", detail: "不是逃走，只是把每天的路变长一点，好让你听见不同的声音。", minAge: 18, maxAge: 49, cost: "钱-4 · 家庭关系-1", preview: "+1 胆识，打开远行路线", requires: [{ type: "resource", key: "money", min: 4, label: "需要 4 钱作为搬迁费" }], effect: { resources: { money: -4, happiness: 1 }, skills: { courage: 1 }, relationships: { family: -1 }, flags: ["moved-out"] }, goalPoints: { free: 2 }, routeTags: ["wander-route"], tags: ["离开", "自由"] },
-      { id: "night-market", label: "夜市摊主邀你合伙一晚", detail: "摊主已经备好货，请你帮忙招呼一晚客人，约定给你 4 元分成。", minAge: 18, maxAge: 49, cost: "精力-2 · 压力+1", preview: "钱+4、表达+1、集市+1", requires: [], effect: { resources: { money: 4, energy: -2, pressure: 1 }, skills: { expression: 1 }, town: { market: 1 }, flags: ["night-market"] }, goalPoints: { town: 1, record: 1 }, routeTags: ["enterprise-route"], tags: ["生意", "风险"] },
-      { id: "study-group", label: "旧同学拉你做一个长期项目", detail: "没有立刻的工资，只有一张共享表格和每周一次的碰头。", minAge: 18, maxAge: 49, cost: "精力-1 · 关系会变得更具体", preview: "+1 学识，朋友+1；项目路线推进", effect: { resources: { energy: -1 }, skills: { study: 1 }, relationships: { friend: 1 }, flags: ["long-project"] }, goalPoints: { learn: 1, connection: 1, record: 1 }, routeTags: ["project-route"], tags: ["项目", "同伴"] },
-      { id: "care-burden", label: "家里有人需要长期照料", detail: "这不是一次帮忙就能解决的事。你可以承担一部分，也可以先把分工写清楚。", minAge: 18, maxAge: 75, cost: "精力-1 · 压力+2", preview: "+1 体谅，家庭+2；照料路线推进", effect: { resources: { pressure: 2, energy: -1 }, skills: { empathy: 1 }, relationships: { family: 2 }, flags: ["care-burden"] }, goalPoints: { home: 2, connection: 1 }, routeTags: ["care-route"], tags: ["照料", "责任"] },
-      { id: "side-project", label: "你做的小东西有人愿意付钱", detail: "第一单不大，却迫使你把兴趣、质量和时间都写进一张报价单。", minAge: 18, maxAge: 49, cost: "精力-2 · 可能进入自立路线", preview: "+7 钱，手艺/表达各+1", effect: { resources: { money: 7, energy: -2 }, skills: { craft: 1, expression: 1 }, flags: ["side-project"] }, goalPoints: { learn: 2, free: 1 }, routeTags: ["enterprise-route"], tags: ["副业", "自立"] },
-      { id: "old-friend-call", label: "多年不见的人突然来电", detail: "对方没有寒暄太久，只问：你现在还在做那件事吗？", minAge: 30, maxAge: 75, cost: "不消耗行动点 · 需要主动回答", preview: "+2 朋友，打开重逢路线", effect: { relationships: { friend: 2 }, resources: { happiness: 1 }, flags: ["old-friend-call"] }, goalPoints: { connection: 2, record: 1 }, routeTags: ["relationship-route"], tags: ["重逢", "朋友"] },
-      { id: "apprentice-request", label: "年轻人问你能不能教他", detail: "他不缺教程，只缺一个愿意在他做错时不马上接手的人。", minAge: 30, maxAge: 75, cost: "精力-1 · 关系会变成传承", preview: "+1 体谅，晚辈+2；传承路线推进", effect: { resources: { energy: -1 }, skills: { empathy: 1 }, relationships: { child: 2 }, flags: ["apprentice-request"] }, goalPoints: { home: 1, town: 1, learn: 1 }, routeTags: ["handoff-route"], tags: ["传承", "晚辈"] },
-      { id: "community-meeting", label: "镇上临时召集一次公开会议", detail: "大家带来的不是同一种答案，但第一次都坐在同一张桌边。", minAge: 30, maxAge: 75, cost: "压力+1 · 需要表达或邻里基础", preview: "+1 表达，邻里+2；公共路线推进", requires: [{ type: "any", requirements: [{ type: "skill", key: "expression", min: 2 }, { type: "relationship", key: "neighbor", min: 3 }] }], effect: { resources: { pressure: 1 }, skills: { expression: 1 }, relationships: { neighbor: 2 }, town: { archive: 1 }, flags: ["community-meeting"] }, goalPoints: { town: 2, record: 1 }, routeTags: ["community-route"], tags: ["公共", "邻里"] },
-      { id: "health-warning", label: "体检报告提醒你别再透支", detail: "医生没有要求你立刻改变人生，只把一张需要认真对待的清单推到你面前。", minAge: 30, maxAge: 75, cost: "不消耗行动点 · 接受一次健康检查", preview: "+2 身体，压力-2；健康路线推进", effect: { resources: { health: 2, pressure: -2 }, flags: ["health-warning"] }, goalPoints: { free: 1, home: 1 }, routeTags: ["health-route"], tags: ["身体", "余地"] },
-      { id: "archive-box", label: "镇志里发现一只没有编号的盒子", detail: "里面不是宝藏，是几代人都没有写完的名单。你可以补一页，也可以把它交给后来的人。", minAge: 50, maxAge: 75, cost: "消耗 1 精力 · 记录会改变结算", preview: "+2 镇志，打开隐藏记录线", effect: { resources: { energy: -1 }, town: { archive: 2 }, flags: ["archive-box"], secrets: ["archive-box"] }, goalPoints: { record: 2, town: 1 }, routeTags: ["record-route"], tags: ["镇志", "彩蛋"] },
-      { id: "last-letter", label: "一封迟到了几十年的信", detail: "信里没有答案，只有一句：如果你还在，就替我把这件事说给别人听。", minAge: 50, maxAge: 75, cost: "不消耗行动点 · 需要朋友或表达基础", preview: "心气+2、朋友+1、表达+1", requires: [{ type: "any", requirements: [{ type: "relationship", key: "friend", min: 2 }, { type: "skill", key: "expression", min: 3 }] }], effect: { resources: { happiness: 2 }, relationships: { friend: 1 }, skills: { expression: 1 }, flags: ["last-letter"] }, goalPoints: { connection: 1, record: 2, free: 1 }, routeTags: ["record-route", "relationship-route"], tags: ["来信", "回声"] },
+      { id: "borrowed-book", label: "有人借给你一本书", detail: "书页里夹着一张没有署名的纸条：如果看完，讲给下一个人听。", result: "你把书带回家，读了几页，把没弄懂的地方记在纸上。", revisit: {"label":"再翻开借来的那本书","detail":"夹在书页里的纸条还在，你可以挑几页重读，顺手记下新的疑问。","result":"你重读了几页，把这次想到的问题记在纸上。"}, maxAge: 11, cost: "不消耗行动点 · 选择后本节点不能接其他机会", preview: "+1 学识，解锁学习路线", effect: { skills: { study: 1 }, resources: { happiness: 1 }, flags: ["borrowed-book"] }, goalPoints: { learn: 1, record: 1 }, routeTags: ["study-route"], tags: ["学识", "传递"] },
+      { id: "repair-bench", label: "后院多了一张工作台", detail: "祁叔没有叫你帮忙，只把一把扳手放在最顺手的位置。", result: "你照着祁叔的示范握住扳手，试着拧紧一颗松动的螺母。", revisit: {"label":"再到后院的工作台练一会儿","detail":"工作台还在老地方，祁叔把手边的零件推过来，让你试着装回去。","result":"你把零件装回去，祁叔在旁边指出了还松的一处。"}, maxAge: 11, cost: "不消耗行动点 · 需要手艺或小镇基础", preview: "+1 手艺，师长关系+1", requires: [{ type: "any", requirements: [{ type: "skill", key: "craft", min: 1 }, { type: "world", key: "shop", min: 1 }] }], effect: { skills: { craft: 1 }, relationships: { mentor: 1 }, flags: ["bench-invite"] }, goalPoints: { learn: 1, town: 1 }, routeTags: ["craft-route"], tags: ["手艺", "师长"] },
+      { id: "school-duty", label: "老师把一项班级工作交给你", detail: "老师递来一张值日表，请你把漏填的名字问清楚。", result: "你逐个问过同学，把值日表补齐，交回老师手里。", revisit: {"label":"班级又有一张表要核对","detail":"老师又递来一张需要核对的表，这回有几位同学想换一下时间。","result":"你问清大家空闲的时间，把调整后的表重新贴上墙。"}, minAge: 8, maxAge: 17, cost: "精力-1 · 压力+1", preview: "表达+1、体谅+1、师长+1", effect: { resources: { pressure: 1, energy: -1 }, skills: { expression: 1, empathy: 1 }, relationships: { mentor: 1 }, flags: ["class-duty"] }, goalPoints: { learn: 1, home: 1, town: 1 }, routeTags: ["community-route"], tags: ["责任", "学校"] },
+      { id: "red-envelope", label: "过年时长辈悄悄塞来红包", detail: "长辈让你收好这点钱，要买什么由你自己决定。", result: "你接过红包，把钱收进自己的口袋。", revisit: {"label":"长辈又留了一份红包","detail":"饭桌散了，长辈把红包放到你手边，问你最近够不够用。","result":"你收好这次的红包，陪长辈多坐了一会儿。"}, maxAge: 17, cost: "不消耗行动点 · 选择会改变现金流", preview: "+6 钱，家庭关系+1", effect: { resources: { money: 6, happiness: 1 }, relationships: { family: 1 }, flags: ["red-envelope"] }, goalPoints: { home: 1 }, routeTags: ["care-route"], tags: ["家人", "经济"] },
+      { id: "club-invite", label: "社团把最后一个名额留给你", detail: "活动室里还缺一个帮手。加入之后，每周要留出一段时间和大家一起做事。", result: "你按约定去参加活动，和身边的人一起把桌椅摆好。", revisit: {"label":"社团约你参加下一次活动","detail":"社团的活动时间又写上了黑板，熟悉的人等你一起去。","result":"你去了这次活动，和同伴一起忙完了手头的事。"}, minAge: 12, maxAge: 17, cost: "精力 -1", preview: "+1 朋友，解锁一条兴趣路线", effect: { relationships: { friend: 1 }, resources: { happiness: 1, energy: -1 }, flags: ["club-member"] }, goalPoints: { connection: 1 }, routeTags: ["interest-route"], tags: ["兴趣", "同伴"] },
+      { id: "first-crush", label: "有人把座位往你这边挪了一点", detail: "对方提起最近喜欢的一首歌，停下来等你接话。", result: "你和身边的人聊了一会儿，记住了对方说起的小事。", revisit: {"label":"熟悉的人又在旁边留了座位","detail":"这次不用重新找话题，你们可以接着上回没说完的事聊。","result":"你坐了过去，听对方说完最近的日子，也讲了讲自己。"}, minAge: 13, maxAge: 29, cost: "不消耗行动点 · 关系需要后续投入", preview: "+1 伴侣，心气+1", effect: { relationships: { partner: 1 }, resources: { happiness: 1 }, flags: ["first-crush"] }, goalPoints: { connection: 1, free: 1 }, routeTags: ["relationship-route"], tags: ["关系", "心气"] },
+      { id: "summer-job", label: "暑假有一份临时工作", detail: "老板说先来三天，把货清点好，再看看后面怎么安排。", result: "你按约定做完临时工作，领到了这几天的工钱。", revisit: {"label":"临时工作又来找你","detail":"那边又缺几天人手，问你有没有空。接下之后，仍要把这一班活做完。","result":"你把这班活做完，领到了约好的工钱。"}, minAge: 15, maxAge: 29, cost: "精力-2", preview: "钱+5，留下暑期工作经历", effect: { resources: { money: 5, energy: -2 }, flags: ["summer-job"] }, goalPoints: { learn: 1, free: 1 }, routeTags: ["work-route"], tags: ["工作", "现金流"] },
+      { id: "move-out", label: "有人建议你搬到镇外住", detail: "镇外有间空屋可以租，搬过去要花钱，也要重新安排回家的时间。", result: "你付了搬迁费，把行李带到镇外，开始熟悉新的路。", revisit: {"label":"再换一处镇外的住处","detail":"那边有间合适的屋子，搬过去还得付一笔搬迁费，也会少些回家的时间。","result":"你又整理了一次行李，付清搬迁费，换了每天回去的住处。"}, minAge: 18, maxAge: 49, cost: "钱-4 · 家庭关系-1", preview: "+1 胆识，打开远行路线", requires: [{ type: "resource", key: "money", min: 4, label: "需要 4 钱作为搬迁费" }], effect: { resources: { money: -4, happiness: 1 }, skills: { courage: 1 }, relationships: { family: -1 }, flags: ["moved-out"] }, goalPoints: { free: 2 }, routeTags: ["wander-route"], tags: ["离开", "自由"] },
+      { id: "night-market", label: "夜市摊主邀你合伙一晚", detail: "摊主已经备好货，请你帮忙招呼一晚客人，约定给你 4 元分成。", result: "你帮摊主招呼了一晚客人，收下约好的 4 元分成。", revisit: {"label":"熟悉的夜市摊位又缺人手","detail":"摊主问你这晚能不能再来，分成仍是 4 元。货已经备好，就等人招呼。","result":"你忙完这一晚，和摊主清过账，收下约好的 4 元分成。"}, minAge: 18, maxAge: 49, cost: "精力-2 · 压力+1", preview: "钱+4、表达+1、集市+1", requires: [], effect: { resources: { money: 4, energy: -2, pressure: 1 }, skills: { expression: 1 }, town: { market: 1 }, flags: ["night-market"] }, goalPoints: { town: 1, record: 1 }, routeTags: ["enterprise-route"], tags: ["生意", "风险"] },
+      { id: "study-group", label: "旧同学拉你做一个长期项目", detail: "没有立刻的工资，只有一张共享表格和每周一次的碰头。", result: "你参加了碰头，把自己负责核对的一栏记了下来。", revisit: {"label":"旧同学约你继续手头的项目","detail":"共享表格里添了几处待核对的内容，这次碰头要把它们查清楚。","result":"你和同学核对了一页资料，把没查完的地方留在表上。"}, minAge: 18, maxAge: 49, cost: "精力-1 · 关系会变得更具体", preview: "+1 学识，朋友+1；项目路线推进", effect: { resources: { energy: -1 }, skills: { study: 1 }, relationships: { friend: 1 }, flags: ["long-project"] }, goalPoints: { learn: 1, connection: 1, record: 1 }, routeTags: ["project-route"], tags: ["项目", "同伴"] },
+      { id: "care-burden", label: "家里有人需要长期照料", detail: "家人把需要照看的时间列出来，请你接下一段，也一起商量分工。", result: "你接下了一段照料，和家人说好接替的时间。", revisit: {"label":"家里的照料安排要再分一分","detail":"原来的分工有了空缺，需要有人补上一段时间。先把自己能承担的部分说清楚。","result":"你接下这段照料，和家人重新对好了时间。"}, minAge: 18, maxAge: 75, cost: "精力-1 · 压力+2", preview: "+1 体谅，家庭+2；照料路线推进", effect: { resources: { pressure: 2, energy: -1 }, skills: { empathy: 1 }, relationships: { family: 2 }, flags: ["care-burden"] }, goalPoints: { home: 2, connection: 1 }, routeTags: ["care-route"], tags: ["照料", "责任"] },
+      { id: "side-project", label: "你做的小东西有人愿意付钱", detail: "对方给了尺寸和用途，你需要把工时与价格写清楚。", result: "你按约定做好小东西，交货时收下了工钱。", revisit: {"label":"又有人来订你做的小东西","detail":"对方带来新的要求，你得重新估工时、报价格，不能直接照搬上一单。","result":"你按这次的要求做好东西，收下工钱，并把用时记了下来。"}, minAge: 18, maxAge: 49, cost: "精力-2 · 可能进入自立路线", preview: "+7 钱，手艺/表达各+1", effect: { resources: { money: 7, energy: -2 }, skills: { craft: 1, expression: 1 }, flags: ["side-project"] }, goalPoints: { learn: 2, free: 1 }, routeTags: ["enterprise-route"], tags: ["副业", "自立"] },
+      { id: "old-friend-call", label: "多年不见的人突然来电", detail: "对方没有寒暄太久，只问：你现在还在做那件事吗？", result: "你接起电话，说了说这些年的变化，也听了对方的近况。", revisit: {"label":"重新联系上的朋友又来电话","detail":"这次对方先问起你上回说的事，接着聊到自己最近的打算。","result":"你们把近况又聊了一遍，约好有空继续联系。"}, minAge: 30, maxAge: 75, cost: "不消耗行动点 · 需要主动回答", preview: "+2 朋友，打开重逢路线", effect: { relationships: { friend: 2 }, resources: { happiness: 1 }, flags: ["old-friend-call"] }, goalPoints: { connection: 2, record: 1 }, routeTags: ["relationship-route"], tags: ["重逢", "朋友"] },
+      { id: "apprentice-request", label: "年轻人问你能不能教他", detail: "他带来几处没弄懂的地方，想请你看着他自己做一遍。", result: "你让年轻人自己试了一遍，在他卡住的地方给了提示。", revisit: {"label":"那个来请教的年轻人又有了问题","detail":"他把卡住的地方指给你看，请你陪着走一遍，别急着替他做完。","result":"你陪他把问题理清，留下一段让他自己继续试。"}, minAge: 30, maxAge: 75, cost: "精力-1 · 关系会变成传承", preview: "+1 体谅，晚辈+2；传承路线推进", effect: { resources: { energy: -1 }, skills: { empathy: 1 }, relationships: { child: 2 }, flags: ["apprentice-request"] }, goalPoints: { home: 1, town: 1, learn: 1 }, routeTags: ["handoff-route"], tags: ["传承", "晚辈"] },
+      { id: "community-meeting", label: "镇上临时召集一次公开会议", detail: "几家街坊各有想法，桌上铺着纸，等人把要做的事和分工记下来。", result: "你听完几家的意见，帮大家把需要分工的事记了下来。", revisit: {"label":"街坊们又要坐下来议一件事","detail":"桌边又摆开了记录本，大家想把这次要分担的事说清楚。","result":"你和街坊逐项核对安排，把这次谈妥的分工记进镇志。"}, minAge: 30, maxAge: 75, cost: "压力+1 · 需要表达或邻里基础", preview: "+1 表达，邻里+2；公共路线推进", requires: [{ type: "any", requirements: [{ type: "skill", key: "expression", min: 2 }, { type: "relationship", key: "neighbor", min: 3 }] }], effect: { resources: { pressure: 1 }, skills: { expression: 1 }, relationships: { neighbor: 2 }, town: { archive: 1 }, flags: ["community-meeting"] }, goalPoints: { town: 2, record: 1 }, routeTags: ["community-route"], tags: ["公共", "邻里"] },
+      { id: "health-warning", label: "体检报告提醒你别再透支", detail: "医生把几项检查结果圈出来，问了问你的作息，让你先照顾好睡眠和饮食。", result: "你把医生的提醒带回家，照着清单调整了几项安排。", revisit: {"label":"到了复查和调整作息的时候","detail":"医生翻开之前的记录，问你最近怎样休息，再把需要留意的几项圈出来。","result":"你记下复查时的提醒，给接下来的日子留出休息时间。"}, minAge: 30, maxAge: 75, cost: "不消耗行动点 · 接受一次健康检查", preview: "+2 身体，压力-2；健康路线推进", effect: { resources: { health: 2, pressure: -2 }, flags: ["health-warning"] }, goalPoints: { free: 1, home: 1 }, routeTags: ["health-route"], tags: ["身体", "余地"] },
+      { id: "archive-box", label: "镇志里发现一只没有编号的盒子", detail: "里面放着几代人没有写完的名单，有几处名字你还认得。", result: "你把名单摊开，补上了自己认得的几个人。", revisit: {"label":"接着补那只旧盒子里的名单","detail":"盒子还在原来的架子上，名单上仍有空白，等人补写名字和来历。","result":"你核对了几个名字，把查清的来历添进名单。"}, minAge: 50, maxAge: 75, cost: "消耗 1 精力 · 记录会改变结算", preview: "+2 镇志，打开隐藏记录线", effect: { resources: { energy: -1 }, town: { archive: 2 }, flags: ["archive-box"], secrets: ["archive-box"] }, goalPoints: { record: 2, town: 1 }, routeTags: ["record-route"], tags: ["镇志", "彩蛋"] },
+      { id: "last-letter", label: "一封迟到了几十年的信", detail: "信里提起一件旧事，请收到的人把它说给还记得的朋友听。", result: "你把信里的往事讲给熟人听，听到了几句补充。", revisit: {"label":"把那封迟来的信再读一遍","detail":"那封信又被翻了出来。你可以重新读一遍，把其中提到的人和事讲得更清楚。","result":"你重新读过那封信，又和熟人说起其中的一段往事。"}, minAge: 50, maxAge: 75, cost: "不消耗行动点 · 需要朋友或表达基础", preview: "心气+2、朋友+1、表达+1", requires: [{ type: "any", requirements: [{ type: "relationship", key: "friend", min: 2 }, { type: "skill", key: "expression", min: 3 }] }], effect: { resources: { happiness: 2 }, relationships: { friend: 1 }, skills: { expression: 1 }, flags: ["last-letter"] }, goalPoints: { connection: 1, record: 2, free: 1 }, routeTags: ["record-route", "relationship-route"], tags: ["来信", "回声"] },
     ],
     jobs: [
       { id: "shop-shift", label: "修理铺帮工", detail: "跟着祁叔接一班小活，收入稳定，但需要真的会动手。", minAge: 15, points: 2, cost: "2行动点 · 精力-2 · 压力+1", preview: "工资+7；手艺+1；修理铺+1", requires: [{ type: "skill", key: "craft", min: 1, label: "需要手艺 1" }], effect: { resources: { money: 7, energy: -2, pressure: 1 }, skills: { craft: 1 }, town: { shop: 1 }, flags: ["worked-shop"] }, goalPoints: { learn: 1, town: 1 }, jobId: "shop-shift", tags: ["工资", "手艺"] },
@@ -535,6 +535,27 @@
       { id: "archive-box", label: "没有编号的盒子", detail: "几代人都没有写完的名单，等着某个人补上下一页。" },
     ],
   };
+
+  // Opportunity history belongs to this life. Current-node entries are excluded
+  // so accepting and re-rendering a card cannot turn its first visit into a revisit.
+  function getOpportunityCopy(item, life) {
+    if (!item) return null;
+    const currentAge = CONTENT.rounds[life?.round]?.age ?? life?.age;
+    const history = Array.isArray(life?.opportunity?.history) ? life.opportunity.history : [];
+    const repeated = Number.isFinite(currentAge) && history.some((entry) =>
+      entry?.id === item.id && Number.isInteger(entry.age) &&
+      entry.age >= CONTENT.rounds[0].age && entry.age < currentAge
+    );
+    const copy = repeated ? item.revisit || item : item;
+    return {
+      label: copy.label ?? item.label,
+      detail: copy.detail ?? item.detail,
+      result: copy.result ?? item.result ?? copy.detail ?? item.detail,
+      repeated,
+    };
+  }
+
+  CONTENT.getOpportunityCopy = getOpportunityCopy;
 
   window.EchoTownContent = CONTENT;
 })();

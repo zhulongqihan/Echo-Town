@@ -1,0 +1,1750 @@
+{
+  "early_and_layout": {
+    "content": "6.2.1",
+    "six": {
+      "age": 6,
+      "skills": {
+        "study": 3,
+        "craft": 4,
+        "expression": 0,
+        "empathy": 3,
+        "courage": 1
+      },
+      "pursuit": {
+        "id": "pursuit:craft:share-notes",
+        "routeId": "craft",
+        "round": 1,
+        "age": 8,
+        "actionId": "share-notes",
+        "label": "把笔记借给同桌",
+        "detail": "你们不一定成为最好的朋友，但可以先互相帮一次。",
+        "actionLabel": "把笔记借给同桌",
+        "status": "upcoming",
+        "checks": [
+          {
+            "label": "为这件事留出精力 1",
+            "met": true
+          }
+        ],
+        "reserveEnergy": 1,
+        "nextStep": {
+          "label": "8 岁：把笔记借给同桌",
+          "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+          "command": null,
+          "available": false
+        }
+      }
+    },
+    "eight": {
+      "age": 8,
+      "skills": {
+        "study": 4,
+        "craft": 4,
+        "expression": 0,
+        "empathy": 3,
+        "courage": 1
+      }
+    },
+    "repeated": "再到后院的工作台练一会儿\n工作台还在老地方，祁叔把手边的零件推过来，让你试着装回去。\n不消耗行动点、现金或精力\n机械+1 · 师长+1 · 祁叔+2\n手艺已到童年增长上限 4；13 岁起上限 6",
+    "recs": [
+      {
+        "id": "routine-care",
+        "text": "照料家里的人\n1 行动点 · 精力 -1\n家人期待+1 · 烹饪+1 · 体谅+1 · 家人+1 · 母亲+1"
+      },
+      {
+        "id": "routine-rest",
+        "text": "认真休息\n1 行动点\n精力+2 · 身体+1 · 心气+1 · 压力-1 · 家人期待-1 · 运动+1"
+      },
+      {
+        "id": "routine-social",
+        "text": "约一个人见面\n1 行动点 · 精力 -1\n心气+1 · 家人期待-1 · 公共事务+1 · 朋友+1 · 阿禾+1"
+      }
+    ],
+    "matrix": [
+      {
+        "phase": "management",
+        "width": 1280,
+        "height": 720,
+        "large": false,
+        "scroll": {
+          "top": 252.6875,
+          "bottom": 580,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 327.3125
+        },
+        "footer": {
+          "top": 580,
+          "bottom": 649,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 69
+        },
+        "button": {
+          "top": 591,
+          "bottom": 639,
+          "left": 713.8125,
+          "right": 1247,
+          "width": 533.1875,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 650,
+          "left": 698.8125,
+          "right": 1262,
+          "width": 563.1875,
+          "height": 530
+        },
+        "completeCards": 1,
+        "minFont": 13
+      },
+      {
+        "phase": "management",
+        "width": 1280,
+        "height": 720,
+        "large": true,
+        "scroll": {
+          "top": 268.390625,
+          "bottom": 580,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 311.609375
+        },
+        "footer": {
+          "top": 580,
+          "bottom": 649,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 69
+        },
+        "button": {
+          "top": 591,
+          "bottom": 639,
+          "left": 713.8125,
+          "right": 1247,
+          "width": 533.1875,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 650,
+          "left": 698.8125,
+          "right": 1262,
+          "width": 563.1875,
+          "height": 530
+        },
+        "completeCards": 1,
+        "minFont": 16
+      },
+      {
+        "phase": "management",
+        "width": 1366,
+        "height": 768,
+        "large": false,
+        "scroll": {
+          "top": 252.6875,
+          "bottom": 628,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 375.3125
+        },
+        "footer": {
+          "top": 628,
+          "bottom": 697,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 69
+        },
+        "button": {
+          "top": 639,
+          "bottom": 687,
+          "left": 761.96875,
+          "right": 1333,
+          "width": 571.03125,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 698,
+          "left": 746.96875,
+          "right": 1348,
+          "width": 601.03125,
+          "height": 578
+        },
+        "completeCards": 2,
+        "minFont": 13
+      },
+      {
+        "phase": "management",
+        "width": 1366,
+        "height": 768,
+        "large": true,
+        "scroll": {
+          "top": 268.390625,
+          "bottom": 628,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 359.609375
+        },
+        "footer": {
+          "top": 628,
+          "bottom": 697,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 69
+        },
+        "button": {
+          "top": 639,
+          "bottom": 687,
+          "left": 761.96875,
+          "right": 1333,
+          "width": 571.03125,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 698,
+          "left": 746.96875,
+          "right": 1348,
+          "width": 601.03125,
+          "height": 578
+        },
+        "completeCards": 2,
+        "minFont": 16
+      },
+      {
+        "phase": "management",
+        "width": 1920,
+        "height": 1080,
+        "large": false,
+        "scroll": {
+          "top": 259.09375,
+          "bottom": 940,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 680.90625
+        },
+        "footer": {
+          "top": 940,
+          "bottom": 1009,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 69
+        },
+        "button": {
+          "top": 951,
+          "bottom": 999,
+          "left": 1111,
+          "right": 1881,
+          "width": 770,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 1010,
+          "left": 1096,
+          "right": 1896,
+          "width": 800,
+          "height": 890
+        },
+        "completeCards": 3,
+        "minFont": 13
+      },
+      {
+        "phase": "management",
+        "width": 1920,
+        "height": 1080,
+        "large": true,
+        "scroll": {
+          "top": 274.796875,
+          "bottom": 940,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 665.203125
+        },
+        "footer": {
+          "top": 940,
+          "bottom": 1009,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 69
+        },
+        "button": {
+          "top": 951,
+          "bottom": 999,
+          "left": 1111,
+          "right": 1881,
+          "width": 770,
+          "height": 48
+        },
+        "buttonHit": true,
+        "overlap": false,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 1010,
+          "left": 1096,
+          "right": 1896,
+          "width": 800,
+          "height": 890
+        },
+        "completeCards": 3,
+        "minFont": 16
+      },
+      {
+        "phase": "event",
+        "width": 1280,
+        "height": 720,
+        "large": false,
+        "scroll": {
+          "top": 252.6875,
+          "bottom": 649,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 396.3125
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 650,
+          "left": 698.8125,
+          "right": 1262,
+          "width": 563.1875,
+          "height": 530
+        },
+        "completeCards": 1,
+        "minFont": 13
+      },
+      {
+        "phase": "event",
+        "width": 1280,
+        "height": 720,
+        "large": true,
+        "scroll": {
+          "top": 268.390625,
+          "bottom": 649,
+          "left": 699.8125,
+          "right": 1261,
+          "width": 561.1875,
+          "height": 380.609375
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 650,
+          "left": 698.8125,
+          "right": 1262,
+          "width": 563.1875,
+          "height": 530
+        },
+        "completeCards": 1,
+        "minFont": 16
+      },
+      {
+        "phase": "event",
+        "width": 1366,
+        "height": 768,
+        "large": false,
+        "scroll": {
+          "top": 252.6875,
+          "bottom": 697,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 444.3125
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 698,
+          "left": 746.96875,
+          "right": 1348,
+          "width": 601.03125,
+          "height": 578
+        },
+        "completeCards": 2,
+        "minFont": 13
+      },
+      {
+        "phase": "event",
+        "width": 1366,
+        "height": 768,
+        "large": true,
+        "scroll": {
+          "top": 268.390625,
+          "bottom": 697,
+          "left": 747.96875,
+          "right": 1347,
+          "width": 599.03125,
+          "height": 428.609375
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 698,
+          "left": 746.96875,
+          "right": 1348,
+          "width": 601.03125,
+          "height": 578
+        },
+        "completeCards": 1,
+        "minFont": 16
+      },
+      {
+        "phase": "event",
+        "width": 1920,
+        "height": 1080,
+        "large": false,
+        "scroll": {
+          "top": 259.09375,
+          "bottom": 1009,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 749.90625
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 1010,
+          "left": 1096,
+          "right": 1896,
+          "width": 800,
+          "height": 890
+        },
+        "completeCards": 3,
+        "minFont": 13
+      },
+      {
+        "phase": "event",
+        "width": 1920,
+        "height": 1080,
+        "large": true,
+        "scroll": {
+          "top": 274.796875,
+          "bottom": 1009,
+          "left": 1097,
+          "right": 1895,
+          "width": 798,
+          "height": 734.203125
+        },
+        "footer": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "width": 0,
+          "height": 0
+        },
+        "button": null,
+        "buttonHit": true,
+        "overlap": null,
+        "overflow": false,
+        "desk": {
+          "top": 120,
+          "bottom": 1010,
+          "left": 1096,
+          "right": 1896,
+          "width": 800,
+          "height": 890
+        },
+        "completeCards": 3,
+        "minFont": 16
+      }
+    ],
+    "calculation": "把笔记借给同桌\n\n执行后：16 元 · 精力 7 · 0 行动点\n\n坐到第一排\n\n执行后：16 元 · 精力 7 · 0 行动点\n\n先把眼前的日子稳住\n\n执行后：16 元 · 精力 8 · 0 行动点\n\n坐到靠窗的位置\n\n执行后：16 元 · 精力 7 · 0 行动点\n\n照旧工具的刻痕练一次拆装\n\n○ 需要继承一件趁手工具\n\n需要继承一件趁手工具",
+    "reloadVerified": true,
+    "keyboardVerified": true,
+    "errors": []
+  },
+  "complete_life": {
+    "transcript": [
+      {
+        "age": 10,
+        "resources": {
+          "money": 16,
+          "energy": 11,
+          "health": 10,
+          "happiness": 8,
+          "pressure": 2,
+          "expectation": 5
+        },
+        "skills": {
+          "study": 4,
+          "craft": 4,
+          "expression": 0,
+          "empathy": 4,
+          "courage": 1
+        },
+        "event": "rest-at-home",
+        "pursuit": {
+          "id": "pursuit:craft:repair-lantern",
+          "routeId": "craft",
+          "round": 3,
+          "age": 11,
+          "actionId": "repair-lantern",
+          "label": "去后院修灯",
+          "detail": "让台上有光，比自己站在光里更踏实。",
+          "actionLabel": "去后院修灯",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "11 岁：去后院修灯",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 11,
+        "resources": {
+          "money": 16,
+          "energy": 9,
+          "health": 10,
+          "happiness": 9,
+          "pressure": 1,
+          "expectation": 4
+        },
+        "skills": {
+          "study": 4,
+          "craft": 4,
+          "expression": 0,
+          "empathy": 4,
+          "courage": 1
+        },
+        "event": "repair-lantern",
+        "pursuit": {
+          "id": "pursuit:craft:chain-craft-promise",
+          "routeId": "craft",
+          "round": 4,
+          "age": 13,
+          "actionId": "chain-craft-promise",
+          "label": "和祁叔写下维修步骤",
+          "detail": "先把检查顺序写清楚，以后遇到同样的故障再回来核对。",
+          "actionLabel": "和祁叔写下维修步骤",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "为这件事留出精力 1",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 1,
+          "nextStep": {
+            "label": "13 岁：和祁叔写下维修步骤",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 13,
+        "resources": {
+          "money": 15,
+          "energy": 6,
+          "health": 10,
+          "happiness": 9,
+          "pressure": 1,
+          "expectation": 4
+        },
+        "skills": {
+          "study": 4,
+          "craft": 6,
+          "expression": 0,
+          "empathy": 4,
+          "courage": 1
+        },
+        "event": "chain-craft-promise",
+        "pursuit": {
+          "id": "pursuit:craft:join-repair",
+          "routeId": "craft",
+          "round": 5,
+          "age": 15,
+          "actionId": "join-repair",
+          "label": "加入修理社",
+          "detail": "从给工具编号、清理工作台开始。",
+          "actionLabel": "加入修理社",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "15 岁：加入修理社",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 15,
+        "resources": {
+          "money": 21,
+          "energy": 5,
+          "health": 10,
+          "happiness": 9,
+          "pressure": 2,
+          "expectation": 4
+        },
+        "skills": {
+          "study": 4,
+          "craft": 6,
+          "expression": 0,
+          "empathy": 4,
+          "courage": 1
+        },
+        "event": "join-repair",
+        "pursuit": {
+          "id": "pursuit:craft:stay-for-family",
+          "routeId": "craft",
+          "round": 6,
+          "age": 17,
+          "actionId": "stay-for-family",
+          "label": "留在镇上工作",
+          "detail": "先让家里喘一口气，自己的计划以后再说。",
+          "actionLabel": "留在镇上工作",
+          "status": "upcoming",
+          "checks": [],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "17 岁：留在镇上工作",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 17,
+        "resources": {
+          "money": 30,
+          "energy": 6,
+          "health": 10,
+          "happiness": 8,
+          "pressure": 3,
+          "expectation": 4
+        },
+        "skills": {
+          "study": 4,
+          "craft": 6,
+          "expression": 0,
+          "empathy": 6,
+          "courage": 1
+        },
+        "event": "stay-for-family",
+        "pursuit": {
+          "id": "pursuit:craft:chain-craft-trial",
+          "routeId": "craft",
+          "round": 8,
+          "age": 21,
+          "actionId": "chain-craft-trial",
+          "label": "照着旧维修单试修",
+          "detail": "用真实故障检验少年时的步骤，无论结果如何都保留记录。",
+          "actionLabel": "照着旧维修单试修",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要完成前一段经历",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            },
+            {
+              "label": "试修检定最低 6 / 5，已准备充分",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "21 岁：照着旧维修单试修",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 19,
+        "resources": {
+          "money": 34,
+          "energy": 5,
+          "health": 10,
+          "happiness": 9,
+          "pressure": 4,
+          "expectation": 4
+        },
+        "skills": {
+          "study": 6,
+          "craft": 7,
+          "expression": 0,
+          "empathy": 6,
+          "courage": 1
+        },
+        "event": "city-library",
+        "project": "active",
+        "pursuit": {
+          "id": "pursuit:craft:chain-craft-trial",
+          "routeId": "craft",
+          "round": 8,
+          "age": 21,
+          "actionId": "chain-craft-trial",
+          "label": "照着旧维修单试修",
+          "detail": "用真实故障检验少年时的步骤，无论结果如何都保留记录。",
+          "actionLabel": "照着旧维修单试修",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要完成前一段经历",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            },
+            {
+              "label": "试修检定最低 7 / 5，已准备充分",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "21 岁：照着旧维修单试修",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 21,
+        "resources": {
+          "money": 35,
+          "energy": 6,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 3,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 8,
+          "expression": 0,
+          "empathy": 6,
+          "courage": 1
+        },
+        "event": "chain-craft-trial",
+        "project": "active",
+        "pursuit": {
+          "id": "pursuit:craft:return-workshop",
+          "routeId": "craft",
+          "round": 10,
+          "age": 28,
+          "actionId": "return-workshop",
+          "label": "回到修理铺",
+          "detail": "把手艺当成主业，接受收入慢一点。",
+          "actionLabel": "回到修理铺",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 3",
+              "met": true
+            },
+            {
+              "label": "需要积蓄 2",
+              "met": true
+            },
+            {
+              "label": "为这件事留出钱 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "28 岁：回到修理铺",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 24,
+        "resources": {
+          "money": 39,
+          "energy": 6,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 4,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 8,
+          "expression": 0,
+          "empathy": 6,
+          "courage": 1
+        },
+        "event": "keep-friendship",
+        "project": "active",
+        "pursuit": {
+          "id": "pursuit:craft:return-workshop",
+          "routeId": "craft",
+          "round": 10,
+          "age": 28,
+          "actionId": "return-workshop",
+          "label": "回到修理铺",
+          "detail": "把手艺当成主业，接受收入慢一点。",
+          "actionLabel": "回到修理铺",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 3",
+              "met": true
+            },
+            {
+              "label": "需要积蓄 2",
+              "met": true
+            },
+            {
+              "label": "为这件事留出钱 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "28 岁：回到修理铺",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 28,
+        "resources": {
+          "money": 41,
+          "energy": 7,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 5,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 8,
+          "expression": 0,
+          "empathy": 6,
+          "courage": 1
+        },
+        "event": "return-workshop",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:ask-family-share",
+          "routeId": "craft",
+          "round": 11,
+          "age": 32,
+          "actionId": "ask-family-share",
+          "label": "和家人把账摊开",
+          "detail": "不独自扮演英雄，把每个人能做的事写下来。",
+          "actionLabel": "和家人把账摊开",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要体谅 3",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "32 岁：和家人把账摊开",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 32,
+        "resources": {
+          "money": 43,
+          "energy": 8,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 5,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 9,
+          "expression": 0,
+          "empathy": 8,
+          "courage": 1
+        },
+        "event": "ask-family-share",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:chain-craft-workshop",
+          "routeId": "craft",
+          "round": 12,
+          "age": 36,
+          "actionId": "chain-craft-workshop",
+          "label": "按试修记录接第一批订单",
+          "detail": "把费用和交付要求写在同一张单上，再检验自己的方法。",
+          "actionLabel": "按试修记录接第一批订单",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要完成前一段经历（成功或失败均可）",
+              "met": true
+            },
+            {
+              "label": "需要手艺 4",
+              "met": true
+            },
+            {
+              "label": "为这件事留出钱 10",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 1",
+              "met": true
+            },
+            {
+              "label": "订单交付检定最低 9 / 7，已准备充分",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 1,
+          "nextStep": {
+            "label": "36 岁：按试修记录接第一批订单",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 36,
+        "resources": {
+          "money": 41,
+          "energy": 8,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 6,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 0,
+          "empathy": 8,
+          "courage": 1
+        },
+        "event": "chain-craft-workshop",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:talk-through",
+          "routeId": "craft",
+          "round": 13,
+          "age": 40,
+          "actionId": "talk-through",
+          "label": "坐下来把委屈说完",
+          "detail": "不先准备反驳，先准确复述对方的感受。",
+          "actionLabel": "坐下来把委屈说完",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要体谅 4",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "40 岁：坐下来把委屈说完",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 40,
+        "resources": {
+          "money": 43,
+          "energy": 7,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 7,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 0,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "talk-through",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:repair-bridge-adult",
+          "routeId": "craft",
+          "round": 15,
+          "age": 47,
+          "actionId": "repair-bridge-adult",
+          "label": "带人先修桥",
+          "detail": "桥不能只靠一个人扛，先把工作拆给愿意来的人。",
+          "actionLabel": "带人先修桥",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要胆识 4",
+              "met": false
+            },
+            {
+              "label": "需要手艺 3",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            },
+            {
+              "label": "为这件事留出身体 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "47 岁：带人先修桥",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 44,
+        "resources": {
+          "money": 45,
+          "energy": 7,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 8,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "tell-regret",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:repair-bridge-adult",
+          "routeId": "craft",
+          "round": 15,
+          "age": 47,
+          "actionId": "repair-bridge-adult",
+          "label": "带人先修桥",
+          "detail": "桥不能只靠一个人扛，先把工作拆给愿意来的人。",
+          "actionLabel": "带人先修桥",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要胆识 4",
+              "met": false
+            },
+            {
+              "label": "需要手艺 3",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            },
+            {
+              "label": "为这件事留出身体 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "47 岁：带人先修桥",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 47,
+        "resources": {
+          "money": 47,
+          "energy": 8,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 9,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "steady-middle-flood",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:teach-youth",
+          "routeId": "craft",
+          "round": 17,
+          "age": 52,
+          "actionId": "teach-youth",
+          "label": "在学校带年轻人做项目",
+          "detail": "把你走过的弯路变成他们可以少走的一段。",
+          "actionLabel": "在学校带年轻人做项目",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 4或表达 4",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "52 岁：在学校带年轻人做项目",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 49,
+        "resources": {
+          "money": 49,
+          "energy": 8,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 10,
+          "expectation": 3
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "keep-wet-pages",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:teach-youth",
+          "routeId": "craft",
+          "round": 17,
+          "age": 52,
+          "actionId": "teach-youth",
+          "label": "在学校带年轻人做项目",
+          "detail": "把你走过的弯路变成他们可以少走的一段。",
+          "actionLabel": "在学校带年轻人做项目",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 4或表达 4",
+              "met": true
+            },
+            {
+              "label": "为这件事留出精力 2",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 2,
+          "nextStep": {
+            "label": "52 岁：在学校带年轻人做项目",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 52,
+        "resources": {
+          "money": 45,
+          "energy": 8,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 9,
+          "expectation": 1
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "teach-youth",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:train-successor",
+          "routeId": "craft",
+          "round": 20,
+          "age": 65,
+          "actionId": "train-successor",
+          "label": "把作坊交给学徒",
+          "detail": "让他先试着做决定，你只在必要时补一句。",
+          "actionLabel": "把作坊交给学徒",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要作坊基础 3",
+              "met": true
+            },
+            {
+              "label": "需要手艺 5",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "65 岁：把作坊交给学徒",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 56,
+        "resources": {
+          "money": 41,
+          "energy": 9,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 8,
+          "expectation": 0
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "archive-postcard",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:train-successor",
+          "routeId": "craft",
+          "round": 20,
+          "age": 65,
+          "actionId": "train-successor",
+          "label": "把作坊交给学徒",
+          "detail": "让他先试着做决定，你只在必要时补一句。",
+          "actionLabel": "把作坊交给学徒",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要作坊基础 3",
+              "met": true
+            },
+            {
+              "label": "需要手艺 5",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "65 岁：把作坊交给学徒",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 60,
+        "resources": {
+          "money": 37,
+          "energy": 10,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 7,
+          "expectation": 0
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "steady-later-town",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:train-successor",
+          "routeId": "craft",
+          "round": 20,
+          "age": 65,
+          "actionId": "train-successor",
+          "label": "把作坊交给学徒",
+          "detail": "让他先试着做决定，你只在必要时补一句。",
+          "actionLabel": "把作坊交给学徒",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要作坊基础 3",
+              "met": true
+            },
+            {
+              "label": "需要手艺 5",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "65 岁：把作坊交给学徒",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 65,
+        "resources": {
+          "money": 33,
+          "energy": 10,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 6,
+          "expectation": 0
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "train-successor",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:handoff-craft",
+          "routeId": "craft",
+          "round": 22,
+          "age": 75,
+          "actionId": "handoff-craft",
+          "label": "留一份可以照做的维修册",
+          "detail": "把方法、检查步骤与需要避开的错误交出去。",
+          "actionLabel": "留一份可以照做的维修册",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 6",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "75 岁：留一份可以照做的维修册",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 70,
+        "resources": {
+          "money": 29,
+          "energy": 10,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 5,
+          "expectation": 0
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "steady-later-farewell",
+        "project": "completed",
+        "pursuit": {
+          "id": "pursuit:craft:handoff-craft",
+          "routeId": "craft",
+          "round": 22,
+          "age": 75,
+          "actionId": "handoff-craft",
+          "label": "留一份可以照做的维修册",
+          "detail": "把方法、检查步骤与需要避开的错误交出去。",
+          "actionLabel": "留一份可以照做的维修册",
+          "status": "upcoming",
+          "checks": [
+            {
+              "label": "需要手艺 6",
+              "met": true
+            }
+          ],
+          "reserveEnergy": 0,
+          "nextStep": {
+            "label": "75 岁：留一份可以照做的维修册",
+            "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+            "command": null,
+            "available": false
+          }
+        }
+      },
+      {
+        "age": 75,
+        "resources": {
+          "money": 25,
+          "energy": 10,
+          "health": 10,
+          "happiness": 10,
+          "pressure": 4,
+          "expectation": 0
+        },
+        "skills": {
+          "study": 6,
+          "craft": 10,
+          "expression": 2,
+          "empathy": 10,
+          "courage": 1
+        },
+        "event": "handoff-craft",
+        "project": "completed",
+        "pursuit": null
+      }
+    ],
+    "ending": {
+      "title": "你把一门手艺做成了可以接下去的日子。",
+      "copy": "本世手艺谋生达成 5 项阶段成果。你选择的愿望也有了实际证据。",
+      "tone": "手艺谋生",
+      "score": 100,
+      "routeId": "craft",
+      "achievedGoalIds": [
+        "craft:childhood",
+        "craft:adolescence",
+        "craft:youth",
+        "craft:middle",
+        "craft:later"
+      ],
+      "consequences": [
+        {
+          "id": "craft-orders-delivered",
+          "round": 12,
+          "success": true
+        }
+      ]
+    },
+    "project": {
+      "version": 1,
+      "eligibleFromRound": 7,
+      "current": {
+        "id": "craft-customers-youth-v1",
+        "status": "completed",
+        "acceptedRound": 7,
+        "steps": {
+          "firstWork": {
+            "round": 7,
+            "type": "LIFE_ACTION",
+            "actionId": "shop-shift",
+            "slot": 1,
+            "receiptId": "craft-customers-youth-v1:7:1:LIFE_ACTION:shop-shift",
+            "ap": 2,
+            "moneySpent": 0,
+            "energySpent": 2
+          },
+          "preparation": {
+            "round": 8,
+            "type": "LIFE_ACTION",
+            "actionId": "routine-repair",
+            "slot": 1,
+            "receiptId": "craft-customers-youth-v1:8:1:LIFE_ACTION:routine-repair",
+            "ap": 1,
+            "moneySpent": 0,
+            "energySpent": 2
+          },
+          "returnWork": {
+            "round": 9,
+            "type": "LIFE_ACTION",
+            "actionId": "shop-shift",
+            "slot": 1,
+            "receiptId": "craft-customers-youth-v1:9:1:LIFE_ACTION:shop-shift",
+            "ap": 2,
+            "moneySpent": 0,
+            "energySpent": 2
+          }
+        },
+        "settledRound": 10,
+        "resultId": "craft-customers-youth-v1:completed",
+        "finalCraft": 8
+      }
+    },
+    "offlineReload": true,
+    "errors": []
+  },
+  "inheritance_and_slots": {
+    "legacy": "steady-habit",
+    "generation": 2,
+    "age": 6,
+    "inherited": [
+      "steady-habit"
+    ],
+    "challengeRules": "6.2.1",
+    "challengeRefresh": true,
+    "mainPreserved": true
+  },
+  "pwa_update": {
+    "version": "6.2.1",
+    "same": true,
+    "caches": [
+      "echo-town-desktop-v9-8"
+    ],
+    "feedback": {
+      "title": "机会已接住：后院多了一张工作台",
+      "copy": "祁叔没有叫你帮忙，只把一把扳手放在最顺手的位置。",
+      "changes": [
+        "机械+1",
+        "手艺+1",
+        "师长+1",
+        "祁叔+2"
+      ],
+      "newSecrets": [],
+      "milestones": [],
+      "tags": [
+        "手艺",
+        "师长"
+      ]
+    },
+    "phase": "management",
+    "offlineSame": true,
+    "errors": []
+  },
+  "guidance_regressions": {
+    "cases": [
+      {
+        "age": 15,
+        "guidance": "目标还需：少年阶段完成一次修理铺工作",
+        "jobAvailable": true
+      },
+      {
+        "age": 17,
+        "guidance": "目标还需：少年阶段完成一次修理铺工作",
+        "jobAvailable": true
+      }
+    ],
+    "pursuit": {
+      "id": "pursuit:craft:chain-craft-workshop",
+      "routeId": "craft",
+      "round": 12,
+      "age": 36,
+      "actionId": "chain-craft-workshop",
+      "label": "先用小单补完旧维修单",
+      "detail": "21岁那次试修没有通过。先接范围较小的返修单，多花一点精力核查，只承担这一笔能交代清楚的维修。",
+      "actionLabel": "先用小单补完旧维修单",
+      "status": "upcoming",
+      "checks": [
+        {
+          "label": "需要完成前一段经历（成功或失败均可）",
+          "met": true
+        },
+        {
+          "label": "需要手艺 4",
+          "met": false
+        },
+        {
+          "label": "为这件事留出钱 6",
+          "met": false
+        },
+        {
+          "label": "为这件事留出精力 2",
+          "met": true
+        },
+        {
+          "label": "小单返修检定最低 3 / 6，仍有失败可能",
+          "met": false
+        }
+      ],
+      "reserveEnergy": 2,
+      "nextStep": {
+        "label": "36 岁：先用小单补完旧维修单",
+        "detail": "这件事还在后面的节点；现在可把时间给仍能增长的能力、关系或恢复。",
+        "command": null,
+        "available": false
+      }
+    },
+    "actual": "1\n先用小单补完旧维修单\n21岁那次试修没有通过。先接范围较小的返修单，多花一点精力核查，只承担这一笔能交代清楚的维修。\n小单返修检定：预计 4—6，门槛 6\n钱 -6 · 精力 -2\n成功时：钱+3、手艺+1、修理铺+1 · 失败时：压力+2",
+    "rules": {
+      "display": "6.2.0",
+      "stored": "6.2.0"
+    },
+    "errors": []
+  },
+  "extracted_file_package": {
+    "entry": "file:///F:/selfplay/output/playwright/verify-echo-town-desktop-v9-appeal-20261023/development/game/index.html",
+    "version": "6.2.1",
+    "age": 8,
+    "phase": "management",
+    "pursuit": {
+      "id": "pursuit:craft:share-notes",
+      "routeId": "craft",
+      "round": 1,
+      "age": 8,
+      "actionId": "share-notes",
+      "label": "把笔记借给同桌",
+      "detail": "你们不一定成为最好的朋友，但可以先互相帮一次。",
+      "actionLabel": "把笔记借给同桌",
+      "status": "ready",
+      "checks": [
+        {
+          "label": "为这件事留出精力 1",
+          "met": true
+        }
+      ],
+      "reserveEnergy": 1,
+      "nextStep": {
+        "label": "接下来：把笔记借给同桌",
+        "detail": "准备已经足够，可结束生活安排后做这件事。",
+        "command": {
+          "type": "EVENT_ACTION",
+          "id": "share-notes"
+        },
+        "available": false
+      }
+    },
+    "visibleImages": [
+      {
+        "src": "assets/scene-school.webp",
+        "width": 1672,
+        "complete": true
+      }
+    ],
+    "mainReload": true,
+    "challengeReload": true,
+    "mainPreserved": true,
+    "challengeRules": "6.2.0",
+    "revisit": "再到后院的工作台练一会儿\n工作台还在老地方，祁叔把手边的零件推过来，让你试着装回去。\n不消耗行动点、现金或精力\n机械+1 · 师长+1 · 祁叔+2\n手艺已到童年增长上限 4；13 岁起上限 6",
+    "errors": []
+  },
+  "notes": [
+    "inheritance_and_slots采集早于挑战标签修正，当时显示6.2.1。保留原始观察，不改写历史；最终challengeRules=6.2.0以guidance_regressions、extracted_file_package和独立旧信封导入复核为准。",
+    "pwa_update验证旧6.2.0/cache7到6.2.1/cache8保存后更新，随后修复的引导与挑战标签由专项和最终包复核。",
+    "所有操作在隔离的测试浏览器和存档中进行；未读取或修改用户实际进度。"
+  ]
+}

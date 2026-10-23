@@ -1,9 +1,9 @@
 {
-  "review_version": "6.2.0",
-  "content_version": "6.2.0",
+  "review_version": "6.2.1",
+  "content_version": "6.2.1",
   "baseline_no_ai": true,
   "runtime_ai": false,
-  "review_scope": "D7完整电脑经营体验：三路线项目、条件事件、四人物连续回应、五阶段决定、真实回顾/遗产预填/本地分享卡、独立固定挑战；正式源码与独立审查及真实浏览器证据已整合复核。",
+  "review_scope": "D7 6.2.1吸引力问题改进：真实后续追求、有效行动推荐、18机会首遇/复访、准确地点、电脑决策栏与字号；旧目标、数值、存档及固定挑战6.2.0兼容。",
   "policy": {
     "allowed_assistance": [
       "草稿变体",
@@ -19,11 +19,11 @@
     ],
     "final_owner": "A00",
     "integrator": "A00",
-    "authorization": "2026-10-05 用户明确批准实施经营策略优化计划"
+    "authorization": "EVENT-20261023-028授权先同步配置介绍、再改进吸引力；沿用此前D7实施范围。"
   },
   "reviewer": "A00",
   "status": "approved",
-  "reviewed_at": "2026-10-23T01:43:21+08:00",
+  "reviewed_at": "2026-10-23T18:23:10+08:00",
   "previous_reviews": [
     {
       "review_version": "5.0.0",
@@ -1318,7 +1318,11 @@
     "legacy_migration_keeps_progress": "passed",
     "mobile_keyboard_and_offline": "passed",
     "desktop_project_and_migration": "passed",
-    "complete_desktop_routes_journey_and_modes": "passed"
+    "complete_desktop_routes_journey_and_modes": "passed",
+    "pursuit_and_capped_training": "passed",
+    "opportunity_revisits_preserve_old_history": "passed",
+    "desktop_decisions_and_large_text": "passed",
+    "challenge_rule_identity_unchanged": "passed"
   },
   "review_notes": [
     "天赋家境/体魄收益及精力上限完整兑现；已满足与未满足门槛均显示。",
@@ -1326,7 +1330,8 @@
     "小镇遗产在交接时生效，下一世不重复添加；已按公开命令复核。",
     "图像视觉、浏览器测试及结论边界见 development/tests/strategy-v8-acceptance-20261015.md；真实玩家趣味体验仍未测定。",
     "D7最终基线与实现审阅：122项正式行为测试、电脑与文件/PWA/离线/导入失败浏览器证据见desktop-v9-acceptance-20261022.md；实现审阅通过不表示真人趣味性通过。",
-    "完整D7内容验收：173项正式行为回归、三条路线多策略、真实人物/结局/遗产/PNG/模式往返与最终cache7离线更新通过。详见desktop-full-v9-acceptance-20261023.md；旧122项首切片记录保留为历史。"
+    "完整D7内容验收：173项正式行为回归、三条路线多策略、真实人物/结局/遗产/PNG/模式往返与最终cache7离线更新通过。详见desktop-full-v9-acceptance-20261023.md；旧122项首切片记录保留为历史。",
+    "6.2.1新增26项引导与叙事回归，共199项；正式完整人生、三尺寸双字号、未达目标/失败补救真实导入、旧PWA更新和新版离线文件入口证据见appeal-polish-acceptance-20261023.md。独立311检查点核心结算无差异；不宣称真人吸引力通过。"
   ],
   "projects": {
     "ids": [
@@ -1350,7 +1355,7 @@
     "real_player_samples": 0,
     "required_real_player_samples": 0,
     "user_event": "EVENT-20261022-025",
-    "evidence": "development/tests/desktop-full-v9-acceptance-20261023.md",
+    "evidence": "development/tests/appeal-polish-acceptance-20261023.md",
     "limitation": "内部策略与真实浏览器验证；不代表真人乐趣或市场验证。"
   },
   "journey": {

@@ -1,5 +1,5 @@
 {
-  "content_version": "6.2.0",
+  "content_version": "6.2.1",
   "project_id": "echo-town-life-sim",
   "rules": {
     "life_rounds": 23,
