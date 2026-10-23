@@ -2,8 +2,8 @@
 document_id: AGENT-REGISTRY
 title: Agent角色注册表
 status: 已锁定
-version: 3.40.0
-as_of: 2026-10-23T18:23:10+08:00
+version: 3.41.0
+as_of: 2026-10-23T18:30:24+08:00
 canonical: true
 owner: A00
 pending: []
@@ -15,7 +15,7 @@ pending: []
 
 ## 当前结论
 
-- 2026-10-23：TASK-20261023-A00-APPEAL-001实现和验收完成，A00收口阶段同步。appeal_gameplay、appeal_layout、appeal_narrative及experience_evidence_audit完成，提案与独立修复复核已整合，无运行中子任务。
+- 2026-10-23：TASK-20261023-A00-APPEAL-001实现、验收与远端同步完成，A00租约释放。appeal_gameplay、appeal_layout、appeal_narrative及experience_evidence_audit完成，提案与独立修复复核已整合，无运行中子任务。
 
 - 2026-10-23补充核验：github_history_audit、experience_design_audit、experience_evidence_audit三个只读专项已完成；A00完成整合、干净副本复验与持续授权下的GitHub同步。没有运行中的子任务。
 
@@ -32,7 +32,7 @@ pending: []
 
 | ID | 角色 | 主要所有权 | 首次启动条件 | 当前状态 | 对话标识 |
 | --- | --- | --- | --- | --- | --- |
-| A00 | 主Agent／总控整合 | 00、决策日志、Agent治理、根交接、11、框架契约与校验 | 始终存在 | 阶段同步中：D7 6.2.1吸引力改进已验收 | HANDOFF-20261023-036 |
+| A00 | 主Agent／总控整合 | 00、决策日志、Agent治理、根交接、11、框架契约与校验 | 始终存在 | 已完成：D7 6.2.1吸引力改进已同步 | HANDOFF-20261023-036 |
 | A01 | 产品、玩家与创意方向 | 01、02、03 | G0A锁定 | 已完成：G2玩家定位与竞品研究通过 | REVIEW-A01-G2-20260828 |
 | A07 | 制作、QA与风险审查 | 10；各门禁审查报告 | 首份专题进入审查时可审查；10需G1-G8 | 需重开：D5核心循环、音频、长流程与回退待正式专项复审 | REVIEW-20260830-027 |
 | A02 | 核心系统与事件规则 | 04、06 | 04需G1+G2；06还需G4 | 需重开：D5人生片段触发与状态一致性待正式专项复审 | REVIEW-20260830-027 |
