@@ -2,13 +2,13 @@
 document_id: MASTER
 title: 《回声镇：一生一局》规划总入口
 status: 已锁定
-version: 3.46.0
-as_of: 2026-10-23T01:43:21+08:00
-updated_at: 2026-10-23T01:43:21+08:00
+version: 3.47.0
+as_of: 2026-10-23T16:53:03+08:00
+updated_at: 2026-10-23T16:53:03+08:00
 canonical: true
 current_gate: D7电脑经营体验已交付
 current_rule: development
-source: EVENT-20261005-019、EVENT-20261015-020、EVENT-20261022-021、EVENT-20261022-022、EVENT-20261022-023、EVENT-20261022-024、EVENT-20261022-025、EVENT-20261023-026；D7正式源与实际验收
+source: EVENT-20261023-027、DEC-20261023-029；EVENT-20261005-019、EVENT-20261015-020、EVENT-20261022-021、EVENT-20261022-022、EVENT-20261022-023、EVENT-20261022-024、EVENT-20261022-025、EVENT-20261023-026；D7正式源与实际验收
 pending:
   - G3至G10正式版专题仍待复审，数值不视为平衡锁定
 supersedes: []
@@ -27,8 +27,10 @@ supersedes: []
 - [完整离线包](../output/releases/echo-town-desktop-v9-20261023.zip)为1,791,065字节；解压后32个入口和运行文件匹配正式源，实际双击、事件反馈刷新、挑战刷新及回主人生通过。详见[最终验收](../development/tests/desktop-full-v9-acceptance-20261023.md)与[运行时契约](../docs/current_runtime_contract.md)。
 - 用户明确不参与试玩、全部自主完成（EVENT-025）；原5人前置已取消。内部验证没有证明真人趣味、实际10—20分钟时长或市场留存，不虚构此类结论。
 - gameplay_resume、ui_implementation、validation_resume均已完成；正式改动由A00整合，TASK-20261022-A00-DESKTOP-001已完成，实施租约释放，无等待中的子任务。
-- 最新交接：[20261023_035-desktop-v9-complete.md](handoffs/20261023_035-desktop-v9-complete.md)。当前授权计划无未完成实施项，不再等待用户试玩。
-- 唯一正式源为development/game，根index.html保持双击入口；未提交、推送或远端发布，原工作树、旧包和开始前备份保留。D5/v7、D6/v8、D7首切片122项等仅是历史基线。
+- 最新交接：[20261023_035-desktop-v9-complete.md](handoffs/20261023_035-desktop-v9-complete.md)。D7实施完成；本轮可用性核验与GitHub同步补齐，不再等待用户试玩。
+- 唯一正式源为development/game；D7产品提交`de6c50038857c73cf50db4ed15c0f069618ba693`已推送并由远端API确认，源码、测试、必要样例、文档和离线包均已同步。原始素材、旧包和本地备份保留；GitHub Pages/Release未发布。
+- 阶段完成及时提交推送是持续要求（EVENT-20260829-011），后续摘要不得因本轮未重提而撤销。
+- 本轮干净副本173/173、浏览器完整人生/第二世/离线恢复通过；吸引力仍有成长过早封顶、窄栏滚动和重复叙事问题。详见[可玩性与同步核验](../docs/readiness_audit_20261023.md)。
 - G3至G10正式专题仍待独立复审，当前数值不视为正式平衡锁定；这些后续专题不阻塞本次已授权交付。
 
 ## 权威来源分工

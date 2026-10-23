@@ -6,7 +6,7 @@
   "current_rule": "development",
   "development_phase": "D7电脑经营体验已交付",
   "development_authorization": "DEC-20261022-026",
-  "state_synced_at": "2026-10-23T01:43:21+08:00",
+  "state_synced_at": "2026-10-23T16:53:03+08:00",
   "allowed_runtime_roots": [
     "development/"
   ],
@@ -206,5 +206,13 @@
     "output/implementation-proposals/",
     "output/playwright/",
     "output/releases/verify-v8-20261015/"
-  ]
+  ],
+  "repository_sync": {
+    "url": "https://github.com/zhulongqihan/Echo-Town",
+    "branch": "main",
+    "standing_authorization": "EVENT-20260829-011",
+    "product_commit": "de6c50038857c73cf50db4ed15c0f069618ba693",
+    "remote_verified_at": "2026-10-23T16:53:03+08:00",
+    "online_site_published": false
+  }
 }
