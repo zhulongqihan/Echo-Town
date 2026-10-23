@@ -4,11 +4,15 @@
   "project_name": "回声镇：一生一局",
   "framework_gate": "F0B",
   "current_rule": "development",
-  "development_phase": "D5视觉声音与人生片段验证",
-  "development_authorization": "DEC-20260830-021",
-  "state_synced_at": "2026-08-30T01:02:44+08:00",
-  "allowed_runtime_roots": ["development/"],
-  "playable_entries": ["index.html"],
+  "development_phase": "D7电脑经营体验已交付",
+  "development_authorization": "DEC-20261022-026",
+  "state_synced_at": "2026-10-23T01:43:21+08:00",
+  "allowed_runtime_roots": [
+    "development/"
+  ],
+  "playable_entries": [
+    "index.html"
+  ],
   "canonical_root": "planning",
   "required_canonical_files": [
     "planning/00_master-index.md",
@@ -29,7 +33,16 @@
     "planning/10_production-testing-roadmap.md",
     "planning/11_final-gdd.md"
   ],
-  "roles": ["A00", "A01", "A02", "A03", "A04", "A05", "A06", "A07"],
+  "roles": [
+    "A00",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07"
+  ],
   "task_required_fields": [
     "task_id",
     "agent_id",
@@ -43,22 +56,155 @@
     "revoked_reason",
     "stop_conditions"
   ],
-  "active_task_statuses": ["待启动", "可启动", "工作中", "待审查"],
-  "forbidden_runtime_extensions_before_g10": [".js", ".ts", ".tsx", ".jsx", ".css", ".html", ".vue", ".svelte"],
-  "allowed_framework_code": ["planning/tools/validate_project.py"],
+  "active_task_statuses": [
+    "待启动",
+    "可启动",
+    "工作中",
+    "待审查"
+  ],
+  "forbidden_runtime_extensions_before_g10": [
+    ".js",
+    ".ts",
+    ".tsx",
+    ".jsx",
+    ".css",
+    ".html",
+    ".vue",
+    ".svelte"
+  ],
+  "allowed_framework_code": [
+    "planning/tools/validate_project.py"
+  ],
   "gates": [
-    {"id": "G0", "name": "规划治理", "owner": "A00", "depends_on": []},
-    {"id": "G0A", "name": "Agent治理", "owner": "A00", "depends_on": ["G0"]},
-    {"id": "F0B", "name": "开发框架就绪", "owner": "A00", "depends_on": ["G0A"]},
-    {"id": "G1", "name": "产品定义与体验支柱", "owner": "A01", "depends_on": ["F0B"]},
-    {"id": "G2", "name": "玩家与竞品", "owner": "A01", "depends_on": ["G1"]},
-    {"id": "G3", "name": "核心人生循环", "owner": "A02", "depends_on": ["G1", "G2"]},
-    {"id": "G4", "name": "世界人物与叙事", "owner": "A03", "depends_on": ["G1", "G3"]},
-    {"id": "G5", "name": "系统事件与内容工程", "owner": "A02", "depends_on": ["G3", "G4"]},
-    {"id": "G6", "name": "内容生产规范", "owner": "A04", "depends_on": ["G4", "G5"]},
-    {"id": "G7", "name": "UX无障碍与声音", "owner": "A05", "depends_on": ["G3", "G4", "G5"]},
-    {"id": "G8", "name": "技术与数据", "owner": "A06", "depends_on": ["G5", "G6", "G7"]},
-    {"id": "G9", "name": "生产测试与发布", "owner": "A07", "depends_on": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"]},
-    {"id": "G10", "name": "最终GDD与开发解锁", "owner": "A00", "depends_on": ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"]}
+    {
+      "id": "G0",
+      "name": "规划治理",
+      "owner": "A00",
+      "depends_on": []
+    },
+    {
+      "id": "G0A",
+      "name": "Agent治理",
+      "owner": "A00",
+      "depends_on": [
+        "G0"
+      ]
+    },
+    {
+      "id": "F0B",
+      "name": "开发框架就绪",
+      "owner": "A00",
+      "depends_on": [
+        "G0A"
+      ]
+    },
+    {
+      "id": "G1",
+      "name": "产品定义与体验支柱",
+      "owner": "A01",
+      "depends_on": [
+        "F0B"
+      ]
+    },
+    {
+      "id": "G2",
+      "name": "玩家与竞品",
+      "owner": "A01",
+      "depends_on": [
+        "G1"
+      ]
+    },
+    {
+      "id": "G3",
+      "name": "核心人生循环",
+      "owner": "A02",
+      "depends_on": [
+        "G1",
+        "G2"
+      ]
+    },
+    {
+      "id": "G4",
+      "name": "世界人物与叙事",
+      "owner": "A03",
+      "depends_on": [
+        "G1",
+        "G3"
+      ]
+    },
+    {
+      "id": "G5",
+      "name": "系统事件与内容工程",
+      "owner": "A02",
+      "depends_on": [
+        "G3",
+        "G4"
+      ]
+    },
+    {
+      "id": "G6",
+      "name": "内容生产规范",
+      "owner": "A04",
+      "depends_on": [
+        "G4",
+        "G5"
+      ]
+    },
+    {
+      "id": "G7",
+      "name": "UX无障碍与声音",
+      "owner": "A05",
+      "depends_on": [
+        "G3",
+        "G4",
+        "G5"
+      ]
+    },
+    {
+      "id": "G8",
+      "name": "技术与数据",
+      "owner": "A06",
+      "depends_on": [
+        "G5",
+        "G6",
+        "G7"
+      ]
+    },
+    {
+      "id": "G9",
+      "name": "生产测试与发布",
+      "owner": "A07",
+      "depends_on": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ]
+    },
+    {
+      "id": "G10",
+      "name": "最终GDD与开发解锁",
+      "owner": "A00",
+      "depends_on": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G9"
+      ]
+    }
+  ],
+  "allowed_auxiliary_code_roots": [
+    "output/implementation-proposals/",
+    "output/playwright/",
+    "output/releases/verify-v8-20261015/"
   ]
 }

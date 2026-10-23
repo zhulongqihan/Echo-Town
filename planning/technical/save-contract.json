@@ -1,65 +1,467 @@
 {
-  "schema_version": "3.0.0",
-  "storage_key": "echo-town-generation-save",
-  "legacy_storage_keys": ["echo-town-generation-save-v6", "echo-town-generation-save-v5", "echo-town-generation-save-v4", "echo-town-save", "echo-town-mvp-v1"],
-  "save_version": 7,
-  "accepted_versions": [7],
+  "schema_version": "5.1.0",
+  "storage_key": "echo-town-generation-save-v9",
+  "legacy_storage_keys": [
+    "echo-town-generation-save-v6",
+    "echo-town-generation-save-v5",
+    "echo-town-generation-save-v4",
+    "echo-town-save",
+    "echo-town-mvp-v1"
+  ],
+  "save_version": 9,
+  "accepted_versions": [
+    7,
+    8,
+    9
+  ],
   "max_save_bytes": 524288,
-  "screen_values": ["start", "game", "ending", "archive"],
-  "settings": {"fontScale": "boolean", "sound": "boolean"},
-  "life_status_values": ["active", "complete"],
-  "profile_values": ["town-child", "workshop-heir", "newcomer", "scholar", "storyteller"],
-  "talent_values": ["good-memory", "nimble-hands", "silver-tongue", "warm-heart", "thick-skin", "night-owl", "lucky-coin", "slow-and-steady"],
-  "goal_values": ["learn", "home", "connection", "town", "record", "free"],
+  "screen_values": [
+    "start",
+    "game",
+    "ending",
+    "archive"
+  ],
+  "introSeen": "boolean",
+  "settings": {
+    "fontScale": "boolean",
+    "sound": "boolean",
+    "volume": {
+      "type": "number",
+      "min": 0,
+      "max": 1
+    }
+  },
+  "life_status_values": [
+    "active",
+    "complete"
+  ],
+  "profile_values": [
+    "town-child",
+    "workshop-heir",
+    "newcomer",
+    "scholar",
+    "storyteller"
+  ],
+  "talent_values": [
+    "good-memory",
+    "nimble-hands",
+    "silver-tongue",
+    "warm-heart",
+    "thick-skin",
+    "night-owl",
+    "lucky-coin",
+    "slow-and-steady",
+    "bright-smile",
+    "quick-learner",
+    "strong-back",
+    "good-family",
+    "curious-mouth",
+    "maker-spirit",
+    "room-reader",
+    "restless-feet",
+    "ledger-mind",
+    "quiet-anchor"
+  ],
+  "goal_values": [
+    "learn",
+    "home",
+    "connection",
+    "town",
+    "record",
+    "free"
+  ],
   "world": {
-    "completedLives": {"type": "integer", "min": 0, "max": 9999},
-    "town": ["shop", "bridge", "school", "market", "archive"],
+    "completedLives": {
+      "type": "integer",
+      "min": 0,
+      "max": 9007199254740991
+    },
+    "town": [
+      "shop",
+      "bridge",
+      "school",
+      "market",
+      "archive"
+    ],
     "legacyBank_max": 3,
     "collectedLegacyIds_max": 16,
     "achievements_max": 16,
-    "secrets_max": 10,
+    "secrets_max": 11,
     "moments_max": 12,
     "history_max": 40,
-    "text_max": 240
+    "text_policy": "导入保留原文；有效紧凑 JSON 总量受 max_save_bytes 约束"
   },
   "current_life": {
-    "generation": {"type": "integer", "min": 1, "max": 9999},
-    "round": {"type": "integer", "min": 0, "max": 22},
-    "maxRounds": 23,
-    "actionPointsPerRound": 3,
-    "seed": {"type": "uint32", "min": 0, "max": 4294967295},
-    "resources": {
-      "money": {"min": 0, "max": 100},
-      "energy": {"min": 0, "max": 10},
-      "health": {"min": 0, "max": 10},
-      "happiness": {"min": 0, "max": 10},
-      "pressure": {"min": 0, "max": 10}
+    "generation": {
+      "type": "integer",
+      "min": 1,
+      "max": 9007199254740991
     },
-    "maxResources": ["energy"],
-    "skills": ["study", "craft", "expression", "empathy", "courage"],
-    "relationships": ["family", "mentor", "friend", "partner", "child", "neighbor"],
-    "town": ["shop", "bridge", "school", "market", "archive"],
-    "goals": ["learn", "home", "connection", "town", "record", "free"],
+    "round": {
+      "type": "integer",
+      "min": 0,
+      "max": 22
+    },
+    "maxRounds": 23,
+    "actionPointsPerRound": 2,
+    "seed": {
+      "type": "uint32",
+      "min": 0,
+      "max": 4294967295
+    },
+    "resources": {
+      "money": {
+        "min": 0,
+        "max": 9007199254740991
+      },
+      "energy": {
+        "min": 0,
+        "max": "maxResources.energy",
+        "import_preserves_existing": true
+      },
+      "health": {
+        "min": 0,
+        "max": 10
+      },
+      "happiness": {
+        "min": 0,
+        "max": 10
+      },
+      "pressure": {
+        "min": 0,
+        "max": 10
+      },
+      "expectation": {
+        "min": 0,
+        "max": 10
+      }
+    },
+    "maxResources": [
+      "energy"
+    ],
+    "skills": [
+      "study",
+      "craft",
+      "expression",
+      "empathy",
+      "courage"
+    ],
+    "relationships": [
+      "family",
+      "mentor",
+      "friend",
+      "partner",
+      "child",
+      "neighbor"
+    ],
+    "characters": [
+      "father",
+      "mother",
+      "qishu",
+      "linlaoshi",
+      "ahe",
+      "zhoulan",
+      "xiaoman",
+      "chenshen"
+    ],
+    "interests": [
+      "reading",
+      "machinery",
+      "writing",
+      "cooking",
+      "music",
+      "sports",
+      "photography",
+      "ecology",
+      "teaching",
+      "business",
+      "community",
+      "travel"
+    ],
+    "opportunity": {
+      "drawnIds_max": 3,
+      "history_max": 23
+    },
+    "town": [
+      "shop",
+      "bridge",
+      "school",
+      "market",
+      "archive"
+    ],
+    "goals": [
+      "learn",
+      "home",
+      "connection",
+      "town",
+      "record",
+      "free"
+    ],
     "action_log_max": 23,
     "life_log_max": 120,
+    "sceneVisits_max": 80,
     "inventory_max": 6,
     "job_shifts_max": 120,
-    "job_history_max": 6,
-    "cashflow": ["income", "expenses", "debt"],
+    "job_history_max": 7,
+    "cashflow": [
+      "income",
+      "expenses",
+      "debt"
+    ],
     "flags_max": 80,
-    "secrets_max": 10,
+    "secrets_max": 11,
     "moments_max": 12,
     "new_moments_max": 12,
     "inheritedLegacyIds_max": 3,
     "selectedLegacies_max": 3,
     "legacyCandidates_max": 10,
-    "text_max": 240
+    "text_policy": "新生成文案由引擎限制长度；迁移不额外裁剪旧文本",
+    "strategy": {
+      "version": 1,
+      "route_values": [
+        "craft",
+        "study",
+        "community"
+      ],
+      "goals_max": 15,
+      "goal_statuses": [
+        "achieved",
+        "missed",
+        "legacy-settled"
+      ],
+      "evidence_max": 256,
+      "consequences_max": 3,
+      "migratedThroughStage": "null or stage id"
+    },
+    "ledger": {
+      "opening": [
+        "money",
+        "debt",
+        "income",
+        "expenses"
+      ],
+      "totals": [
+        "income",
+        "expenses",
+        "borrowed",
+        "repaid",
+        "unpaid"
+      ],
+      "entries_max": 4096
+    },
+    "migration": {
+      "goalAccessVersion": 1,
+      "activeGoalIds": "固定的当前阶段已证明可接入目标ID，最多三项",
+      "deferGoals": "boolean",
+      "legacyGoalProgress": "保留旧愿望进度；已生成结局不重评",
+      "admission_policy": "有限普通命令路径构造充分条件见证，非穷尽搜索；无保证路径的目标保留旧制"
+    },
+    "projects": {
+      "version": 1,
+      "eligibleFromRound": [
+        7,
+        null
+      ],
+      "project_id": "craft-customers-youth-v1",
+      "current": "null or one project record",
+      "statuses": [
+        "active",
+        "completed",
+        "incomplete",
+        "withdrawn"
+      ],
+      "acceptedRound": 7,
+      "step_rounds": {
+        "firstWork": 7,
+        "preparation": 8,
+        "returnWork": 9
+      },
+      "receipt_fields": [
+        "round",
+        "type",
+        "actionId",
+        "slot",
+        "receiptId",
+        "ap",
+        "moneySpent",
+        "energySpent"
+      ],
+      "current_round_ap": "actionPoints <= 2 - recordedAP - otherActionsAtLeastOneAP",
+      "settlement": "after actual age28 event, one stable resultId, matching final ability stored once; never retroactive",
+      "evidence": "matching actual job/life evidence; item preparation additionally requires same-round purchase ledger and retained item",
+      "history_summary": [
+        "id",
+        "status",
+        "resultId",
+        "settledRound",
+        "stepsDone",
+        "preparationActionId",
+        "matching final ability field?"
+      ],
+      "ids": [
+        "craft-customers-youth-v1",
+        "study-practice-youth-v1",
+        "community-network-youth-v1"
+      ],
+      "final_fields_by_id": {
+        "craft-customers-youth-v1": "finalCraft",
+        "study-practice-youth-v1": "finalStudy",
+        "community-network-youth-v1": "finalEmpathy"
+      }
+    }
   },
   "import_policy": {
     "parse_before_replace": true,
     "reject_keeps_current_save": true,
-    "normalize_before_persist": true,
+    "validate_before_persist": true,
+    "capacity_check_before_replace": true,
+    "backup_before_main_write": true,
+    "replace_memory_after_commit": true,
     "execute_imported_markup": false,
-    "legacy_storage_preserved": true
-  }
+    "legacy_storage_preserved": true,
+    "v7_migrates_to_v8": true,
+    "migration_idempotent": true,
+    "export_compact_json": true,
+    "history_preserved_up_to_existing_limit": 40,
+    "clear_marker_prevents_v7_resurrection": true,
+    "v8_migrates_to_v9": true,
+    "clear_marker_prevents_v8_resurrection": true,
+    "newest_corrupt_key_blocks_fallback": true,
+    "projects_require_actual_evidence": true,
+    "source_priority": [
+      "v9",
+      "v8",
+      "v7"
+    ],
+    "project_eligibility": "only untouched 19 entry or before; never reconstruct past steps",
+    "mode_switch_single_pointer_commit": true,
+    "challenge_envelope_slot_bound": true,
+    "stale_window_cannot_switch_or_write_another_slot": true
+  },
+  "previous_storage_key": "echo-town-generation-save-v8",
+  "backup_key": "echo-town-generation-save-v9-before-import",
+  "v7_backup_prefix": "echo-town-generation-save-v7-original-",
+  "max_import_bytes": 2097152,
+  "setup": {
+    "route_values": [
+      "craft",
+      "study",
+      "community"
+    ],
+    "attribute_total": 20,
+    "attribute_range": [
+      0,
+      10
+    ],
+    "talent_count_to_start": 3,
+    "editable_between_lives": true
+  },
+  "limit_semantics": "current_life 中普通数量是正常游戏容量；导入允许保留旧档已有值，严格结构容量见 import_structural_limits，不因升级静默截断。",
+  "import_structural_limits": {
+    "world_history": 40,
+    "world_collection_arrays": 100,
+    "inventory": 100,
+    "jobHistory": 100,
+    "legacyCandidates": 20,
+    "secrets": 100,
+    "moments": 100,
+    "actions": 23,
+    "lifeLog": 120,
+    "sceneVisits": 80,
+    "flags": 80,
+    "inheritedLegacyIds": 3,
+    "selectedLegacies": 3,
+    "opportunity_drawnIds": 3,
+    "opportunity_history": 23
+  },
+  "v7_storage_key": "echo-town-generation-save",
+  "v8_backup_prefix": "echo-town-generation-save-v8-original-",
+  "modeStorage": {
+    "version": 1,
+    "pointerKey": "echo-town-mode-selection-v1",
+    "snapshotPrefix": "echo-town-mode-snapshot-v1:",
+    "challengeStorageKey": "echo-town-challenge-craft-start-v1-save-v9",
+    "challengeBackupKey": "echo-town-challenge-craft-start-v1-before-import",
+    "slotIds": [
+      "main",
+      "craft-start-v1"
+    ],
+    "defaultLoadSlot": "main",
+    "pointerFields": [
+      "version",
+      "activeSlotId",
+      "refs"
+    ],
+    "commitPoint": "single pointer setItem after validated snapshots",
+    "clearMarker": {
+      "version": 9,
+      "cleared": true
+    },
+    "challenge": {
+      "id": "craft-start-v1",
+      "rulesVersion": "6.2.0",
+      "seed": 277191004,
+      "envelopeFormat": "echo-town-challenge",
+      "envelopeVersion": 1,
+      "generation": 1,
+      "profileId": "workshop-heir",
+      "goalId": "learn",
+      "talentIds": [
+        "slow-and-steady",
+        "good-memory",
+        "warm-heart"
+      ],
+      "attributes": {
+        "appearance": 3,
+        "intelligence": 5,
+        "physique": 6,
+        "family": 6
+      }
+    },
+    "maxInputBytes": 2097152,
+    "maxEnvelopeBytes": 524288,
+    "protectCorruptPointer": true,
+    "preserveOriginalMainV9V8V7": true,
+    "backupsAreCompletePayloads": true,
+    "cleanupUnreferencedSnapshotsAfterCommitOnly": true,
+    "recoveryBackupPrefixes": {
+      "main": "echo-town-mode-main-recovery-raw-",
+      "craft-start-v1": "echo-town-challenge-craft-start-v1-recovery-raw-"
+    },
+    "switchRequiresExpectedSourceSlotId": true,
+    "recoveryRequiresKnownSlotAndStillInvalidSource": true,
+    "recoveryBackupsPreserveRawReferenceAndLastValidBackup": true
+  },
+  "journeyVariantIds": [
+    "journey-craft-repair-v1",
+    "journey-study-recheck-v1",
+    "journey-community-replan-v1"
+  ],
+  "journey_variants": [
+    {
+      "id": "journey-craft-repair-v1",
+      "actionId": "chain-craft-workshop",
+      "round": 12,
+      "sourceActionId": "chain-craft-trial",
+      "sourceRound": 8,
+      "sourceSuccess": false,
+      "counts_as_workshop": false
+    },
+    {
+      "id": "journey-study-recheck-v1",
+      "actionId": "chain-study-report",
+      "round": 16,
+      "sourceActionId": "chain-study-trial",
+      "sourceRound": 8,
+      "sourceSuccess": false
+    },
+    {
+      "id": "journey-community-replan-v1",
+      "actionId": "chain-community-flood",
+      "round": 15,
+      "sourceActionId": "chain-community-roster",
+      "sourceRound": 11,
+      "sourceSuccess": false
+    }
+  ]
 }

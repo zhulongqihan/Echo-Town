@@ -1,0 +1,197 @@
+{
+  "created_at": "2026-10-22T19:51:42+08:00",
+  "archive": "output/releases/echo-town-desktop-v9-slice-20261022.zip",
+  "archive_bytes": 1772930,
+  "archive_sha256": "fccfe6b467fec811e2f59e909531497ac0edf0903f416b1cd4e342757dfca7b4",
+  "content_version": "6.1.0",
+  "save_version": 9,
+  "cache": "echo-town-desktop-v9-4",
+  "image_bytes": 1603758,
+  "entry_count": 35,
+  "runtime_matches_source": true,
+  "node_tests": {
+    "pass": 122,
+    "fail": 0
+  },
+  "human_playtests": {
+    "collected": 0,
+    "required": 5
+  },
+  "entries": [
+    {
+      "path": "index.html",
+      "bytes": 1735,
+      "sha256": "191c693c2b006236cc7ebcbfb0e6d069b4c656c30f7ed05916631eb9fea33556"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3777,
+      "sha256": "67afd44db28471ea22ba4e5f31948a6da98a3aec1af42312534ea753cad1942f"
+    },
+    {
+      "path": "development/game/README.md",
+      "bytes": 8177,
+      "sha256": "5113dd25c6ced21ccd5d6471fc6b8b6fc31f78b534c86162aed9e9cec759a6f8"
+    },
+    {
+      "path": "docs/current_runtime_contract.md",
+      "bytes": 15914,
+      "sha256": "44296bece7c1a6732397b85a1108857fa99c4f94d8c1d63b0816e81ea71ed9e4"
+    },
+    {
+      "path": "development/game/index.html",
+      "bytes": 29438,
+      "sha256": "ce129a77d7448a4f9b509b1e1a45c368f3fba982c882ba9b491d5c5e798733c6"
+    },
+    {
+      "path": "development/game/styles.css",
+      "bytes": 89205,
+      "sha256": "002ec0dfb31fa5c679ee4817bdec8ab01cf15c51ce2f4850b1ff9bcc34be204e"
+    },
+    {
+      "path": "development/game/content.js",
+      "bytes": 105831,
+      "sha256": "b9c19e8160b9c5a14fe8ed7abf565f1f789d02af8f5ca1b0c714320c94ec4ebc"
+    },
+    {
+      "path": "development/game/strategy.js",
+      "bytes": 45158,
+      "sha256": "e148ff72dec7c4cdb9503c0ad9dd5ae855476753c0fd6368b5170dc0738ce2b2"
+    },
+    {
+      "path": "development/game/projects.js",
+      "bytes": 19799,
+      "sha256": "5ee5fa37011b8ceb265a51e47ca819f7ede4abbc660d9f4531fb3ec87fca8c28"
+    },
+    {
+      "path": "development/game/save.js",
+      "bytes": 41052,
+      "sha256": "f58fa7cfa7f3067f79627cfc9b10c114342dc54dcd3fe8ddf3422478f4bd9271"
+    },
+    {
+      "path": "development/game/engine.js",
+      "bytes": 82573,
+      "sha256": "11021e09d422a472233e78e0419ddfc755ac039d2c8d52bbe2f7af776b1739d5"
+    },
+    {
+      "path": "development/game/audio.js",
+      "bytes": 8017,
+      "sha256": "706e8489b6a0ea9201e5dbe9dcf763814fad307b5f9fc622c2d73dd523326fdb"
+    },
+    {
+      "path": "development/game/scene.js",
+      "bytes": 18497,
+      "sha256": "774d791631a644cb41e7ff4dee826d6b0a4ac273879a63d3b95da928c88be7c6"
+    },
+    {
+      "path": "development/game/ui.js",
+      "bytes": 70001,
+      "sha256": "a4b4a95ed9c445648e57647c5bb571c56db54f69eba7d2ef982215950c5a4bc2"
+    },
+    {
+      "path": "development/game/game.js",
+      "bytes": 2795,
+      "sha256": "a6018d4c7e6e0f8b26b43484d7bd1040a21a9172b3c8fe2534d074d2fbd29881"
+    },
+    {
+      "path": "development/game/sw.js",
+      "bytes": 2027,
+      "sha256": "1dca8924766ff3ffbd97b237c453828b7218ac270567fdf3ee2ecfd3d4f5098c"
+    },
+    {
+      "path": "development/game/manifest.webmanifest",
+      "bytes": 537,
+      "sha256": "bd363a7a066a51110654f4c68da4e077fb7799ee9194bb5536da38ce21fff0bf"
+    },
+    {
+      "path": "development/game/favicon.svg",
+      "bytes": 288,
+      "sha256": "5484167782af3a2308c8350ab1c0f83e7caa746ed9c974b61080da0d34b7cd6a"
+    },
+    {
+      "path": "development/game/icon-192.svg",
+      "bytes": 318,
+      "sha256": "be5cf6a4f50ea109e0de37567dbe36ba0dd8b28bdb8d90b820a047a6ce1d13b9"
+    },
+    {
+      "path": "development/game/icon-512.svg",
+      "bytes": 325,
+      "sha256": "eb1fe8e4c0ffb979ed8b852bcf4cce2d5a4c0d3fb9c8900099851d2daea8c4ac"
+    },
+    {
+      "path": "development/game/assets/stage-childhood.webp",
+      "bytes": 146018,
+      "sha256": "60fcff0a91a4ad4836da48260a1af1c114e7def96ae421ccce2522c63702dfc2"
+    },
+    {
+      "path": "development/game/assets/stage-adolescence.webp",
+      "bytes": 138018,
+      "sha256": "c0a4ebcc9d7f123500491e3e3169933b0b68399591c6186ba6e422f2fc99cc56"
+    },
+    {
+      "path": "development/game/assets/stage-youth.webp",
+      "bytes": 148762,
+      "sha256": "74b7c17ffcb4c56ddc9cda23e415981158be28a23da85b22effcfb54bae3fb0d"
+    },
+    {
+      "path": "development/game/assets/stage-middle.webp",
+      "bytes": 177854,
+      "sha256": "9670faf948d3e1f69cc1b8b6c5a72efce3814dd0f259651976f49d143ec75e5a"
+    },
+    {
+      "path": "development/game/assets/stage-later.webp",
+      "bytes": 164254,
+      "sha256": "31114c6f21840a7a3349f4e720c8a74744e8994ef4629632f8dacb7e1ac3a4a8"
+    },
+    {
+      "path": "development/game/assets/scene-school.webp",
+      "bytes": 131496,
+      "sha256": "de19cdbc1a29276bb39522529b017f85795521f920567047236bd26486c93ef9"
+    },
+    {
+      "path": "development/game/assets/scene-festival.webp",
+      "bytes": 194168,
+      "sha256": "fd9f54f28d18c73a6a0bb656a0766625ce281fda7bb5a5883733ac085e443f8d"
+    },
+    {
+      "path": "development/game/assets/scene-station.webp",
+      "bytes": 135744,
+      "sha256": "78d48c22aa046b56d25d82303fbbb51551278146c996167a53ab0ceee4a5de1d"
+    },
+    {
+      "path": "development/game/assets/scene-flood.webp",
+      "bytes": 225222,
+      "sha256": "ed6536b99952431e72aed719916e898dcbc943ad8669498351eb85004116921b"
+    },
+    {
+      "path": "development/game/assets/scene-cinema.webp",
+      "bytes": 142222,
+      "sha256": "5259448aa7a93279efc0cb78624b3c7cf45523000b394584654a838931bafb9e"
+    },
+    {
+      "path": "output/playtests/desktop-v9/观察者记录.md",
+      "bytes": 1307,
+      "sha256": "348ae0743fb0314cb495355b8c700cdbda77475e426fe1897565d4f0f4dd5d44"
+    },
+    {
+      "path": "output/playtests/desktop-v9/试玩存档/middle-32-independent-work.json",
+      "bytes": 13665,
+      "sha256": "e3a1aa3fead9f987012b693f999ac4361f935504a8347808c35aa5c261fa4405"
+    },
+    {
+      "path": "output/playtests/desktop-v9/试玩存档/youth-19-offer.json",
+      "bytes": 8822,
+      "sha256": "513a7c35843f7eb81a15a9d323c0931135f0640d6801b180f0d13d3c58402fc6"
+    },
+    {
+      "path": "output/playtests/desktop-v9/试玩存档/youth-28-feedback.json",
+      "bytes": 14562,
+      "sha256": "66119d7d00a6a0c33d97811e62a0e251bf3cb511c6a92567b276e00d7b90e6ee"
+    },
+    {
+      "path": "output/playtests/desktop-v9/试玩说明.md",
+      "bytes": 1650,
+      "sha256": "92ac166792ed1aef51248938f456cf97d5f0235185c73db785781708b98b04a2"
+    }
+  ]
+}

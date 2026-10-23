@@ -1,18 +1,16 @@
 ---
 document_id: MASTER
 title: 《回声镇：一生一局》规划总入口
-status: 工作中
-version: 3.34.0
-as_of: 2026-08-30T01:02:44+08:00
-updated_at: 2026-08-30T01:02:44+08:00
+status: 已锁定
+version: 3.46.0
+as_of: 2026-10-23T01:43:21+08:00
+updated_at: 2026-10-23T01:43:21+08:00
 canonical: true
-current_gate: D5视觉声音与人生片段验证
+current_gate: D7电脑经营体验已交付
 current_rule: development
-source: 用户批准的《回声镇：一生一局》完整规划生产计划及后续确认
+source: EVENT-20261005-019、EVENT-20261015-020、EVENT-20261022-021、EVENT-20261022-022、EVENT-20261022-023、EVENT-20261022-024、EVENT-20261022-025、EVENT-20261023-026；D7正式源与实际验收
 pending:
-  - G1用户决策、专题同步、角色审计和发行包复核已完成；用户试玩体验数据仍待采集
-  - G2玩家定位与竞品研究和G6内容生产规范保留；G3核心循环、G4世界叙事、G5系统内容、G7 UX、G8技术、G9生产测试需以D3结果复审；G10最终GDD暂停批准
-  - D4生活经营沙盒已实现并完成内部结构、可达性与浏览器验收；D5视觉声音与人生片段已完成内部验收，等待用户回填第一眼理解、真实时长、经营决策感、媒体体验和第二世重玩意愿
+  - G3至G10正式版专题仍待复审，数值不视为平衡锁定
 supersedes: []
 ---
 
@@ -22,41 +20,23 @@ supersedes: []
 
 ## 当前状态
 
-- 当前阶段：D5视觉声音与人生片段验证——用户已触发CHANGE-20260830-009，媒体与片段切片已完成内部验证，当前仍不锁定正式版规则。
-- 根目录试玩入口：[`index.html`](../index.html)已交付并通过真实浏览器验证，打开后自动进入唯一游戏源码入口`development/game/index.html`；后续可试玩版本沿用该入口约定。
-- 已完成：阶段0——规划治理与资料库初始化；阶段0A——Agent协作治理与单窗口调度修订。
-- 当前门禁：D5视觉声音与人生片段验证；G1与G2保留，G3至G10受用户试玩反馈影响需按依赖复审，D4、D3与旧版构建仅作为回退基线。
-- 当前运行规则：development；允许A00按已确认边界推进可回退开发，并按G2至G10补齐正式版证据，不把未经门禁验收的实现写成完成事实。
-- 当前P0冲突：无。
-- 当前P1未决：D5媒体层能否增强阶段辨识、结果记忆和重玩动力而不增加噪声；D4工作/账单/物品的长期策略价值、正式版内容产能估算、长期重玩证据、用户批准最终GDD仍未解决。
-- 当前关键试玩事实：玩家反馈“玩着云里雾里，根本看不懂在做什么”，并明确要求每一世可以相对独立、对下一世提供基础性可操作影响，降低对连续线性叙事的依赖。
-- 当前变更申请：[CHANGE-20260830-009](changes/CHANGE_20260830_009.md)；上位生活经营变更为[CHANGE-20260829-008](changes/CHANGE_20260829_008.md)，丰富版循环变更为[CHANGE-20260829-007](changes/CHANGE_20260829_007.md)。
-- 丰富版提案：[20260829_rich-life-loop-proposal.md](replans/20260829_rich-life-loop-proposal.md)。
-- 丰富版审阅：[REVIEW-20260829-025-richness-audit.md](reviews/REVIEW_20260829_025-richness-audit.md)。
-- 丰富版验收：[rich-loop-acceptance-20260829.md](../development/tests/rich-loop-acceptance-20260829.md)。
-- D4生活经营提案：[20260829_life-sim-sandbox-proposal.md](replans/20260829_life-sim-sandbox-proposal.md)。
-- D4生活经营审阅：[REVIEW_20260829_026-life-sim.md](reviews/REVIEW_20260829_026-life-sim.md)。
-- D4生活经营验收：[life-sim-acceptance-20260829.md](../development/tests/life-sim-acceptance-20260829.md)。
-- D5媒体与人生片段提案：[20260830_media-feedback-layer-proposal.md](replans/20260830_media-feedback-layer-proposal.md)。
-- D5媒体与人生片段审阅：[REVIEW_20260830_027-media-loop.md](reviews/REVIEW_20260830_027-media-loop.md)。
-- D5媒体与人生片段验收：[media-loop-acceptance-20260830.md](../development/tests/media-loop-acceptance-20260830.md)。
-- G0评审：[G0_planning-governance_20260828.md](reviews/G0_planning-governance_20260828.md)
-- G0A评审：[G0A_agent-governance_20260828.md](reviews/G0A_agent-governance_20260828.md)（已按用户确认修订）
-- F0B评审：[F0B_framework-readiness_20260828.md](reviews/F0B_framework-readiness_20260828.md)（自检通过，已由用户最新指令确认）
-- 用户事件：[user-event-log.md](user-event-log.md)
-- 开发变更申请：[CHANGE_20260828_001.md](changes/CHANGE_20260828_001.md)、[CHANGE_20260828_003.md](changes/CHANGE_20260828_003.md)、[CHANGE_20260828_004.md](changes/CHANGE_20260828_004.md)、[CHANGE_20260828_005.md](changes/CHANGE_20260828_005.md)
-- D2验收记录：[d2-browser-acceptance.md](../development/tests/d2-browser-acceptance.md)
-- D2审查报告：[D2_mvp-acceptance_20260828.md](reviews/D2_mvp-acceptance_20260828.md)
-- 当前可玩构建审计：[playable-build-audit-20260828.md](../development/release/playable-build-audit-20260828.md)
-- 当前可玩构建验收：[playable-build-acceptance.md](../development/tests/playable-build-acceptance.md)
-- 根目录入口验收：[root-playable-entry-acceptance-20260829.md](../development/tests/root-playable-entry-acceptance-20260829.md)
-- 最新交接：[20260830_028-media-loop.md](handoffs/20260830_028-media-loop.md)
+- **完整电脑端经营与探索计划已交付**。正式版本D7／content6.2.0／savev9／schema5.1.0／cache echo-town-desktop-v9-7；五阶段、23节点、2AP与原三路线保留。
+- 三个青年项目、路线各两种经营方式、五阶段代表决定、四人物连续相遇、三种早年失败的补救版本、真实回顾与遗产开局预填均已实现。
+- 离线PNG人生卡和固定起点挑战已接通；挑战与主人生各自保存、导入导出和清除。模式切换、旧窗口与坏档恢复均按事务保护，v7/v8原文保留。
+- 正式行为测试173/173通过；内容、存档、模块边界、语法校验通过。三路线完整人生、退出/失败退路、40世容量、桌面/键盘/音频/媒体失败、真实FileReader、离线卡片、文件入口及PWA保存后更新已有证据。
+- [完整离线包](../output/releases/echo-town-desktop-v9-20261023.zip)为1,791,065字节；解压后32个入口和运行文件匹配正式源，实际双击、事件反馈刷新、挑战刷新及回主人生通过。详见[最终验收](../development/tests/desktop-full-v9-acceptance-20261023.md)与[运行时契约](../docs/current_runtime_contract.md)。
+- 用户明确不参与试玩、全部自主完成（EVENT-025）；原5人前置已取消。内部验证没有证明真人趣味、实际10—20分钟时长或市场留存，不虚构此类结论。
+- gameplay_resume、ui_implementation、validation_resume均已完成；正式改动由A00整合，TASK-20261022-A00-DESKTOP-001已完成，实施租约释放，无等待中的子任务。
+- 最新交接：[20261023_035-desktop-v9-complete.md](handoffs/20261023_035-desktop-v9-complete.md)。当前授权计划无未完成实施项，不再等待用户试玩。
+- 唯一正式源为development/game，根index.html保持双击入口；未提交、推送或远端发布，原工作树、旧包和开始前备份保留。D5/v7、D6/v8、D7首切片122项等仅是历史基线。
+- G3至G10正式专题仍待独立复审，当前数值不视为正式平衡锁定；这些后续专题不阻塞本次已授权交付。
 
 ## 权威来源分工
 
 | 主题 | 唯一权威文件 | 当前状态 |
 | --- | --- | --- |
 | 全局状态、门禁、下一步 | 本文件 | 已锁定 |
+| 当前运行时事实、模块边界、兼容与验证命令 | [docs/current_runtime_contract.md](../docs/current_runtime_contract.md) | 已锁定 |
 | 已确认决策及变更历史 | [decision-log.md](decision-log.md) | 已锁定 |
 | Agent角色、权限、启动与运行状态 | [agents/00-agent-registry.md](agents/00-agent-registry.md) | 已锁定 |
 | 产品目标、受众、范围 | [01_project-charter.md](01_project-charter.md) | 已锁定 |
@@ -71,7 +51,7 @@ supersedes: []
 | 生产、测试与发布 | [10_production-testing-roadmap.md](10_production-testing-roadmap.md) | 需重开（依赖G3核心循环重构，见CHANGE-20260829-006） |
 | 最终产品契约 | [11_final-gdd.md](11_final-gdd.md) | 暂停批准（核心循环需重规划，见CHANGE-20260829-006） |
 
-## 阶段与依赖
+## 阶段与依赖（含历史记录）
 
 | 阶段 | 主要输出 | 依赖 | 状态 | 锁定门禁 |
 | --- | --- | --- | --- | --- |
@@ -94,6 +74,8 @@ supersedes: []
 | D3丰富版人生循环验证 | 5阶段、23节点、69行动、5身份、8天赋、6愿望、资源/技能/关系/小镇、16遗产、12成就、8彩蛋、save v5 | CHANGE-20260829-007、TASK-20260829-A00-RICH-LOOP-001 | 已实现（内部静态、可达性与浏览器验收通过，待用户试玩） | D3-rich |
 | D4生活经营沙盒验证 | 23节点双层循环、每节点3点生活行动、6职业、6物品、生活账单、工作履历、现金流、16遗产、16成就、10彩蛋、save v6 | CHANGE-20260829-008、TASK-20260829-A00-LIFE-SIM-001 | 已实现（内部长流程、债务、跨世、移动端与存档验收通过，待用户试玩） | D4-life-sim |
 | D5视觉声音与人生片段验证 | 5阶段场景图、阶段配乐、行动音效、媒体开关、12个人生片段、结算/镇志收集、save v7 | CHANGE-20260830-009、TASK-20260830-A00-MEDIA-LOOP-001 | 已实现（内部验证通过，待用户试玩） | D5-media-loop |
+| D6经营策略完整人生 | 15成果、3事件链、遗产新选项、v8迁移、分步UI和离线交付 | DEC-20261005-025 | 已完成内部验收；真人体验待测 | D6-strategy |
+| D7电脑经营与探索 | 三项目、连续人物与条件剧情、个性回顾/遗产预填/本地卡片、独立挑战与完整离线包 | DEC-20261022-026、EVENT-025 | 已完成自主验收与解压交付；真人不作前置 | D7-desktop |
 | 旧版可玩构建回退基线 | 12节点、人物关系、发现、三种今生方向、5个结局、v3存档、根目录试玩入口、旧发行包 | 用户EVENT-20260828-008/009、旧版专项审计、旧发行包复核 | 保留回退，不代表D3新玩法通过 | 回退 |
 
 ## 已锁定决策
@@ -163,7 +145,7 @@ G1通过前必须：
 
 ## 当前唯一主任务
 
-当前已执行`TASK-20260829-A00-LIFE-SIM-001`并完成D4生活经营沙盒切片：玩家从6岁走到75岁，在23个成长节点中先经营生活行动、工作、现金流、物品和账单，再处理人生事件，结算时选择最多3件遗产进入下一世，并通过成就、彩蛋和镇志获得可回看的长期反馈。内部验证已通过，当前等待用户试玩证据；在用户确认前不把行动点、工资、价格、职业参数和内容规模写成正式版规则，D3与旧版构建和发行包继续作为回退基线。
+TASK-20261022-A00-DESKTOP-001已完成：全部功能、规则与存档回归、电脑浏览器验证、完整版离线包、解压复测与交接均已完成；A00租约已释放。当前没有未完成的授权实施项，不等待用户试玩。后续按新的具体需求开展。
 
 ## 新会话恢复步骤
 

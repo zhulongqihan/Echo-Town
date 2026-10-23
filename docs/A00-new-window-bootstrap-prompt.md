@@ -1,33 +1,19 @@
-# 《回声镇：一生一局》A00 新窗口接班提示
+# A00新窗口恢复入口
 
-你是本项目唯一总控 A00，工作区固定为 `F:\selfplay`。必须先读取 `planning/00_master-index.md`、最新交接、用户事件、决策日志和 A00 `STATE.md`，以权威文件为准，不以旧聊天或旧摘要为准。
+先读[MASTER](../planning/00_master-index.md)、[最新交接](../planning/handoffs/20261023_035-desktop-v9-complete.md)、[运行时契约](current_runtime_contract.md)及最新用户消息。不要回退Git HEAD或恢复旧提案；当前授权任务已完成，不自动重新实施。
 
-## 当前真实状态
+# 当前状态摘要
 
-- 总入口：`planning/00_master-index.md`，当前门禁 G10；G1至G9已锁定。
-- G10最终GDD、内部总审计、五结局浏览器验收和发行包复核已完成，等待用户试玩回填与明确批准。
-- 当前没有活动开发租约；当前运行规则为 `development`。
-- 当前可玩构建是免费、离线、全中文、单机网页/PWA；运行时不依赖AI、账号、多人服务或付费系统。
-- 游戏入口：`development/game/index.html`。
-- 当前发行包：`output/releases/echo-town-playable-20260828.zip`；摘要文件在同目录。
-- 最新交接：`planning/handoffs/20260828_021-g10-final-audit.md`。
+更新时间：2026-10-23T01:43:21+08:00。权威入口：[MASTER](../planning/00_master-index.md) 3.46.0。
 
-## 当前可玩构建
+D7完整电脑经营与探索计划已交付，content6.2.0／savev9／cache echo-town-desktop-v9-7。正式源唯一development/game；根index.html可双击，旧工作树与备份保留。
 
-构建包含12个生命节点、每节点3个选择、5个条件/默认结局、三种今生方向、人物关系、跨世小镇/人物/证据、历世档案、v3本地存档、v1/v2兼容迁移、JSON导出/导入、PWA离线资源、响应式布局、键盘/触屏操作和基础无障碍支持。
+三条路线青年项目与不同经营安排、电脑大场景、五阶段代表决定、四人物连续相遇、三种失败补救版本、真实回顾/遗产预填、本地PNG人生卡、独立固定挑战均已实现。三名代理全部完成，A00任务完成并释放租约，无待处理子任务。
 
-## 已验证
+173项正式行为测试与内容/存档/边界/项目校验通过；旧档迁移、40世、电脑/键盘/媒体失败/文件导入/离线更新已有证据。完整ZIP1,791,065字节，解压后32个运行文件匹配，根file入口与主线/挑战刷新往返实际通过。
 
-- `python planning/tools/validate_project.py`：通过，无错误、无警告；
-- `python development/content/validate_content.py`：通过，12事件、36选择、5结局；
-- `python development/tests/validate_save_contract.py`：通过，v3存档契约和v1/v2兼容范围正常；
-- `node --check development/game/game.js` 与 `node --check development/game/sw.js`：通过；
-- 真实浏览器已完成首世、刷新恢复、跨世回声、方向切换、存档迁移、离线重载和五结局可达性验证；
-- 当前仍缺用户本人对时长、理解、重玩意愿和个人设备体验的回填。
+用户明确“我不会试玩的，全部都靠你来”，原真人前置已取消。无需用户试玩或招募；真人乐趣、时长与市场吸引力仍没有证据。G3至G10正式专题不自动批准，但不阻塞本次已完成交付。
 
-## 下一步
+[入口](../index.html) · [离线包](../output/releases/echo-town-desktop-v9-20261023.zip) · [运行时契约](current_runtime_contract.md) · [完整验收](../development/tests/desktop-full-v9-acceptance-20261023.md) · [最新交接](../planning/handoffs/20261023_035-desktop-v9-complete.md)。
 
-1. 交付发行包和最终GDD，收集用户试玩回填；
-2. 若用户确认通过，更新用户事件、决策日志、总入口、G10审计和 A00 状态，关闭G10；
-3. 若用户发现阻塞问题，按 G9 缺陷分级回到对应门禁，只做有记录的修复；
-4. 未获批准前不宣称正式版完成，不擅自扩大内容范围或解除开发边界。
+D5/v7、D6/v8与D7首切片122项只是历史。不得回退工作树或拿旧提案覆盖当前源；下一步按新的具体需求开展，不重复宣布等待用户试玩。

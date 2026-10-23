@@ -1,82 +1,1304 @@
 {
-  "review_version": "5.0.0",
-  "content_version": "5.0.0",
+  "review_version": "6.2.0",
+  "content_version": "6.2.0",
   "baseline_no_ai": true,
   "runtime_ai": false,
+  "review_scope": "D7完整电脑经营体验：三路线项目、条件事件、四人物连续回应、五阶段决定、真实回顾/遗产预填/本地分享卡、独立固定挑战；正式源码与独立审查及真实浏览器证据已整合复核。",
   "policy": {
-    "allowed_assistance": ["草稿变体", "校对候选", "测试数据"],
-    "forbidden_assistance": ["决定规则", "新增世界事实", "决定结局", "替代最终审校", "模仿在世作者"],
-    "final_owner": "A04",
-    "integrator": "A00"
+    "allowed_assistance": [
+      "草稿变体",
+      "校对候选",
+      "测试数据"
+    ],
+    "forbidden_assistance": [
+      "决定规则",
+      "新增世界事实",
+      "决定结局",
+      "替代最终审校",
+      "模仿在世作者"
+    ],
+    "final_owner": "A00",
+    "integrator": "A00",
+    "authorization": "2026-10-05 用户明确批准实施经营策略优化计划"
   },
+  "reviewer": "A00",
+  "status": "approved",
+  "reviewed_at": "2026-10-23T01:43:21+08:00",
+  "previous_reviews": [
+    {
+      "review_version": "5.0.0",
+      "content_version": "5.0.0",
+      "baseline_no_ai": true,
+      "runtime_ai": false,
+      "policy": {
+        "allowed_assistance": [
+          "草稿变体",
+          "校对候选",
+          "测试数据"
+        ],
+        "forbidden_assistance": [
+          "决定规则",
+          "新增世界事实",
+          "决定结局",
+          "替代最终审校",
+          "模仿在世作者"
+        ],
+        "final_owner": "A04",
+        "integrator": "A00"
+      },
+      "assets": [
+        {
+          "id": "childhood-yard",
+          "action_ids": [
+            "yard-play",
+            "fix-radio",
+            "read-comic"
+          ],
+          "facts": [
+            "收音机",
+            "邻居孩子",
+            "旧画报"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "childhood-school",
+          "action_ids": [
+            "front-seat",
+            "window-seat",
+            "share-notes"
+          ],
+          "facts": [
+            "座位",
+            "学校",
+            "同桌"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "childhood-sick",
+          "action_ids": [
+            "rest-at-home",
+            "hide-fever",
+            "ask-for-help"
+          ],
+          "facts": [
+            "身体",
+            "求助",
+            "家人"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "childhood-festival",
+          "action_ids": [
+            "tell-story",
+            "repair-lantern",
+            "invite-shy-child"
+          ],
+          "facts": [
+            "灯会",
+            "表达",
+            "递出机会"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "adolescence-exam",
+          "action_ids": [
+            "study-plan",
+            "comfort-friend",
+            "learn-bicycle"
+          ],
+          "facts": [
+            "考试",
+            "朋友",
+            "手艺"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "adolescence-club",
+          "action_ids": [
+            "join-literature",
+            "join-repair",
+            "join-river-team"
+          ],
+          "facts": [
+            "文学社",
+            "修理社",
+            "志愿队"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "adolescence-summer",
+          "action_ids": [
+            "leave-for-school",
+            "stay-for-family",
+            "ask-scholarship"
+          ],
+          "facts": [
+            "录取通知",
+            "留镇工作",
+            "助学金"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "youth-departure",
+          "action_ids": [
+            "share-room",
+            "night-shift",
+            "city-library"
+          ],
+          "facts": [
+            "合租",
+            "夜班",
+            "图书馆"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "youth-mentor",
+          "action_ids": [
+            "mentor-newcomer",
+            "fix-bicycle",
+            "publish-story"
+          ],
+          "facts": [
+            "新人",
+            "自行车",
+            "故事"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "youth-love",
+          "action_ids": [
+            "confess-love",
+            "keep-friendship",
+            "avoid-relationship"
+          ],
+          "facts": [
+            "亲密关系",
+            "朋友",
+            "边界"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "youth-career",
+          "action_ids": [
+            "take-promotion",
+            "return-workshop",
+            "community-speech"
+          ],
+          "facts": [
+            "升职",
+            "修理铺",
+            "社区发言"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-family",
+          "action_ids": [
+            "pay-medical-bill",
+            "ask-family-share",
+            "take-risk-loan"
+          ],
+          "facts": [
+            "医疗账单",
+            "家庭分担",
+            "借贷"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-store",
+          "action_ids": [
+            "open-workshop",
+            "change-career",
+            "take-sabbatical"
+          ],
+          "facts": [
+            "作坊",
+            "转行",
+            "停工"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-partner",
+          "action_ids": [
+            "talk-through",
+            "buy-peace",
+            "leave-argument"
+          ],
+          "facts": [
+            "伴侣",
+            "沟通",
+            "冲突"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-child",
+          "action_ids": [
+            "support-choice",
+            "pay-course",
+            "tell-regret"
+          ],
+          "facts": [
+            "晚辈",
+            "课程",
+            "遗憾"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-flood",
+          "action_ids": [
+            "repair-bridge-adult",
+            "protect-home",
+            "organize-evacuation"
+          ],
+          "facts": [
+            "暴雨",
+            "河桥",
+            "疏散"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "middle-ledger",
+          "action_ids": [
+            "publish-ledger",
+            "trace-watergate",
+            "keep-wet-pages"
+          ],
+          "facts": [
+            "旧账",
+            "水闸",
+            "证据"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-restart",
+          "action_ids": [
+            "return-school",
+            "teach-youth",
+            "street-performance"
+          ],
+          "facts": [
+            "重返学校",
+            "教给年轻人",
+            "街头表演"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-memory",
+          "action_ids": [
+            "write-letter",
+            "visit-old-friend",
+            "archive-postcard"
+          ],
+          "facts": [
+            "信",
+            "旧友",
+            "明信片"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-town",
+          "action_ids": [
+            "save-school",
+            "fund-school",
+            "invite-town-alumni"
+          ],
+          "facts": [
+            "学校",
+            "奖学金",
+            "校友"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-handoff",
+          "action_ids": [
+            "train-successor",
+            "record-life",
+            "give-away-tools"
+          ],
+          "facts": [
+            "学徒",
+            "镇志",
+            "工具"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-farewell",
+          "action_ids": [
+            "open-clock",
+            "sit-by-bridge",
+            "call-family"
+          ],
+          "facts": [
+            "钟",
+            "桥边",
+            "电话"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "later-final",
+          "action_ids": [
+            "write-final-page",
+            "leave-open-door",
+            "listen-thirteenth"
+          ],
+          "facts": [
+            "最后一页",
+            "留门",
+            "第十三声"
+          ],
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        }
+      ],
+      "life_actions": [
+        {
+          "id": "routine-study",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-repair",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-social",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-care",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-rest",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-explore",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "routine-record",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "shop-shift",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "tutor-shift",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "market-shift",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "courier-shift",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "night-shift",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "town-job",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        }
+      ],
+      "items": [
+        {
+          "id": "toolkit",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "study-notebook",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "warm-coat",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "old-phone",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "first-aid",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "camera",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        }
+      ],
+      "moments": [
+        {
+          "id": "first-study",
+          "trigger": "life-action:routine-study",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "first-repair",
+          "trigger": "life-action:routine-repair",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "first-wage",
+          "trigger": "flag:first-wage",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "first-purchase",
+          "trigger": "flag:bought-item",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "first-bill",
+          "trigger": "bill",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "debt-on-paper",
+          "trigger": "flag:in-debt",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "change-of-work",
+          "trigger": "job-change",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "night-route",
+          "trigger": "flag:worked-night",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "care-at-home",
+          "trigger": "life-action:routine-care",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "town-duty",
+          "trigger": "job:town-job",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "write-it-down",
+          "trigger": "life-action:routine-record",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        {
+          "id": "leave-a-door",
+          "trigger": "event:leave-open-door",
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        }
+      ],
+      "reference_richness_p2": {
+        "opportunities": {
+          "count": 18,
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        "interests": {
+          "count": 12,
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        "characters": {
+          "count": 8,
+          "owner": "A04",
+          "reviewer": "A00",
+          "status": "approved"
+        },
+        "relationship_mirroring": "passed",
+        "interest_weighted_draw": "passed"
+      },
+      "media": {
+        "stage_art": [
+          "childhood",
+          "adolescence",
+          "youth",
+          "middle",
+          "later"
+        ],
+        "audio": "local-web-audio-synth",
+        "owner": "A04",
+        "reviewer": "A00",
+        "status": "approved"
+      },
+      "checks": {
+        "goal_and_action_clarity": "passed",
+        "five_stage_growth_arc": "passed",
+        "route_divergence_and_costs": "passed",
+        "requirements_are_visible": "passed",
+        "deterministic_tests_are_explainable": "passed",
+        "cross_generation_effects_are_explainable": "passed",
+        "achievements_and_easter_eggs_have_feedback": "passed",
+        "voice_and_sensitivity": "passed",
+        "ai_draft_deletion": "passed"
+      }
+    },
+    {
+      "review_version": "6.0.0",
+      "content_version": "6.0.0",
+      "reviewed_at": "2026-10-15T13:55:00+08:00",
+      "review_scope": "A00最终审阅：107事件选项、15阶段目标、三条事件链、遗产与成长、事务迁移、手机/桌面/键盘/音频/离线；依据实际代码、77项行为回归及浏览器验收。旧A04记录只保留历史。",
+      "evidence": "development/tests/strategy-v8-acceptance-20261015.md"
+    }
+  ],
   "assets": [
-    {"id":"childhood-yard","action_ids":["yard-play","fix-radio","read-comic"],"facts":["收音机","邻居孩子","旧画报"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"childhood-school","action_ids":["front-seat","window-seat","share-notes"],"facts":["座位","学校","同桌"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"childhood-sick","action_ids":["rest-at-home","hide-fever","ask-for-help"],"facts":["身体","求助","家人"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"childhood-festival","action_ids":["tell-story","repair-lantern","invite-shy-child"],"facts":["灯会","表达","递出机会"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"adolescence-exam","action_ids":["study-plan","comfort-friend","learn-bicycle"],"facts":["考试","朋友","手艺"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"adolescence-club","action_ids":["join-literature","join-repair","join-river-team"],"facts":["文学社","修理社","志愿队"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"adolescence-summer","action_ids":["leave-for-school","stay-for-family","ask-scholarship"],"facts":["录取通知","留镇工作","助学金"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"youth-departure","action_ids":["share-room","night-shift","city-library"],"facts":["合租","夜班","图书馆"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"youth-mentor","action_ids":["mentor-newcomer","fix-bicycle","publish-story"],"facts":["新人","自行车","故事"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"youth-love","action_ids":["confess-love","keep-friendship","avoid-relationship"],"facts":["亲密关系","朋友","边界"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"youth-career","action_ids":["take-promotion","return-workshop","community-speech"],"facts":["升职","修理铺","社区发言"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-family","action_ids":["pay-medical-bill","ask-family-share","take-risk-loan"],"facts":["医疗账单","家庭分担","借贷"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-store","action_ids":["open-workshop","change-career","take-sabbatical"],"facts":["作坊","转行","停工"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-partner","action_ids":["talk-through","buy-peace","leave-argument"],"facts":["伴侣","沟通","冲突"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-child","action_ids":["support-choice","pay-course","tell-regret"],"facts":["晚辈","课程","遗憾"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-flood","action_ids":["repair-bridge-adult","protect-home","organize-evacuation"],"facts":["暴雨","河桥","疏散"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"middle-ledger","action_ids":["publish-ledger","trace-watergate","keep-wet-pages"],"facts":["旧账","水闸","证据"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-restart","action_ids":["return-school","teach-youth","street-performance"],"facts":["重返学校","教给年轻人","街头表演"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-memory","action_ids":["write-letter","visit-old-friend","archive-postcard"],"facts":["信","旧友","明信片"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-town","action_ids":["save-school","fund-school","invite-town-alumni"],"facts":["学校","奖学金","校友"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-handoff","action_ids":["train-successor","record-life","give-away-tools"],"facts":["学徒","镇志","工具"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-farewell","action_ids":["open-clock","sit-by-bridge","call-family"],"facts":["钟","桥边","电话"],"owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"later-final","action_ids":["write-final-page","leave-open-door","listen-thirteenth"],"facts":["最后一页","留门","第十三声"],"owner":"A04","reviewer":"A00","status":"approved"}
+    {
+      "id": "childhood-yard",
+      "action_ids": [
+        "yard-play",
+        "fix-radio",
+        "read-comic",
+        "steady-childhood-yard"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[0]"
+    },
+    {
+      "id": "childhood-school",
+      "action_ids": [
+        "front-seat",
+        "window-seat",
+        "share-notes",
+        "steady-childhood-school",
+        "legacy-tool-practice"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[1]"
+    },
+    {
+      "id": "childhood-sick",
+      "action_ids": [
+        "rest-at-home",
+        "hide-fever",
+        "ask-for-help",
+        "steady-childhood-sick"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[2]"
+    },
+    {
+      "id": "childhood-festival",
+      "action_ids": [
+        "tell-story",
+        "repair-lantern",
+        "invite-shy-child",
+        "steady-childhood-festival"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[3]"
+    },
+    {
+      "id": "adolescence-exam",
+      "action_ids": [
+        "study-plan",
+        "comfort-friend",
+        "learn-bicycle",
+        "steady-adolescence-exam",
+        "chain-craft-promise",
+        "chain-study-plan",
+        "legacy-notebook-method"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[4]"
+    },
+    {
+      "id": "adolescence-club",
+      "action_ids": [
+        "join-literature",
+        "join-repair",
+        "join-river-team",
+        "steady-adolescence-club",
+        "chain-community-promise"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[5]"
+    },
+    {
+      "id": "adolescence-summer",
+      "action_ids": [
+        "leave-for-school",
+        "stay-for-family",
+        "ask-scholarship",
+        "steady-adolescence-summer"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[6]"
+    },
+    {
+      "id": "youth-departure",
+      "action_ids": [
+        "share-room",
+        "night-shift",
+        "city-library",
+        "steady-youth-departure"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[7]"
+    },
+    {
+      "id": "youth-mentor",
+      "action_ids": [
+        "mentor-newcomer",
+        "fix-bicycle",
+        "publish-story",
+        "steady-youth-mentor",
+        "chain-craft-trial",
+        "chain-study-trial"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[8]"
+    },
+    {
+      "id": "youth-love",
+      "action_ids": [
+        "confess-love",
+        "keep-friendship",
+        "avoid-relationship",
+        "steady-youth-love"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[9]"
+    },
+    {
+      "id": "youth-career",
+      "action_ids": [
+        "take-promotion",
+        "return-workshop",
+        "community-speech",
+        "steady-youth-career"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[10]"
+    },
+    {
+      "id": "middle-family",
+      "action_ids": [
+        "pay-medical-bill",
+        "ask-family-share",
+        "take-risk-loan",
+        "steady-middle-family",
+        "chain-community-roster",
+        "legacy-letter-share"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[11]"
+    },
+    {
+      "id": "middle-store",
+      "action_ids": [
+        "open-workshop",
+        "change-career",
+        "take-sabbatical",
+        "steady-middle-store",
+        "chain-craft-workshop"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[12]"
+    },
+    {
+      "id": "middle-partner",
+      "action_ids": [
+        "talk-through",
+        "buy-peace",
+        "leave-argument",
+        "steady-middle-partner"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[13]"
+    },
+    {
+      "id": "middle-child",
+      "action_ids": [
+        "support-choice",
+        "pay-course",
+        "tell-regret",
+        "steady-middle-child"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[14]"
+    },
+    {
+      "id": "middle-flood",
+      "action_ids": [
+        "repair-bridge-adult",
+        "protect-home",
+        "organize-evacuation",
+        "steady-middle-flood",
+        "chain-community-flood"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[15]"
+    },
+    {
+      "id": "middle-ledger",
+      "action_ids": [
+        "publish-ledger",
+        "trace-watergate",
+        "keep-wet-pages",
+        "steady-middle-ledger",
+        "chain-study-report"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[16]"
+    },
+    {
+      "id": "later-restart",
+      "action_ids": [
+        "return-school",
+        "teach-youth",
+        "street-performance",
+        "steady-later-restart"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[17]"
+    },
+    {
+      "id": "later-memory",
+      "action_ids": [
+        "write-letter",
+        "visit-old-friend",
+        "archive-postcard",
+        "steady-later-memory"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[18]"
+    },
+    {
+      "id": "later-town",
+      "action_ids": [
+        "save-school",
+        "fund-school",
+        "invite-town-alumni",
+        "steady-later-town"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[19]"
+    },
+    {
+      "id": "later-handoff",
+      "action_ids": [
+        "train-successor",
+        "record-life",
+        "give-away-tools",
+        "steady-later-handoff"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[20]"
+    },
+    {
+      "id": "later-farewell",
+      "action_ids": [
+        "open-clock",
+        "sit-by-bridge",
+        "call-family",
+        "steady-later-farewell"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[21]"
+    },
+    {
+      "id": "later-final",
+      "action_ids": [
+        "write-final-page",
+        "leave-open-door",
+        "listen-thirteenth",
+        "steady-later-final",
+        "handoff-craft",
+        "handoff-study",
+        "handoff-community"
+      ],
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].assets[22]"
+    }
   ],
   "life_actions": [
-    {"id":"routine-study","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-repair","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-social","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-care","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-rest","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-explore","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"routine-record","owner":"A04","reviewer":"A00","status":"approved"}
+    {
+      "id": "routine-study",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[0]"
+    },
+    {
+      "id": "routine-repair",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[1]"
+    },
+    {
+      "id": "routine-social",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[2]"
+    },
+    {
+      "id": "routine-care",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[3]"
+    },
+    {
+      "id": "routine-rest",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[4]"
+    },
+    {
+      "id": "routine-explore",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[5]"
+    },
+    {
+      "id": "routine-record",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].life_actions[6]"
+    }
   ],
   "jobs": [
-    {"id":"shop-shift","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"tutor-shift","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"market-shift","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"courier-shift","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"night-shift","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"town-job","owner":"A04","reviewer":"A00","status":"approved"}
+    {
+      "id": "shop-shift",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[0]"
+    },
+    {
+      "id": "tutor-shift",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[1]"
+    },
+    {
+      "id": "market-shift",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[2]"
+    },
+    {
+      "id": "courier-shift",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[3]"
+    },
+    {
+      "id": "night-shift",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[4]"
+    },
+    {
+      "id": "town-job",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].jobs[5]"
+    }
   ],
   "items": [
-    {"id":"toolkit","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"study-notebook","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"warm-coat","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"old-phone","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"first-aid","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"camera","owner":"A04","reviewer":"A00","status":"approved"}
+    {
+      "id": "toolkit",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[0]"
+    },
+    {
+      "id": "study-notebook",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[1]"
+    },
+    {
+      "id": "warm-coat",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[2]"
+    },
+    {
+      "id": "old-phone",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[3]"
+    },
+    {
+      "id": "first-aid",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[4]"
+    },
+    {
+      "id": "camera",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].items[5]"
+    }
   ],
   "moments": [
-    {"id":"first-study","trigger":"life-action:routine-study","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"first-repair","trigger":"life-action:routine-repair","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"first-wage","trigger":"flag:first-wage","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"first-purchase","trigger":"flag:bought-item","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"first-bill","trigger":"bill","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"debt-on-paper","trigger":"flag:in-debt","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"change-of-work","trigger":"job-change","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"night-route","trigger":"flag:worked-night","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"care-at-home","trigger":"life-action:routine-care","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"town-duty","trigger":"job:town-job","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"write-it-down","trigger":"life-action:routine-record","owner":"A04","reviewer":"A00","status":"approved"},
-    {"id":"leave-a-door","trigger":"event:leave-open-door","owner":"A04","reviewer":"A00","status":"approved"}
+    {
+      "id": "first-study",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[0]"
+    },
+    {
+      "id": "first-repair",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[1]"
+    },
+    {
+      "id": "first-wage",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[2]"
+    },
+    {
+      "id": "first-purchase",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[3]"
+    },
+    {
+      "id": "first-bill",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[4]"
+    },
+    {
+      "id": "debt-on-paper",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[5]"
+    },
+    {
+      "id": "change-of-work",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[6]"
+    },
+    {
+      "id": "night-route",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[7]"
+    },
+    {
+      "id": "care-at-home",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[8]"
+    },
+    {
+      "id": "town-duty",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[9]"
+    },
+    {
+      "id": "write-it-down",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[10]"
+    },
+    {
+      "id": "leave-a-door",
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved",
+      "previous_review_ref": "previous_reviews[0].moments[11]"
+    }
   ],
+  "strategy": {
+    "route_ids": [
+      "craft",
+      "study",
+      "community"
+    ],
+    "stage_goal_ids": [
+      "craft:childhood",
+      "study:childhood",
+      "community:childhood",
+      "craft:adolescence",
+      "study:adolescence",
+      "community:adolescence",
+      "craft:youth",
+      "study:youth",
+      "community:youth",
+      "craft:middle",
+      "study:middle",
+      "community:middle",
+      "craft:later",
+      "study:later",
+      "community:later"
+    ],
+    "chain_ids": [
+      "craft-orders",
+      "study-method",
+      "community-roster"
+    ],
+    "owner": "A00",
+    "reviewer": "A00",
+    "status": "approved"
+  },
+  "reference_richness_p2": {
+    "opportunities": {
+      "count": 18,
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved"
+    },
+    "interests": {
+      "count": 12,
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved"
+    },
+    "characters": {
+      "count": 8,
+      "owner": "A00",
+      "reviewer": "A00",
+      "status": "approved"
+    }
+  },
   "media": {
-    "stage_art": ["childhood", "adolescence", "youth", "middle", "later"],
+    "stage_art": [
+      "childhood",
+      "adolescence",
+      "youth",
+      "middle",
+      "later"
+    ],
+    "event_art": [
+      "childhood-school",
+      "childhood-festival",
+      "youth-departure",
+      "middle-flood",
+      "later-farewell"
+    ],
+    "image_paths": [
+      "assets/stage-childhood.webp",
+      "assets/stage-adolescence.webp",
+      "assets/stage-youth.webp",
+      "assets/stage-middle.webp",
+      "assets/stage-later.webp",
+      "assets/scene-school.webp",
+      "assets/scene-festival.webp",
+      "assets/scene-station.webp",
+      "assets/scene-flood.webp",
+      "assets/scene-cinema.webp"
+    ],
     "audio": "local-web-audio-synth",
-    "owner": "A04",
+    "owner": "A00",
     "reviewer": "A00",
     "status": "approved"
   },
@@ -89,6 +1311,62 @@
     "cross_generation_effects_are_explainable": "passed",
     "achievements_and_easter_eggs_have_feedback": "passed",
     "voice_and_sensitivity": "passed",
-    "ai_draft_deletion": "passed"
+    "ai_draft_deletion": "passed",
+    "phase_goals_and_actual_success_evidence": "passed",
+    "three_event_chains_and_legacy_choices": "passed",
+    "resource_cost_preview_matches_execution": "passed",
+    "legacy_migration_keeps_progress": "passed",
+    "mobile_keyboard_and_offline": "passed",
+    "desktop_project_and_migration": "passed",
+    "complete_desktop_routes_journey_and_modes": "passed"
+  },
+  "review_notes": [
+    "天赋家境/体魄收益及精力上限完整兑现；已满足与未满足门槛均显示。",
+    "已修成就授予时点、还来得及触发条件、无收益休息、四项遗产未实现入口的文案。",
+    "小镇遗产在交接时生效，下一世不重复添加；已按公开命令复核。",
+    "图像视觉、浏览器测试及结论边界见 development/tests/strategy-v8-acceptance-20261015.md；真实玩家趣味体验仍未测定。",
+    "D7最终基线与实现审阅：122项正式行为测试、电脑与文件/PWA/离线/导入失败浏览器证据见desktop-v9-acceptance-20261022.md；实现审阅通过不表示真人趣味性通过。",
+    "完整D7内容验收：173项正式行为回归、三条路线多策略、真实人物/结局/遗产/PNG/模式往返与最终cache7离线更新通过。详见desktop-full-v9-acceptance-20261023.md；旧122项首切片记录保留为历史。"
+  ],
+  "projects": {
+    "ids": [
+      "craft-customers-youth-v1",
+      "study-practice-youth-v1",
+      "community-network-youth-v1"
+    ],
+    "job_ids": [
+      "project-craft-shift",
+      "project-study-consult"
+    ],
+    "owner": "A00",
+    "reviewer": "A00",
+    "status": "approved",
+    "life_action_ids": [
+      "project-community-care"
+    ]
+  },
+  "experience_validation": {
+    "status": "autonomous-validation-passed",
+    "real_player_samples": 0,
+    "required_real_player_samples": 0,
+    "user_event": "EVENT-20261022-025",
+    "evidence": "development/tests/desktop-full-v9-acceptance-20261023.md",
+    "limitation": "内部策略与真实浏览器验证；不代表真人乐趣或市场验证。"
+  },
+  "journey": {
+    "variant_ids": [
+      "journey-craft-repair-v1",
+      "journey-study-recheck-v1",
+      "journey-community-replan-v1"
+    ],
+    "npc_ids": [
+      "qishu",
+      "linlaoshi",
+      "chenshen",
+      "ahe"
+    ],
+    "owner": "A00",
+    "reviewer": "A00",
+    "status": "approved"
   }
 }

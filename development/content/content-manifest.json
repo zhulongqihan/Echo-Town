@@ -1,61 +1,953 @@
 {
-  "content_version": "5.0.0",
+  "content_version": "6.2.0",
   "project_id": "echo-town-life-sim",
   "rules": {
     "life_rounds": 23,
     "stages": 5,
-    "actions_per_round": 3,
-    "actions_total": 69,
+    "actions_total": 107,
     "life_actions": 7,
     "jobs": 6,
     "items": 6,
     "moments": 12,
-    "action_points_per_round": 3,
+    "action_points_per_round": 2,
     "profiles": 5,
     "talents": 8,
     "goals": 6,
     "legacy_choices": 3,
     "legacy_count": 16,
     "achievements": 16,
-    "secrets": 10,
+    "secrets": 11,
+    "opportunities": 18,
+    "interests": 12,
+    "characters": 8,
     "runtime_generation": false,
-    "randomness": "deterministic-seed-only"
+    "randomness": "deterministic-seed-only",
+    "base_actions_total": 69,
+    "added_actions_total": 38,
+    "actions_min_per_round": 4,
+    "conservative_actions": 23,
+    "strategy_routes": 3,
+    "stage_goals": 15,
+    "event_chains": 3,
+    "image_count": 10,
+    "max_image_bytes": 5242880,
+    "projects": 3,
+    "project_jobs": 2,
+    "project_life_actions": 1,
+    "event_variants": 3,
+    "recurring_npcs": 4,
+    "save_slots": 2
   },
-  "profiles": ["town-child", "workshop-heir", "newcomer", "scholar", "storyteller"],
-  "talents": ["good-memory", "nimble-hands", "silver-tongue", "warm-heart", "thick-skin", "night-owl", "lucky-coin", "slow-and-steady"],
-  "goals": ["learn", "home", "connection", "town", "record", "free"],
-  "rounds": [
-    {"id":"childhood-yard","stage":"childhood","age":6,"action_ids":["yard-play","fix-radio","read-comic"],"tags":["起点","探索"]},
-    {"id":"childhood-school","stage":"childhood","age":8,"action_ids":["front-seat","window-seat","share-notes"],"tags":["学习","关系"]},
-    {"id":"childhood-sick","stage":"childhood","age":10,"action_ids":["rest-at-home","hide-fever","ask-for-help"],"tags":["身体","求助"]},
-    {"id":"childhood-festival","stage":"childhood","age":11,"action_ids":["tell-story","repair-lantern","invite-shy-child"],"tags":["表达","小镇"]},
-    {"id":"adolescence-exam","stage":"adolescence","age":13,"action_ids":["study-plan","comfort-friend","learn-bicycle"],"tags":["考试","成长"]},
-    {"id":"adolescence-club","stage":"adolescence","age":15,"action_ids":["join-literature","join-repair","join-river-team"],"tags":["社团","路线"]},
-    {"id":"adolescence-summer","stage":"adolescence","age":17,"action_ids":["leave-for-school","stay-for-family","ask-scholarship"],"tags":["离开","责任"]},
-    {"id":"youth-departure","stage":"youth","age":19,"action_ids":["share-room","night-shift","city-library"],"tags":["独立","资源"]},
-    {"id":"youth-mentor","stage":"youth","age":21,"action_ids":["mentor-newcomer","fix-bicycle","publish-story"],"tags":["师徒","口碑"]},
-    {"id":"youth-love","stage":"youth","age":24,"action_ids":["confess-love","keep-friendship","avoid-relationship"],"tags":["亲密","取舍"]},
-    {"id":"youth-career","stage":"youth","age":28,"action_ids":["take-promotion","return-workshop","community-speech"],"tags":["工作","方向"]},
-    {"id":"middle-family","stage":"middle","age":32,"action_ids":["pay-medical-bill","ask-family-share","take-risk-loan"],"tags":["家庭","风险"]},
-    {"id":"middle-store","stage":"middle","age":36,"action_ids":["open-workshop","change-career","take-sabbatical"],"tags":["经营","重启"]},
-    {"id":"middle-partner","stage":"middle","age":40,"action_ids":["talk-through","buy-peace","leave-argument"],"tags":["伴侣","沟通"]},
-    {"id":"middle-child","stage":"middle","age":44,"action_ids":["support-choice","pay-course","tell-regret"],"tags":["晚辈","传承"]},
-    {"id":"middle-flood","stage":"middle","age":47,"action_ids":["repair-bridge-adult","protect-home","organize-evacuation"],"tags":["灾害","小镇"]},
-    {"id":"middle-ledger","stage":"middle","age":49,"action_ids":["publish-ledger","trace-watergate","keep-wet-pages"],"tags":["旧账","真相"]},
-    {"id":"later-restart","stage":"later","age":52,"action_ids":["return-school","teach-youth","street-performance"],"tags":["第二次机会","公共生活"]},
-    {"id":"later-memory","stage":"later","age":56,"action_ids":["write-letter","visit-old-friend","archive-postcard"],"tags":["记忆","重逢"]},
-    {"id":"later-town","stage":"later","age":60,"action_ids":["save-school","fund-school","invite-town-alumni"],"tags":["公共选择","学校"]},
-    {"id":"later-handoff","stage":"later","age":65,"action_ids":["train-successor","record-life","give-away-tools"],"tags":["交接","成就"]},
-    {"id":"later-farewell","stage":"later","age":70,"action_ids":["open-clock","sit-by-bridge","call-family"],"tags":["回声","告别"]},
-    {"id":"later-final","stage":"later","age":75,"action_ids":["write-final-page","leave-open-door","listen-thirteenth"],"tags":["结算","彩蛋"]}
+  "profiles": [
+    "town-child",
+    "workshop-heir",
+    "newcomer",
+    "scholar",
+    "storyteller"
   ],
-  "legacy_ids": ["steady-habit", "small-tool", "study-notebook", "radio-recording", "family-recipe", "friend-letter", "bridge-map", "shop-key", "wet-ledger", "school-badge", "clock-spring", "town-register", "travel-postcard", "apprentice-notes", "unfinished-letter", "open-door"],
-  "life_action_ids": ["routine-study", "routine-repair", "routine-social", "routine-care", "routine-rest", "routine-explore", "routine-record"],
-  "job_ids": ["shop-shift", "tutor-shift", "market-shift", "courier-shift", "night-shift", "town-job"],
-  "item_ids": ["toolkit", "study-notebook", "warm-coat", "old-phone", "first-aid", "camera"],
-  "moment_ids": ["first-study", "first-repair", "first-wage", "first-purchase", "first-bill", "debt-on-paper", "change-of-work", "night-route", "care-at-home", "town-duty", "write-it-down", "leave-a-door"],
-  "stage_art_ids": ["childhood", "adolescence", "youth", "middle", "later"],
-  "achievement_ids": ["first-page", "three-lives", "master-of-one", "well-rounded", "town-builder", "legacy-collector", "good-neighbor", "second-chance", "thirteenth-chime", "echo-heard", "old-friend", "leave-a-light", "first-pay", "balance-sheet", "three-jobs", "kept-breath"],
-  "secret_ids": ["thirteenth-chime", "echo-not-glitch", "river-number", "empty-seat", "coin-under-floor", "night-radio", "paper-fold", "open-door-secret", "last-bus", "pocket-receipt"],
-  "runtime_files": ["development/game/index.html", "development/game/content.js", "development/game/audio.js", "development/game/game.js", "development/game/styles.css", "development/game/sw.js"]
+  "talents": [
+    "good-memory",
+    "nimble-hands",
+    "silver-tongue",
+    "warm-heart",
+    "thick-skin",
+    "night-owl",
+    "lucky-coin",
+    "slow-and-steady"
+  ],
+  "talent_draft_ids": [
+    "bright-smile",
+    "quick-learner",
+    "strong-back",
+    "good-family",
+    "curious-mouth",
+    "maker-spirit",
+    "room-reader",
+    "restless-feet",
+    "ledger-mind",
+    "quiet-anchor"
+  ],
+  "goals": [
+    "learn",
+    "home",
+    "connection",
+    "town",
+    "record",
+    "free"
+  ],
+  "rounds": [
+    {
+      "id": "childhood-yard",
+      "stage": "childhood",
+      "age": 6,
+      "base_action_ids": [
+        "yard-play",
+        "fix-radio",
+        "read-comic"
+      ],
+      "action_ids": [
+        "yard-play",
+        "fix-radio",
+        "read-comic",
+        "steady-childhood-yard"
+      ],
+      "added_action_ids": [
+        "steady-childhood-yard"
+      ],
+      "conservative_action_id": "steady-childhood-yard"
+    },
+    {
+      "id": "childhood-school",
+      "stage": "childhood",
+      "age": 8,
+      "base_action_ids": [
+        "front-seat",
+        "window-seat",
+        "share-notes"
+      ],
+      "action_ids": [
+        "front-seat",
+        "window-seat",
+        "share-notes",
+        "steady-childhood-school",
+        "legacy-tool-practice"
+      ],
+      "added_action_ids": [
+        "steady-childhood-school",
+        "legacy-tool-practice"
+      ],
+      "conservative_action_id": "steady-childhood-school"
+    },
+    {
+      "id": "childhood-sick",
+      "stage": "childhood",
+      "age": 10,
+      "base_action_ids": [
+        "rest-at-home",
+        "hide-fever",
+        "ask-for-help"
+      ],
+      "action_ids": [
+        "rest-at-home",
+        "hide-fever",
+        "ask-for-help",
+        "steady-childhood-sick"
+      ],
+      "added_action_ids": [
+        "steady-childhood-sick"
+      ],
+      "conservative_action_id": "steady-childhood-sick"
+    },
+    {
+      "id": "childhood-festival",
+      "stage": "childhood",
+      "age": 11,
+      "base_action_ids": [
+        "tell-story",
+        "repair-lantern",
+        "invite-shy-child"
+      ],
+      "action_ids": [
+        "tell-story",
+        "repair-lantern",
+        "invite-shy-child",
+        "steady-childhood-festival"
+      ],
+      "added_action_ids": [
+        "steady-childhood-festival"
+      ],
+      "conservative_action_id": "steady-childhood-festival"
+    },
+    {
+      "id": "adolescence-exam",
+      "stage": "adolescence",
+      "age": 13,
+      "base_action_ids": [
+        "study-plan",
+        "comfort-friend",
+        "learn-bicycle"
+      ],
+      "action_ids": [
+        "study-plan",
+        "comfort-friend",
+        "learn-bicycle",
+        "steady-adolescence-exam",
+        "chain-craft-promise",
+        "chain-study-plan",
+        "legacy-notebook-method"
+      ],
+      "added_action_ids": [
+        "steady-adolescence-exam",
+        "chain-craft-promise",
+        "chain-study-plan",
+        "legacy-notebook-method"
+      ],
+      "conservative_action_id": "steady-adolescence-exam"
+    },
+    {
+      "id": "adolescence-club",
+      "stage": "adolescence",
+      "age": 15,
+      "base_action_ids": [
+        "join-literature",
+        "join-repair",
+        "join-river-team"
+      ],
+      "action_ids": [
+        "join-literature",
+        "join-repair",
+        "join-river-team",
+        "steady-adolescence-club",
+        "chain-community-promise"
+      ],
+      "added_action_ids": [
+        "steady-adolescence-club",
+        "chain-community-promise"
+      ],
+      "conservative_action_id": "steady-adolescence-club"
+    },
+    {
+      "id": "adolescence-summer",
+      "stage": "adolescence",
+      "age": 17,
+      "base_action_ids": [
+        "leave-for-school",
+        "stay-for-family",
+        "ask-scholarship"
+      ],
+      "action_ids": [
+        "leave-for-school",
+        "stay-for-family",
+        "ask-scholarship",
+        "steady-adolescence-summer"
+      ],
+      "added_action_ids": [
+        "steady-adolescence-summer"
+      ],
+      "conservative_action_id": "steady-adolescence-summer"
+    },
+    {
+      "id": "youth-departure",
+      "stage": "youth",
+      "age": 19,
+      "base_action_ids": [
+        "share-room",
+        "night-shift",
+        "city-library"
+      ],
+      "action_ids": [
+        "share-room",
+        "night-shift",
+        "city-library",
+        "steady-youth-departure"
+      ],
+      "added_action_ids": [
+        "steady-youth-departure"
+      ],
+      "conservative_action_id": "steady-youth-departure"
+    },
+    {
+      "id": "youth-mentor",
+      "stage": "youth",
+      "age": 21,
+      "base_action_ids": [
+        "mentor-newcomer",
+        "fix-bicycle",
+        "publish-story"
+      ],
+      "action_ids": [
+        "mentor-newcomer",
+        "fix-bicycle",
+        "publish-story",
+        "steady-youth-mentor",
+        "chain-craft-trial",
+        "chain-study-trial"
+      ],
+      "added_action_ids": [
+        "steady-youth-mentor",
+        "chain-craft-trial",
+        "chain-study-trial"
+      ],
+      "conservative_action_id": "steady-youth-mentor"
+    },
+    {
+      "id": "youth-love",
+      "stage": "youth",
+      "age": 24,
+      "base_action_ids": [
+        "confess-love",
+        "keep-friendship",
+        "avoid-relationship"
+      ],
+      "action_ids": [
+        "confess-love",
+        "keep-friendship",
+        "avoid-relationship",
+        "steady-youth-love"
+      ],
+      "added_action_ids": [
+        "steady-youth-love"
+      ],
+      "conservative_action_id": "steady-youth-love"
+    },
+    {
+      "id": "youth-career",
+      "stage": "youth",
+      "age": 28,
+      "base_action_ids": [
+        "take-promotion",
+        "return-workshop",
+        "community-speech"
+      ],
+      "action_ids": [
+        "take-promotion",
+        "return-workshop",
+        "community-speech",
+        "steady-youth-career"
+      ],
+      "added_action_ids": [
+        "steady-youth-career"
+      ],
+      "conservative_action_id": "steady-youth-career"
+    },
+    {
+      "id": "middle-family",
+      "stage": "middle",
+      "age": 32,
+      "base_action_ids": [
+        "pay-medical-bill",
+        "ask-family-share",
+        "take-risk-loan"
+      ],
+      "action_ids": [
+        "pay-medical-bill",
+        "ask-family-share",
+        "take-risk-loan",
+        "steady-middle-family",
+        "chain-community-roster",
+        "legacy-letter-share"
+      ],
+      "added_action_ids": [
+        "steady-middle-family",
+        "chain-community-roster",
+        "legacy-letter-share"
+      ],
+      "conservative_action_id": "steady-middle-family"
+    },
+    {
+      "id": "middle-store",
+      "stage": "middle",
+      "age": 36,
+      "base_action_ids": [
+        "open-workshop",
+        "change-career",
+        "take-sabbatical"
+      ],
+      "action_ids": [
+        "open-workshop",
+        "change-career",
+        "take-sabbatical",
+        "steady-middle-store",
+        "chain-craft-workshop"
+      ],
+      "added_action_ids": [
+        "steady-middle-store",
+        "chain-craft-workshop"
+      ],
+      "conservative_action_id": "steady-middle-store"
+    },
+    {
+      "id": "middle-partner",
+      "stage": "middle",
+      "age": 40,
+      "base_action_ids": [
+        "talk-through",
+        "buy-peace",
+        "leave-argument"
+      ],
+      "action_ids": [
+        "talk-through",
+        "buy-peace",
+        "leave-argument",
+        "steady-middle-partner"
+      ],
+      "added_action_ids": [
+        "steady-middle-partner"
+      ],
+      "conservative_action_id": "steady-middle-partner"
+    },
+    {
+      "id": "middle-child",
+      "stage": "middle",
+      "age": 44,
+      "base_action_ids": [
+        "support-choice",
+        "pay-course",
+        "tell-regret"
+      ],
+      "action_ids": [
+        "support-choice",
+        "pay-course",
+        "tell-regret",
+        "steady-middle-child"
+      ],
+      "added_action_ids": [
+        "steady-middle-child"
+      ],
+      "conservative_action_id": "steady-middle-child"
+    },
+    {
+      "id": "middle-flood",
+      "stage": "middle",
+      "age": 47,
+      "base_action_ids": [
+        "repair-bridge-adult",
+        "protect-home",
+        "organize-evacuation"
+      ],
+      "action_ids": [
+        "repair-bridge-adult",
+        "protect-home",
+        "organize-evacuation",
+        "steady-middle-flood",
+        "chain-community-flood"
+      ],
+      "added_action_ids": [
+        "steady-middle-flood",
+        "chain-community-flood"
+      ],
+      "conservative_action_id": "steady-middle-flood"
+    },
+    {
+      "id": "middle-ledger",
+      "stage": "middle",
+      "age": 49,
+      "base_action_ids": [
+        "publish-ledger",
+        "trace-watergate",
+        "keep-wet-pages"
+      ],
+      "action_ids": [
+        "publish-ledger",
+        "trace-watergate",
+        "keep-wet-pages",
+        "steady-middle-ledger",
+        "chain-study-report"
+      ],
+      "added_action_ids": [
+        "steady-middle-ledger",
+        "chain-study-report"
+      ],
+      "conservative_action_id": "steady-middle-ledger"
+    },
+    {
+      "id": "later-restart",
+      "stage": "later",
+      "age": 52,
+      "base_action_ids": [
+        "return-school",
+        "teach-youth",
+        "street-performance"
+      ],
+      "action_ids": [
+        "return-school",
+        "teach-youth",
+        "street-performance",
+        "steady-later-restart"
+      ],
+      "added_action_ids": [
+        "steady-later-restart"
+      ],
+      "conservative_action_id": "steady-later-restart"
+    },
+    {
+      "id": "later-memory",
+      "stage": "later",
+      "age": 56,
+      "base_action_ids": [
+        "write-letter",
+        "visit-old-friend",
+        "archive-postcard"
+      ],
+      "action_ids": [
+        "write-letter",
+        "visit-old-friend",
+        "archive-postcard",
+        "steady-later-memory"
+      ],
+      "added_action_ids": [
+        "steady-later-memory"
+      ],
+      "conservative_action_id": "steady-later-memory"
+    },
+    {
+      "id": "later-town",
+      "stage": "later",
+      "age": 60,
+      "base_action_ids": [
+        "save-school",
+        "fund-school",
+        "invite-town-alumni"
+      ],
+      "action_ids": [
+        "save-school",
+        "fund-school",
+        "invite-town-alumni",
+        "steady-later-town"
+      ],
+      "added_action_ids": [
+        "steady-later-town"
+      ],
+      "conservative_action_id": "steady-later-town"
+    },
+    {
+      "id": "later-handoff",
+      "stage": "later",
+      "age": 65,
+      "base_action_ids": [
+        "train-successor",
+        "record-life",
+        "give-away-tools"
+      ],
+      "action_ids": [
+        "train-successor",
+        "record-life",
+        "give-away-tools",
+        "steady-later-handoff"
+      ],
+      "added_action_ids": [
+        "steady-later-handoff"
+      ],
+      "conservative_action_id": "steady-later-handoff"
+    },
+    {
+      "id": "later-farewell",
+      "stage": "later",
+      "age": 70,
+      "base_action_ids": [
+        "open-clock",
+        "sit-by-bridge",
+        "call-family"
+      ],
+      "action_ids": [
+        "open-clock",
+        "sit-by-bridge",
+        "call-family",
+        "steady-later-farewell"
+      ],
+      "added_action_ids": [
+        "steady-later-farewell"
+      ],
+      "conservative_action_id": "steady-later-farewell"
+    },
+    {
+      "id": "later-final",
+      "stage": "later",
+      "age": 75,
+      "base_action_ids": [
+        "write-final-page",
+        "leave-open-door",
+        "listen-thirteenth"
+      ],
+      "action_ids": [
+        "write-final-page",
+        "leave-open-door",
+        "listen-thirteenth",
+        "steady-later-final",
+        "handoff-craft",
+        "handoff-study",
+        "handoff-community"
+      ],
+      "added_action_ids": [
+        "steady-later-final",
+        "handoff-craft",
+        "handoff-study",
+        "handoff-community"
+      ],
+      "conservative_action_id": "steady-later-final"
+    }
+  ],
+  "legacy_ids": [
+    "steady-habit",
+    "small-tool",
+    "study-notebook",
+    "radio-recording",
+    "family-recipe",
+    "friend-letter",
+    "bridge-map",
+    "shop-key",
+    "wet-ledger",
+    "school-badge",
+    "clock-spring",
+    "town-register",
+    "travel-postcard",
+    "apprentice-notes",
+    "unfinished-letter",
+    "open-door"
+  ],
+  "life_action_ids": [
+    "routine-study",
+    "routine-repair",
+    "routine-social",
+    "routine-care",
+    "routine-rest",
+    "routine-explore",
+    "routine-record"
+  ],
+  "job_ids": [
+    "shop-shift",
+    "tutor-shift",
+    "market-shift",
+    "courier-shift",
+    "night-shift",
+    "town-job"
+  ],
+  "item_ids": [
+    "toolkit",
+    "study-notebook",
+    "warm-coat",
+    "old-phone",
+    "first-aid",
+    "camera"
+  ],
+  "opportunity_ids": [
+    "borrowed-book",
+    "repair-bench",
+    "school-duty",
+    "red-envelope",
+    "club-invite",
+    "first-crush",
+    "summer-job",
+    "move-out",
+    "night-market",
+    "study-group",
+    "care-burden",
+    "side-project",
+    "old-friend-call",
+    "apprentice-request",
+    "community-meeting",
+    "health-warning",
+    "archive-box",
+    "last-letter"
+  ],
+  "interest_ids": [
+    "reading",
+    "machinery",
+    "writing",
+    "cooking",
+    "music",
+    "sports",
+    "photography",
+    "ecology",
+    "teaching",
+    "business",
+    "community",
+    "travel"
+  ],
+  "character_ids": [
+    "father",
+    "mother",
+    "qishu",
+    "linlaoshi",
+    "ahe",
+    "zhoulan",
+    "xiaoman",
+    "chenshen"
+  ],
+  "moment_ids": [
+    "first-study",
+    "first-repair",
+    "first-wage",
+    "first-purchase",
+    "first-bill",
+    "debt-on-paper",
+    "change-of-work",
+    "night-route",
+    "care-at-home",
+    "town-duty",
+    "write-it-down",
+    "leave-a-door"
+  ],
+  "stage_art_ids": [
+    "childhood",
+    "adolescence",
+    "youth",
+    "middle",
+    "later"
+  ],
+  "achievement_ids": [
+    "first-page",
+    "three-lives",
+    "master-of-one",
+    "well-rounded",
+    "town-builder",
+    "legacy-collector",
+    "good-neighbor",
+    "second-chance",
+    "thirteenth-chime",
+    "echo-heard",
+    "old-friend",
+    "leave-a-light",
+    "first-pay",
+    "balance-sheet",
+    "three-jobs",
+    "kept-breath"
+  ],
+  "secret_ids": [
+    "thirteenth-chime",
+    "echo-not-glitch",
+    "river-number",
+    "empty-seat",
+    "coin-under-floor",
+    "night-radio",
+    "paper-fold",
+    "open-door-secret",
+    "last-bus",
+    "pocket-receipt",
+    "archive-box"
+  ],
+  "runtime_files": [
+    "development/game/index.html",
+    "development/game/content.js",
+    "development/game/strategy.js",
+    "development/game/save.js",
+    "development/game/engine.js",
+    "development/game/audio.js",
+    "development/game/ui.js",
+    "development/game/game.js",
+    "development/game/styles.css",
+    "development/game/sw.js",
+    "development/game/manifest.webmanifest",
+    "development/game/favicon.svg",
+    "development/game/icon-192.svg",
+    "development/game/icon-512.svg",
+    "development/game/projects.js",
+    "development/game/scene.js",
+    "development/game/journey.js",
+    "development/game/modes.js",
+    "development/game/journey-card.js",
+    "development/game/journey-ui.js",
+    "development/game/journey.css"
+  ],
+  "stages": [
+    {
+      "id": "childhood",
+      "label": "童年",
+      "range": "6—11岁",
+      "hint": "你还没有决定要成为什么人，但每天都在学会一件小事。"
+    },
+    {
+      "id": "adolescence",
+      "label": "少年",
+      "range": "12—17岁",
+      "hint": "成绩、朋友、兴趣和家人的期待开始拉扯你。"
+    },
+    {
+      "id": "youth",
+      "label": "初入社会",
+      "range": "18—29岁",
+      "hint": "第一次离开熟悉的地方，选择会开始变成履历。"
+    },
+    {
+      "id": "middle",
+      "label": "成家立业",
+      "range": "30—49岁",
+      "hint": "钱、关系、责任与理想同时找上门来。"
+    },
+    {
+      "id": "later",
+      "label": "后半生",
+      "range": "50—75岁",
+      "hint": "你开始决定哪些东西值得留下，哪些东西可以放手。"
+    }
+  ],
+  "strategy": {
+    "route_ids": [
+      "craft",
+      "study",
+      "community"
+    ],
+    "stage_goal_ids": [
+      "craft:childhood",
+      "study:childhood",
+      "community:childhood",
+      "craft:adolescence",
+      "study:adolescence",
+      "community:adolescence",
+      "craft:youth",
+      "study:youth",
+      "community:youth",
+      "craft:middle",
+      "study:middle",
+      "community:middle",
+      "craft:later",
+      "study:later",
+      "community:later"
+    ],
+    "chains": [
+      {
+        "id": "craft-orders",
+        "routeId": "craft",
+        "label": "维修单的三次检验",
+        "ages": [
+          13,
+          21,
+          36
+        ],
+        "actionIds": [
+          "chain-craft-promise",
+          "chain-craft-trial",
+          "chain-craft-workshop"
+        ]
+      },
+      {
+        "id": "study-method",
+        "routeId": "study",
+        "label": "从错题到可核验的旧账",
+        "ages": [
+          13,
+          21,
+          49
+        ],
+        "actionIds": [
+          "chain-study-plan",
+          "chain-study-trial",
+          "chain-study-report"
+        ]
+      },
+      {
+        "id": "community-roster",
+        "routeId": "community",
+        "label": "一张轮值表的三次分工",
+        "ages": [
+          15,
+          32,
+          47
+        ],
+        "actionIds": [
+          "chain-community-promise",
+          "chain-community-roster",
+          "chain-community-flood"
+        ]
+      }
+    ],
+    "training_caps": {
+      "childhood": 4,
+      "adolescence": 6,
+      "youth": 8,
+      "middle": 10,
+      "later": 10
+    },
+    "natural_recovery": 3
+  },
+  "media": {
+    "stage_art_ids": [
+      "childhood",
+      "adolescence",
+      "youth",
+      "middle",
+      "later"
+    ],
+    "event_art_ids": [
+      "childhood-school",
+      "childhood-festival",
+      "youth-departure",
+      "middle-flood",
+      "later-farewell"
+    ],
+    "image_paths": [
+      "assets/stage-childhood.webp",
+      "assets/stage-adolescence.webp",
+      "assets/stage-youth.webp",
+      "assets/stage-middle.webp",
+      "assets/stage-later.webp",
+      "assets/scene-school.webp",
+      "assets/scene-festival.webp",
+      "assets/scene-station.webp",
+      "assets/scene-flood.webp",
+      "assets/scene-cinema.webp"
+    ]
+  },
+  "load_order": [
+    "content.js",
+    "strategy.js",
+    "projects.js",
+    "journey.js",
+    "save.js",
+    "engine.js",
+    "modes.js",
+    "audio.js",
+    "scene.js",
+    "journey-card.js",
+    "journey-ui.js",
+    "ui.js",
+    "game.js"
+  ],
+  "projects": [
+    {
+      "id": "craft-customers-youth-v1",
+      "route_id": "craft",
+      "stage_id": "youth",
+      "entry_age": 19,
+      "deadline_age": 28,
+      "step_ages": [
+        19,
+        21,
+        24
+      ],
+      "required_ap": 5,
+      "total_stage_ap": 8,
+      "unlock_job_id": "project-craft-shift"
+    },
+    {
+      "id": "study-practice-youth-v1",
+      "route_id": "study",
+      "stage_id": "youth",
+      "entry_age": 19,
+      "deadline_age": 28,
+      "step_ages": [
+        19,
+        21,
+        24
+      ],
+      "required_ap": 5,
+      "total_stage_ap": 8,
+      "unlock_job_id": "project-study-consult"
+    },
+    {
+      "id": "community-network-youth-v1",
+      "route_id": "community",
+      "stage_id": "youth",
+      "entry_age": 19,
+      "deadline_age": 28,
+      "step_ages": [
+        19,
+        21,
+        24
+      ],
+      "required_ap": 3,
+      "total_stage_ap": 8,
+      "unlock_action_id": "project-community-care"
+    }
+  ],
+  "project_job_ids": [
+    "project-craft-shift",
+    "project-study-consult"
+  ],
+  "project_life_action_ids": [
+    "project-community-care"
+  ],
+  "journey": {
+    "variant_ids": [
+      "journey-craft-repair-v1",
+      "journey-study-recheck-v1",
+      "journey-community-replan-v1"
+    ],
+    "npc_ids": [
+      "qishu",
+      "linlaoshi",
+      "chenshen",
+      "ahe"
+    ]
+  }
 }

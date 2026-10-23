@@ -296,6 +296,10 @@ def main() -> int:
             errors.extend(f"开发解锁前出现代码文件: {item}" for item in code_files)
     else:
         allowed_roots = [str(item).strip("/") for item in manifest.get("allowed_runtime_roots", [])]
+        auxiliary_roots = [str(item).strip("/") for item in manifest.get("allowed_auxiliary_code_roots", [])]
+        if any(not item.startswith("output/") or ".." in Path(item).parts for item in auxiliary_roots):
+            errors.append("辅助代码授权必须限定在output内明确子目录")
+        allowed_roots += auxiliary_roots
         unauthorized = [
             item for item in code_files
             if not any(item == root or item.startswith(root + "/") for root in allowed_roots)

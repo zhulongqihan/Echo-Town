@@ -1,0 +1,220 @@
+{
+  "name": "回声镇：一生一局",
+  "edition": "desktop",
+  "created_at": "2026-10-23T01:35:08+08:00",
+  "content_version": "6.2.0",
+  "save_version": 9,
+  "save_contract_schema": "5.1.0",
+  "cache": "echo-town-desktop-v9-7",
+  "entry": "index.html",
+  "image_bytes": 1603758,
+  "archive": "output/releases/echo-town-desktop-v9-20261023.zip",
+  "archive_bytes": 1791065,
+  "archive_sha256": "bf13642184bba47ff6bd517867b9491f017d61de4cc5964691d9bdd102f6fb98",
+  "entry_count": 36,
+  "runtime_matches_source": true,
+  "verified_runtime_files": 32,
+  "extracted_to": "output/playwright/verify-echo-town-desktop-v9-20261023",
+  "node_tests": {
+    "pass": 173,
+    "fail": 0,
+    "skipped": 0
+  },
+  "experience_validation": {
+    "real_player_samples": 0,
+    "required_real_player_samples": 0,
+    "user_event": "EVENT-20261022-025",
+    "scope": "Internal strategies, independent review and real browser checks; no claim of human fun or market validation."
+  },
+  "entries": [
+    {
+      "path": "README.md",
+      "bytes": 947,
+      "sha256": "a252b0de6dcabf9788a63d1c00be4aadd4c1eb7b2e38e31cc93cfd788612fb2f"
+    },
+    {
+      "path": "development/game/README.md",
+      "bytes": 10073,
+      "sha256": "d5e13e76d06d7f9067e98c55f3ec3b8cd6e566cd0d491b6fdd64730b912c44e8"
+    },
+    {
+      "path": "development/game/assets/scene-cinema.webp",
+      "bytes": 142222,
+      "sha256": "5259448aa7a93279efc0cb78624b3c7cf45523000b394584654a838931bafb9e"
+    },
+    {
+      "path": "development/game/assets/scene-festival.webp",
+      "bytes": 194168,
+      "sha256": "fd9f54f28d18c73a6a0bb656a0766625ce281fda7bb5a5883733ac085e443f8d"
+    },
+    {
+      "path": "development/game/assets/scene-flood.webp",
+      "bytes": 225222,
+      "sha256": "ed6536b99952431e72aed719916e898dcbc943ad8669498351eb85004116921b"
+    },
+    {
+      "path": "development/game/assets/scene-school.webp",
+      "bytes": 131496,
+      "sha256": "de19cdbc1a29276bb39522529b017f85795521f920567047236bd26486c93ef9"
+    },
+    {
+      "path": "development/game/assets/scene-station.webp",
+      "bytes": 135744,
+      "sha256": "78d48c22aa046b56d25d82303fbbb51551278146c996167a53ab0ceee4a5de1d"
+    },
+    {
+      "path": "development/game/assets/stage-adolescence.webp",
+      "bytes": 138018,
+      "sha256": "c0a4ebcc9d7f123500491e3e3169933b0b68399591c6186ba6e422f2fc99cc56"
+    },
+    {
+      "path": "development/game/assets/stage-childhood.webp",
+      "bytes": 146018,
+      "sha256": "60fcff0a91a4ad4836da48260a1af1c114e7def96ae421ccce2522c63702dfc2"
+    },
+    {
+      "path": "development/game/assets/stage-later.webp",
+      "bytes": 164254,
+      "sha256": "31114c6f21840a7a3349f4e720c8a74744e8994ef4629632f8dacb7e1ac3a4a8"
+    },
+    {
+      "path": "development/game/assets/stage-middle.webp",
+      "bytes": 177854,
+      "sha256": "9670faf948d3e1f69cc1b8b6c5a72efce3814dd0f259651976f49d143ec75e5a"
+    },
+    {
+      "path": "development/game/assets/stage-youth.webp",
+      "bytes": 148762,
+      "sha256": "74b7c17ffcb4c56ddc9cda23e415981158be28a23da85b22effcfb54bae3fb0d"
+    },
+    {
+      "path": "development/game/audio.js",
+      "bytes": 8017,
+      "sha256": "706e8489b6a0ea9201e5dbe9dcf763814fad307b5f9fc622c2d73dd523326fdb"
+    },
+    {
+      "path": "development/game/content.js",
+      "bytes": 105831,
+      "sha256": "e75b9317e13d409e9d28a9da060ad9ac3f50adbb03afbbebee0009ea30cc3b60"
+    },
+    {
+      "path": "development/game/engine.js",
+      "bytes": 85320,
+      "sha256": "9b042f01c85fced9f6a0bcf754051e0aeb3732a9bc0a2cf4712edfa41d4929dd"
+    },
+    {
+      "path": "development/game/favicon.svg",
+      "bytes": 288,
+      "sha256": "5484167782af3a2308c8350ab1c0f83e7caa746ed9c974b61080da0d34b7cd6a"
+    },
+    {
+      "path": "development/game/game.js",
+      "bytes": 1785,
+      "sha256": "1021aba89d983c3610dbe2e41565475c87d67332678f7deeab2b1c4ac0340c4f"
+    },
+    {
+      "path": "development/game/icon-192.svg",
+      "bytes": 318,
+      "sha256": "be5cf6a4f50ea109e0de37567dbe36ba0dd8b28bdb8d90b820a047a6ce1d13b9"
+    },
+    {
+      "path": "development/game/icon-512.svg",
+      "bytes": 325,
+      "sha256": "eb1fe8e4c0ffb979ed8b852bcf4cce2d5a4c0d3fb9c8900099851d2daea8c4ac"
+    },
+    {
+      "path": "development/game/index.html",
+      "bytes": 30525,
+      "sha256": "2b3f198b6c6367c9cd47ac57b501a234f1e3593820b122b59124e407b8b3f7e9"
+    },
+    {
+      "path": "development/game/journey-card.js",
+      "bytes": 7090,
+      "sha256": "e975f66707f243a343ac74b3f7db496f0830d1d11a9e3eaad57bb28901934e5f"
+    },
+    {
+      "path": "development/game/journey-ui.js",
+      "bytes": 11156,
+      "sha256": "032add932e43d74c08fa00339e9940d7e25b7bf1f06a12fea8dd2c838f607ae9"
+    },
+    {
+      "path": "development/game/journey.css",
+      "bytes": 3687,
+      "sha256": "5cd4b1e927e1627073d5fd6fd2a92acceaecb8601071d7c817e4b1db5b48b7f1"
+    },
+    {
+      "path": "development/game/journey.js",
+      "bytes": 29398,
+      "sha256": "ea338f17ab3ee596bacfa1c340dae40aa08f8b035e8884e557467812dc69680e"
+    },
+    {
+      "path": "development/game/manifest.webmanifest",
+      "bytes": 537,
+      "sha256": "bd363a7a066a51110654f4c68da4e077fb7799ee9194bb5536da38ce21fff0bf"
+    },
+    {
+      "path": "development/game/modes.js",
+      "bytes": 3568,
+      "sha256": "bcc1a59eed74a3d4c603a43ab164393d18ca5bca1c7dc4fa12746d345a49fa5b"
+    },
+    {
+      "path": "development/game/projects.js",
+      "bytes": 25780,
+      "sha256": "93ff4163ab2c8c2bb2fd0e82e7bb78bc6cfa03a54430a8f992d723cb5f74bd1a"
+    },
+    {
+      "path": "development/game/save.js",
+      "bytes": 66964,
+      "sha256": "eb8c4f289da71817baa155a2c2176a755263155572bcc633c8b91b398e630255"
+    },
+    {
+      "path": "development/game/scene.js",
+      "bytes": 18815,
+      "sha256": "4fe973b443a17b39e7b1fbc65731959ea2dd1ce7c27109fb532104da45d56ace"
+    },
+    {
+      "path": "development/game/strategy.js",
+      "bytes": 46426,
+      "sha256": "6049ed108503bcc0dcfeae4bfa0e888f18bf798396be6f7eda64989ee389fe28"
+    },
+    {
+      "path": "development/game/styles.css",
+      "bytes": 90223,
+      "sha256": "eedbc0db767a940446ad1ef512f6c76f806adf87fb7a89fa59638f5c94f7a5d0"
+    },
+    {
+      "path": "development/game/sw.js",
+      "bytes": 2114,
+      "sha256": "c4f16730d3e3d8bd0626e975252284e218632f2437065d32e43c8c057236b840"
+    },
+    {
+      "path": "development/game/ui.js",
+      "bytes": 74332,
+      "sha256": "2d4e6d7983022a1ca618d6c61c0dbe793e5aa5ff6259991425dc936904a1de19"
+    },
+    {
+      "path": "docs/current_runtime_contract.md",
+      "bytes": 19872,
+      "sha256": "1569e7d9d18c8a0914b9e6b5d62b259c4f2695443ec8ff622324ba040d40c36c"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1735,
+      "sha256": "191c693c2b006236cc7ebcbfb0e6d069b4c656c30f7ed05916631eb9fea33556"
+    },
+    {
+      "path": "release.json",
+      "bytes": 284,
+      "sha256": "ec5f836faa3d9502dee6250697068edb754cfc143a3850688cb64d4128346cfb"
+    }
+  ],
+  "browser_verified_at": "2026-10-23T01:43:21+08:00",
+  "browser_verification": {
+    "log": "output/playwright/desktop-full-v9-package-final.log",
+    "extracted_root_file_entry": true,
+    "main_feedback_refresh_exact": true,
+    "challenge_refresh_exact": true,
+    "main_resume_exact": true,
+    "page_errors": 0
+  }
+}
