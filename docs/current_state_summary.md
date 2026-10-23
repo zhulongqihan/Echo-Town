@@ -1,6 +1,8 @@
 # 当前状态摘要
 
-更新时间：2026-10-23T16:53:03+08:00。权威入口：[MASTER](../planning/00_master-index.md) 3.47.0。
+更新时间：2026-10-23T17:27:28+08:00。权威入口：[MASTER](../planning/00_master-index.md) 3.48.0。
+
+**当前工作：EVENT-20261023-028已授权先同步配置介绍，再修改吸引力问题。TASK-20261023-A00-APPEAL-001进行中；改进计划见planning/replans/REPLAN_20261023_appeal-polish.md。以下为已交付的基线。**
 
 D7电脑完整版已实现，content6.2.0／savev9／cache echo-town-desktop-v9-7。唯一正式源development/game，稳定入口为根index.html。
 

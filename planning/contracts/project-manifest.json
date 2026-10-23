@@ -4,9 +4,9 @@
   "project_name": "回声镇：一生一局",
   "framework_gate": "F0B",
   "current_rule": "development",
-  "development_phase": "D7电脑经营体验已交付",
-  "development_authorization": "DEC-20261022-026",
-  "state_synced_at": "2026-10-23T16:53:03+08:00",
+  "development_phase": "D7吸引力问题改进中",
+  "development_authorization": "EVENT-20261023-028",
+  "state_synced_at": "2026-10-23T17:27:28+08:00",
   "allowed_runtime_roots": [
     "development/"
   ],
@@ -213,6 +213,7 @@
     "standing_authorization": "EVENT-20260829-011",
     "product_commit": "de6c50038857c73cf50db4ed15c0f069618ba693",
     "remote_verified_at": "2026-10-23T16:53:03+08:00",
-    "online_site_published": false
+    "online_site_published": false,
+    "policy": "docs/repository_sync.md"
   }
 }

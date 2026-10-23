@@ -11,6 +11,8 @@
 - [下载电脑版离线包](output/releases/echo-town-desktop-v9-20261023.zip)
 - [玩法与存档说明](development/game/README.md)
 
+![电脑端游戏画面](output/playwright/desktop-full-v9-game-final.png)
+
 希望安装为 PWA 时，用静态服务器提供项目目录，再通过浏览器打开。首次打开并缓存完成后，可继续离线游玩；双击入口本身不需要服务器。
 
 ## 怎样经营这一生
@@ -49,3 +51,5 @@
 当前内容版本为 **6.2.0**，存档版本为 **v9**。游戏使用本地图片和合成音频，不依赖在线素材服务。
 
 代码与接口说明见[当前运行时契约](docs/current_runtime_contract.md)。根目录 `index.html` 是稳定入口，游戏源码位于 `development/game/`。
+
+开发验证见[测试说明](development/tests/README.md)，源码和版本交付见[仓库同步说明](docs/repository_sync.md)。

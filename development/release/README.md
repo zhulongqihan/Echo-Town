@@ -1,9 +1,9 @@
-# 发布工程入口
+# 离线发行
 
-当前D2 MVP可由任意静态服务器直接提供 `development/game/`，入口为 [`index.html`](../game/index.html)。manifest 和 service worker 已就位，可在支持的浏览器中安装为本地PWA。
+当前电脑版发行包见根目录 [README](../../README.md)。完整解压ZIP后，打开包内根 `index.html`；正式源码始终来自 `development/game/`。
 
-当前实验发行说明见 [`D2-experimental-release.md`](D2-experimental-release.md)，可分发包名为 `echo-town-d2-experimental-20260828.zip`，生成后位于 `output/releases/`。
+包内包含入口、运行模块、样式、WebP图片、PWA资源和玩家说明。内部提案、测试日志、原始PNG及本机备份不放入玩家包。外部同名清单记录内容/存档/缓存版本、文件哈希和ZIP校验值。
 
-交付完成度逐项审计见 [`D2-delivery-audit.md`](D2-delivery-audit.md)。
+发行前校验每个运行文件与正式源一致；实际检查解压入口、保存恢复、主线与挑战、PNG导出及离线更新。保留旧包作为回退依据，不覆盖玩家旧档。
 
-正式发布前仍需G8存档迁移、G9发布标准、版本号和回滚方案；本轮不接入账号、联网服务或付费系统。
+源码、说明、配置和发行包按 [同步约定](../../docs/repository_sync.md)提交推送。在线网站与GitHub Release尚未发布；D2发行记录仅为历史。
